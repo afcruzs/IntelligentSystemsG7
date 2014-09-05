@@ -76,8 +76,6 @@ public class FirstAgent implements AgentProgram {
 		if (FW == false && !visit.contains(current.coordToNorth(orientation)) ) { posibleDirections.add(0); }
 		if (BW == false && !visit.contains(current.coordToSouth(orientation)) ) { posibleDirections.add(2); }
 		
-		//JOptionPane.showMessageDialog(null, visited + "  " + posibleDirections);
-		
 		//Cantidad de paredes libres es mas que dos es un critical node
 		//si la cantidad disponible es mayor que los visitados
 		//hay algun camino posible
