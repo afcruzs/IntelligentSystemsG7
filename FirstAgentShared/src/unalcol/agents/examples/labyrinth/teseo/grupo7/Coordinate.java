@@ -35,7 +35,26 @@ public class Coordinate implements Comparable<Coordinate> {
 	}
 	
 	
-	public Coordinate coordToNorth(Orientation orientation) {
+	public Coordinate coordinateTo(int orientation) {
+		switch (orientation) {
+		case Orientation.NORTH:
+			return new Coordinate(this.x, this.y+1);
+		
+		case Orientation.SOUTH:
+			return new Coordinate(this.x, this.y-1);
+		
+		case Orientation.WEST:
+			return new Coordinate(this.x-1, this.y);
+			
+		case Orientation.EAST:
+			return new Coordinate(this.x+1, this.y);	
+
+		}
+		
+		return null;
+	}
+
+	public Coordinate coordToUp(Orientation orientation) {
 		switch (orientation.orientation) {
 		case Orientation.NORTH:
 			return new Coordinate(this.x, this.y+1);
@@ -44,10 +63,10 @@ public class Coordinate implements Comparable<Coordinate> {
 			return new Coordinate(this.x, this.y-1);
 		
 		case Orientation.WEST:
-			return new Coordinate(this.x+1, this.y);
+			return new Coordinate(this.x-1, this.y);
 			
 		case Orientation.EAST:
-			return new Coordinate(this.x-1, this.y);	
+			return new Coordinate(this.x+1, this.y);	
 
 		}
 		
@@ -63,10 +82,10 @@ public class Coordinate implements Comparable<Coordinate> {
 			return new Coordinate(this.x+1, this.y);
 		
 		case Orientation.WEST:
-			return new Coordinate(this.x, this.y+1);
+			return new Coordinate(this.x, this.y-1);
 			
 		case Orientation.EAST:
-			return new Coordinate(this.x, this.y-1);	
+			return new Coordinate(this.x, this.y+1);	
 
 		}
 		
@@ -82,16 +101,16 @@ public class Coordinate implements Comparable<Coordinate> {
 			return new Coordinate(this.x-1, this.y);
 		
 		case Orientation.WEST:
-			return new Coordinate(this.x, this.y-1);
+			return new Coordinate(this.x, this.y+1);
 			
 		case Orientation.EAST:
-			return new Coordinate(this.x, this.y+1);	
+			return new Coordinate(this.x, this.y-1);	
 
 		}		
 		return null;
 	}
 	
-	public Coordinate coordToSouth(Orientation orientation) {
+	public Coordinate coordToDown(Orientation orientation) {
 		switch (orientation.orientation) {
 		case Orientation.NORTH:
 			return new Coordinate(this.x, this.y-1);
@@ -100,10 +119,10 @@ public class Coordinate implements Comparable<Coordinate> {
 			return new Coordinate(this.x, this.y+1);
 		
 		case Orientation.WEST:
-			return new Coordinate(this.x-1, this.y);
+			return new Coordinate(this.x+1, this.y);
 			
 		case Orientation.EAST:
-			return new Coordinate(this.x+1, this.y);	
+			return new Coordinate(this.x-1, this.y);	
 
 		}		
 	return null;

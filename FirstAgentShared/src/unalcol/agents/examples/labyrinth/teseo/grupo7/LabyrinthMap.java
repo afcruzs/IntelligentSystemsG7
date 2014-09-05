@@ -18,19 +18,15 @@ public class LabyrinthMap {
 		lastCriticalCoordinate = lastCriticalCoordinate.clone();
 		current = current.clone();
 		
-		if( graph.get(lastCriticalCoordinate) == null ){
+		if( graph.get(lastCriticalCoordinate) == null )
 			graph.put(lastCriticalCoordinate, new TreeMap<Coordinate, Edge>() );
-			System.out.println("Donato es una perra1 " + graph.get(lastCriticalCoordinate) );
-		}
 		
-		if( graph.get(current) == null ){
+		if( graph.get(current) == null )
 			graph.put(current, new TreeMap<Coordinate, Edge>() );
-			System.out.println("Donato es una perra2 " + graph.get(current) );
-		}
-		
+		/*
 		System.out.println( graph.get(lastCriticalCoordinate) );
 		System.out.println( graph.get(current) );
-		
+		*/
 		graph.get(lastCriticalCoordinate).put(current, new Edge( path ) );
 		graph.get(current).put(lastCriticalCoordinate, new Edge( reverse(path) ) );
 	}
@@ -50,6 +46,10 @@ public class LabyrinthMap {
 
 	public TreeMap<Coordinate,Edge> getNeighbors(Coordinate coordinate) {
 		return graph.get(coordinate);
+	}
+	
+	public LinkedList<Coordinate> getPath( Coordinate from, Coordinate to ) {
+		return graph.get(from).get(to).getPath();
 	}
 
 	public int size() {

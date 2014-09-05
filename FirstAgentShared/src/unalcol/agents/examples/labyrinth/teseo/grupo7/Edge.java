@@ -9,14 +9,18 @@ public class Edge {
 	/*
 	 * Guarda el camino *
 	 */
-	private LinkedList<Coordinate> road;
+	private LinkedList<Coordinate> path;
 	
-	public Edge(LinkedList<Coordinate> road) {
-		this.road = road;
+	public Edge(LinkedList<Coordinate> path) {
+		this.path = path;
 	}
 
+	public LinkedList<Coordinate> getPath() {
+		return path;
+	}
+	
 	public int getWeight() {
-		return road.size();
+		return path.size() + 1;
 	}
 	
 	public String toString(){

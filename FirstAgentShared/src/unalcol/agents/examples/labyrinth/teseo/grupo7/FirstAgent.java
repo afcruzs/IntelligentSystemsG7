@@ -1,12 +1,12 @@
 package unalcol.agents.examples.labyrinth.teseo.grupo7;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -24,11 +24,12 @@ public class FirstAgent implements AgentProgram {
 	private Coordinate current = new Coordinate();
 	private Coordinate lastCriticalCoordinate = null;
 	private Random r = new Random();
-
-	/*private final int LEFT_EMPTY = 11;
-	private final int RIGHT_EMPTY = 5;
-	private final int FRONT_EMPTY = 3;
-	private final int BACK_EMPTY = 7;*/
+	
+	private final int NO_OP = 0;
+	private final int DIE = 1;
+	private final int ADVANCE = 2;
+	private final int ROTATE = 3;
+	
 	private final int GOTO_SIGNAL = -2;
 	private final int INFINITY = 1000000000;
 
@@ -49,10 +50,10 @@ public class FirstAgent implements AgentProgram {
 		orientation = new Orientation();
 		r = new Random();
 		visit = new TreeSet<>();
-		current = new Coordinate();
+		current = new Coordinate(0,0);
 		lastCriticalCoordinate = null;
 		map = new LabyrinthMap();
-		pathInBuilding = new LinkedList<>();		
+		pathInBuilding = new LinkedList<>();
 	}
 
 	public int rotate(boolean FW, boolean RW, boolean BW, boolean LW, boolean T) {
@@ -68,23 +69,25 @@ public class FirstAgent implements AgentProgram {
 		ArrayList<Integer> posibleDirections = new ArrayList<>(); 
 		if (LW == false && visit.contains(current.coordToLeft(orientation)) ) { visited++; }
 		if (RW == false && visit.contains(current.coordToRight(orientation)) ) { visited++; }
-		if (FW == false && visit.contains(current.coordToNorth(orientation)) ) { visited++; }
-		if (BW == false && visit.contains(current.coordToSouth(orientation)) ) { visited++; }
+		if (FW == false && visit.contains(current.coordToUp(orientation)) ) { visited++; }
+		if (BW == false && visit.contains(current.coordToDown(orientation)) ) { visited++; }
 		
 		if (LW == false && !visit.contains(current.coordToLeft(orientation)) ) { posibleDirections.add(3); }
 		if (RW == false && !visit.contains(current.coordToRight(orientation)) ) { posibleDirections.add(1); }
-		if (FW == false && !visit.contains(current.coordToNorth(orientation)) ) { posibleDirections.add(0); }
-		if (BW == false && !visit.contains(current.coordToSouth(orientation)) ) { posibleDirections.add(2); }
+		if (FW == false && !visit.contains(current.coordToUp(orientation)) ) { posibleDirections.add(0); }
+		if (BW == false && !visit.contains(current.coordToDown(orientation)) ) { posibleDirections.add(2); }
 		
+		System.out.println(current + " -- " + amount + " " + visited + " " + posibleDirections);
+		 
 		//Cantidad de paredes libres es mas que dos es un critical node
 		//si la cantidad disponible es mayor que los visitados
 		//hay algun camino posible
 		if (amount > 2 && amount > visited)
-			save(FW, RW, BW, LW);
+			save(true);
 		//En este caso ya todo esta visitado, se debe guardar
 		//y luego ir al nodo mas cercano que tenga opciones de explorar algo nuevo
 		else if( amount > 2 && amount == visited ) {
-			save(FW, RW, BW, LW);
+			save(true);
 			goToClosestOpenNode();
 			return GOTO_SIGNAL;
 		}
@@ -99,15 +102,15 @@ public class FirstAgent implements AgentProgram {
 		}
 		//Caso especial, cuando empieza la simulacion en un tunel (La mitad de una arista)
 		else if( amount == 2 && visited == 0 )
-			save(FW, RW, BW, LW);
+			save(true);
 		//Caso especial 2, cuando la simulacion empieza en el inicio de un tunel
 		else if( amount == 1 && visited == 0 )
-			save(FW, RW, BW, LW);
+			save(true);
 		//En este caso llegamos a un callejon sin salida y deberiamos
 		//devolvernos al ultimo critical node
 		else if(amount == 1) {
-			save(FW, RW, BW, LW);
-			goTo( lastCriticalCoordinate );
+			save(false);
+			goBack();
 			breakEdge( current, lastCriticalCoordinate );
 			return GOTO_SIGNAL;
 		} else{
@@ -119,28 +122,51 @@ public class FirstAgent implements AgentProgram {
 		 * Cambia la orientacion de acuerdo a lo que escoja aleatoriamente
 		 */
 		rot = posibleDirections.get( r.nextInt(posibleDirections.size()) );
-		switch (rot) {
-		case 0:
+		/*switch (rot) {
+		case Orientation.NORTH:
 			orientation.goToNorth();
 			break;
 
-		case 1:
-			orientation.goToRight();
+		case Orientation.EAST:
+			orientation.goToEast();
 			break;
 
-		case 2:
+		case Orientation.SOUTH:
 			orientation.goToSouth();
 			break;
 
-		case 3:
-			orientation.goToLeft();
+		case Orientation.WEST:
+			orientation.goToWest();
 			break;
 		}
-
+*/
 		return rot;
 	}
 	
 
+	public void save(boolean updateLast) {
+		
+		
+		if (lastCriticalCoordinate != null) {
+			if( current.equals(lastCriticalCoordinate) )
+				return;
+			//System.out.println(lastCriticalCoordinate + " to:  " + current);
+			//System.out.println("LAST /:"+lastCriticalCoordinate + "  CURRENT /:" + current + " "
+				//	+ pathInBuilding);
+			//pathInBuilding.add(current);
+			map.addEdge(lastCriticalCoordinate, current, pathInBuilding);
+			
+			pathInBuilding = new LinkedList<>();
+			//pathInBuilding.add(current);
+		}
+		if( updateLast )
+			lastCriticalCoordinate = current.clone();
+		
+		/*System.out.println(lastCriticalCoordinate);*/
+		//System.out.println(map);
+	}
+
+	
 	private void breakEdge(Coordinate current2,
 			Coordinate lastCriticalCoordinate2) {
 		
@@ -148,77 +174,94 @@ public class FirstAgent implements AgentProgram {
 	}
 
 	private void goToClosestOpenNode() {
-		// TODO Auto-generated method stub
-		//System.out.println("GOTO");
-	}
-
-	private void goTo(Coordinate lastCriticalCoordinate2) {
-		
-		
-		
-		System.out.println("Dijkstra");
+		System.out.println("goToClosestNode");
 		PriorityQueue<ShorestPathNode> q = new PriorityQueue<>();
 		q.add( new ShorestPathNode(current, 0) );
 		
 		ShorestPathNode current = null;
 		Coordinate u = null ,v = null;
-		int vd ,w,ud;
+		int vd, w, ud;
 		
-		HashMap<Coordinate, Integer> distances = new HashMap<>( map.size() );
-		HashMap<Coordinate, Integer> distancesSoFar = new HashMap<>( map.size() );
-		HashMap<Coordinate, Coordinate> parent = new HashMap<>( map.size() );
-		HashSet<Coordinate> visit = new HashSet<>( map.size() );
+		TreeMap<Coordinate, Integer> distances = new TreeMap<>();
+		TreeMap<Coordinate, Integer> distancesSoFar = new TreeMap<>();
+		TreeMap<Coordinate, Coordinate> parent = new TreeMap<>();
+		TreeSet<Coordinate> visit = new TreeSet<>();
 		parent.put(this.current, null);
 		distancesSoFar.put(this.current, 0);
 		
 		while(!q.isEmpty()){
 			current = q.poll();
-			
-			if( distances.containsKey(current) ) continue;
-			
 			u = current.coordinate;
+			
+			if( distances.containsKey(u) ) continue;
+			
 			ud = distancesSoFar.get(u);
 			visit.add(u);
-			distances.put(current.coordinate, current.weight);
-			for( Entry<Coordinate, Edge> x : map.getNeighbors(current.coordinate).entrySet() ){
+			distances.put(u, ud);
+			for( Entry<Coordinate, Edge> x : map.getNeighbors(u).entrySet() ){
+				v = x.getKey();
 				
-				if( !visit.contains(v) ){
-					v = x.getKey();
-					vd = distancesSoFar.containsKey(v) ? distancesSoFar.get(v) : INFINITY;
-					w = x.getValue().getWeight();
-					if( vd + w < ud ){
-						distancesSoFar.put( u, vd + w );
-						parent.put(u, v);		
-						q.add(new ShorestPathNode(u, vd + w));
-					}
+				if( distances.containsKey(v) ) continue;
+				
+				vd = distancesSoFar.containsKey(v) ? distancesSoFar.get(v) : INFINITY;
+				w = x.getValue().getWeight();
+				
+				System.out.println("U: " + u + " V: " + v+ " W: "+ w);
+				if( vd > ud + w ){
+					distancesSoFar.put( v, w + ud );
+					parent.put(v, u);		
+					q.add(new ShorestPathNode( v, w + ud ));
 				}
-					
 			}
-			
-			
 		}
-		
-		System.out.println(parent);
-		
-		//System.out.println("CLOSEST");
+		System.out.println(distances);
 	}
 
-	public void save(boolean FW, boolean RW, boolean BW, boolean LW) {
-		
-		if (lastCriticalCoordinate != null) {
-			System.out.println(lastCriticalCoordinate + " to:  " + current);
-			//System.out.println("LAST /:"+lastCriticalCoordinate + "  CURRENT /:" + current + " "
-				//	+ pathInBuilding);
-			map.addEdge(lastCriticalCoordinate, current, pathInBuilding);
-			
-			pathInBuilding = new LinkedList<>();
-		}
-		lastCriticalCoordinate = current.clone();
-		
-		/*System.out.println(lastCriticalCoordinate);*/
-		System.out.println(map);
+	private void goBack() {
+		System.out.println("Go back");
+		addActions( map.getPath(current, lastCriticalCoordinate), current, lastCriticalCoordinate );
+	}
+	
+	private int numberOfRotationsTo(int from, int to) {
+		return  ( 4 - (from - to) )%4;
 	}
 
+	private void rotationsTo( Coordinate current, Coordinate next ) {
+		int o, dir = orientation.orientation;
+		if( next.equals(current.coordinateTo(Orientation.NORTH)) )
+			o = Orientation.NORTH;
+
+		else if( next.equals(current.coordinateTo(Orientation.WEST)) )
+			o = Orientation.WEST;
+
+		else if( next.equals(current.coordinateTo(Orientation.EAST) ) ) 
+			o = Orientation.EAST;
+
+		else 
+			o = Orientation.SOUTH;
+
+		int r = numberOfRotationsTo(dir, o);
+		
+		for( int i=0; i<r; i++ ) {
+			cmd.add(language.getAction(ROTATE));
+			orientation.orientation = (orientation.orientation + 1)%4;
+		}
+//		System.out.println(dir+" + "+ o + " = "+r + " nueva orientacion: " + orientation.orientation);
+		cmd.add(language.getAction(ADVANCE));
+	}
+	
+	private void addActions( LinkedList<Coordinate> path,
+							 Coordinate from, Coordinate to ) {
+		Coordinate current = from;
+		for( Coordinate c : path ) {
+			rotationsTo(current, c);
+			//System.out.println(orientation.orientation + "  " + current +  "        " + c);
+			current = c;
+		}
+		rotationsTo(current, to);
+	}
+	
+	
 	private void updateCoordinate() {
 		switch (orientation.orientation) {
 		case Orientation.NORTH:
@@ -231,12 +274,12 @@ public class FirstAgent implements AgentProgram {
 			break;
 
 		case Orientation.EAST:
-			current.x--;
+			current.x++;
 			// current = current.coordToLeft(orientation);
 			break;
 
 		case Orientation.WEST:
-			current.x++;
+			current.x--;
 			// current = current.coordToRight(orientation);
 			break;
 
@@ -276,34 +319,38 @@ public class FirstAgent implements AgentProgram {
 					.booleanValue();*/
 
 			int d = rotate(FW, RW, BW, LW, T);
-
+			System.out.println(d);
 			if (0 <= d && d < 4) {
 				for (int i = 1; i <= d; i++) {
-					cmd.add(language.getAction(3)); // rotate
+					cmd.add(language.getAction(ROTATE)); // rotate
+					orientation.orientation = (orientation.orientation + 1)%4;
 				}
-				cmd.add(language.getAction(2)); // advance
+				cmd.add(language.getAction(ADVANCE)); // advance
 
-			} else {
+			} else if( d == DIE ){
 				//System.out.println("PAILA");
-				cmd.add(language.getAction(0)); // die
+				cmd.add(language.getAction(DIE)); // die
 			}
 		}
 		/*
 		 * Meter percepciones de agente
 		 */
 
-		String x = cmd.get(0);
-		if (x.equals(language.getAction(2))) {
+		String x = cmd.get(NO_OP);
+		if (x.equals(language.getAction(ADVANCE))) {
 
 			// JOptionPane.showMessageDialog(null, /*visit.size() + " \n" +*/
 			// orientation + " \n" + current);
 			visit.add(current.clone());
 			updateCoordinate();
 
+		} else if(x.equals(language.getAction(ROTATE)) ) {
+			
+			
 		}
-		cmd.remove(0);
-		System.out.println(x + " ");
-		
+		//System.out.println(x + " Orientation: " + orientation.orientation);
+		System.out.println(x+ "  " + current + " " + lastCriticalCoordinate );
+		cmd.remove(0);		
 		return new Action(x);
 	}
 	
@@ -318,9 +365,6 @@ public class FirstAgent implements AgentProgram {
 		public int compareTo(ShorestPathNode sn) {
 			return weight - sn.weight;
 		}
-		
-		
-		
 	}
 
 }

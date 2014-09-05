@@ -15,23 +15,8 @@ public class TeseoMain {
                                    new String[]{"no_op", "die", "advance", "rotate"}
                                    );
   }
-  
-  static void test(int x, int y){
-	  
-	  int x_ = x;
-	int y_ = y;
-	if(x_ < 0)
-		x_ = Math.abs(x_)*1000;
-	
-	if(y_ < 0)
-		y_ = Math.abs(y_)*1000;
-		
-		System.out.println( ((x_+y_)*(x_+y_+1)+y_)/2 );
-  }
-
+ 
   public static void main( String[] argv ){
-	test(4,-2);
-	test(4,-1);
     //  InteractiveAgentProgram p = new InteractiveAgentProgram( getLanguage() );
     //TeseoSimple p = new TeseoSimple();
 	FirstAgent p = new FirstAgent();  
