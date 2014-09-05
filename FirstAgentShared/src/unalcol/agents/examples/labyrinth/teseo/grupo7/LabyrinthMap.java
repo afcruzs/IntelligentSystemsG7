@@ -62,4 +62,8 @@ public class LabyrinthMap {
 		graph.get(lastCriticalCoordinate2).remove(current2);
 	}
 	
+	public boolean contains(Coordinate c) {
+		return graph.containsKey(c);
+	}
+	
 }
