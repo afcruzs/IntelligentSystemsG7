@@ -2,6 +2,7 @@ package unalcol.agents.examples.labyrinth.teseo.grupo7;
 
 import java.util.LinkedList;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class LabyrinthMap {
 	
@@ -66,4 +67,11 @@ public class LabyrinthMap {
 		return graph.containsKey(c);
 	}
 	
+	public Coordinate getKey(Coordinate coordinate) {
+		for( Coordinate c: graph.keySet() )
+			if( c.equals(coordinate) )
+				return c;
+		return null;
+	}
+
 }

@@ -44,7 +44,7 @@ public class Coordinate implements Comparable<Coordinate> {
 	}
 	
 	public Coordinate clone(){
-		return new Coordinate(x,y);
+		return new Coordinate(x,y,amount);
 	}
 	
 	
