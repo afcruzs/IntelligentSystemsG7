@@ -91,6 +91,7 @@ public class FirstAgent implements AgentProgram {
 		//si la cantidad disponible es mayor que los visitados
 		//hay algun camino posible
 		if (visited > amount) JOptionPane.showMessageDialog(null, "THIS IS SHIIIT ");
+		
 		if (amount > 2 && amount > visited)
 			save(true);
 		//En este caso ya todo esta visitado, se debe guardar
@@ -230,20 +231,25 @@ public class FirstAgent implements AgentProgram {
 	private boolean checkTrivialCase() {
 		System.out.println("Checking Trivial Case");
 		ArrayList<Coordinate> t = new ArrayList<>();
+		
+		
 		Coordinate c = current.coordinateTo(Orientation.NORTH);
-		c = map.visit.get(c);
+		c = map.visit.get(c); //Esto no estaba, creo que faltaba :v
 		if( map.contains(c) && c.getAmount() - visitedNeighbors(c) > 0 )
 			t.add(c);
 
 		c = current.coordinateTo(Orientation.WEST);
+		c = map.visit.get(c); //Esto no estaba, creo que faltaba :v
 		if( map.contains(c) && c.getAmount() - visitedNeighbors(c) > 0 )
 			t.add(c);
 		
 		c = current.coordinateTo(Orientation.EAST);
+		c = map.visit.get(c); //Esto no estaba, creo que faltaba :v
 		if( map.contains(c) && c.getAmount() - visitedNeighbors(c) > 0 )
 			t.add(c);
 
 		c = current.coordinateTo(Orientation.SOUTH);
+		c = map.visit.get(c); //Esto no estaba, creo que faltaba :v
 		if( map.contains(c) && c.getAmount() - visitedNeighbors(c) > 0 )
 			t.add(c);
 		
@@ -262,9 +268,10 @@ public class FirstAgent implements AgentProgram {
 	 * para explorar
 	 * */
 	private void goToClosestOpenNode() {
+		//JOptionPane.showMessageDialog(null, "closest");
 		System.out.println("goToClosestNode");
-		verifyAdjacents();
-		if( checkTrivialCase() ) return;
+		/*verifyAdjacents();
+		if( checkTrivialCase() ) return;*/
 		
 		System.out.print("Dijkstra from: ");
 		System.out.println("\t"+current);

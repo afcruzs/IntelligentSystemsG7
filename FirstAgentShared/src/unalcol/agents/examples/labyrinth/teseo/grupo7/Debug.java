@@ -50,6 +50,8 @@ public class Debug extends JFrame {
 					 g.drawLine(Math.abs(u.x)*space + space/2 , Math.abs(u.y)*space + space/2
 							 , Math.abs(v.x)*space + space/2, Math.abs(v.y)*space + space/2);
 					 
+					 g.fillOval(Math.abs(u.x)*space + space/4, Math.abs(u.y)*space + space/4, space/2, space/2);
+					 g.fillOval(Math.abs(v.x)*space + space/4, Math.abs(v.y)*space + space/4, space/2, space/2);
 				 }
 			 }
 			 
