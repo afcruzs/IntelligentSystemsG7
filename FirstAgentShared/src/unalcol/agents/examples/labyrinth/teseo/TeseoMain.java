@@ -3,7 +3,9 @@ import unalcol.agents.Agent;
 import unalcol.agents.AgentProgram;
 import unalcol.agents.examples.labyrinth.Labyrinth;
 import unalcol.agents.examples.labyrinth.LabyrinthDrawer;
+import unalcol.agents.examples.labyrinth.teseo.grupo7.Debug;
 import unalcol.agents.examples.labyrinth.teseo.grupo7.FirstAgent;
+import unalcol.agents.examples.labyrinth.teseo.grupo7.LabyrinthMap;
 import unalcol.agents.examples.labyrinth.teseo.simple.RandomReflexTeseo;
 import unalcol.agents.examples.labyrinth.teseo.simple.SimpleTeseoAgentProgram;
 import unalcol.agents.simulate.util.SimpleLanguage;
@@ -19,7 +21,7 @@ public class TeseoMain {
   public static void main( String[] argv ){
     //  InteractiveAgentProgram p = new InteractiveAgentProgram( getLanguage() );
     //TeseoSimple p = new TeseoSimple();
-	FirstAgent p = new FirstAgent();  
+	FirstAgent p = new FirstAgent(); 
     //RandomReflexTeseo p = new RandomReflexTeseo();
 	//SimpleTeseoAgentProgram p = new FirstAgent(); 
     p.setLanguage(getLanguage());

@@ -6,13 +6,17 @@ import java.util.TreeSet;
 
 public class LabyrinthMap {
 	
-	private TreeMap<Coordinate, TreeMap<Coordinate, Edge> > graph;
+	protected TreeMap<Coordinate, TreeMap<Coordinate, Edge> > graph;
+	protected TreeMap<Coordinate, Coordinate> visit,updatedCoordinates;
+	
+	
 	
 	public LabyrinthMap(  ) {
 		graph = new TreeMap<>();
+		visit = new TreeMap<>();
+		updatedCoordinates = new TreeMap<>();
 		
 	}
-
 	public void addEdge(Coordinate lastCriticalCoordinate, Coordinate current,
 			LinkedList<Coordinate> path) {
 		
@@ -30,6 +34,9 @@ public class LabyrinthMap {
 		*/
 		graph.get(lastCriticalCoordinate).put(current, new Edge( path ) );
 		graph.get(current).put(lastCriticalCoordinate, new Edge( reverse(path) ) );
+		
+		updatedCoordinates.put(lastCriticalCoordinate, lastCriticalCoordinate);
+		updatedCoordinates.put(current, current);
 	}
 	
 	
@@ -59,19 +66,24 @@ public class LabyrinthMap {
 
 	public void breakEdge(Coordinate current2,
 			Coordinate lastCriticalCoordinate2) {
-		graph.get(current2).remove(lastCriticalCoordinate2);
-		graph.get(lastCriticalCoordinate2).remove(current2);
+		System.out.println( "Breakeada " + current2 + " " + lastCriticalCoordinate2 + " " + graph.get(current2).remove(lastCriticalCoordinate2) );
+		
+		System.out.println( "Breakeada " + current2 + " " + lastCriticalCoordinate2 + " "+ graph.get(lastCriticalCoordinate2).remove(current2) );
 	}
 	
 	public boolean contains(Coordinate c) {
+		if(c == null)
+			 return false;
 		return graph.containsKey(c);
 	}
 	
 	public Coordinate getKey(Coordinate coordinate) {
-		for( Coordinate c: graph.keySet() )
+		
+		return updatedCoordinates.get(coordinate);
+		/*for( Coordinate c: graph.keySet() )
 			if( c.equals(coordinate) )
 				return c;
-		return null;
+		return null;*/
 	}
 
 }

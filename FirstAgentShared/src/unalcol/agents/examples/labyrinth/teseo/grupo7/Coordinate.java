@@ -2,12 +2,32 @@ package unalcol.agents.examples.labyrinth.teseo.grupo7;
 
 public class Coordinate implements Comparable<Coordinate> {
 	protected int x, y, amount;
-
-	public Coordinate(int x, int y, int amount) {
+	protected boolean FW, RW, BW, LW;
+	protected Orientation orientation;
+	
+	public Coordinate(int x, int y, int amount,
+			boolean FW, boolean RW, boolean BW, boolean LW, 
+			Orientation orientation) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.amount = amount;
+		this.FW = FW;
+		this.RW = RW;
+		this.BW = BW;
+		this.LW = LW;
+		this.orientation = orientation;
+	}
+	
+	public void updateInfo(int amount, boolean FW, boolean RW, 
+			boolean BW, boolean LW, Orientation orientation){
+			
+		this.amount = amount;
+		this.FW = FW;
+		this.RW = RW;
+		this.BW = BW;
+		this.LW = LW;
+		this.orientation = orientation;
 	}
 	
 	public Coordinate(){
@@ -20,6 +40,7 @@ public class Coordinate implements Comparable<Coordinate> {
 		this.y = y;
 	}
 	
+
 	@Override
 	public boolean equals(Object o){
 		Coordinate c = (Coordinate)o;
@@ -44,7 +65,303 @@ public class Coordinate implements Comparable<Coordinate> {
 	}
 	
 	public Coordinate clone(){
-		return new Coordinate(x,y,amount);
+		return new Coordinate(x,y,amount,FW, RW, BW, LW, orientation);
+	}
+	
+	private boolean genericCheck(int tempOrientation){
+		switch (tempOrientation) {
+		case Orientation.EAST:
+			return RW;
+			
+		case Orientation.WEST:
+			return LW;
+		
+		case Orientation.NORTH:
+			return FW;
+		
+		default: //South
+			return BW;
+		
+		}
+		
+	}
+	public boolean verifyLeftWall( int orientation ){
+		//return genericCheck(( orientation.orientation + Orientation.WEST ) % 4);
+		switch (orientation) {
+		case Orientation.WEST:
+				switch (this.orientation.orientation) {
+				
+				case Orientation.NORTH:
+					return BW;
+				
+				case Orientation.WEST:
+						return LW;	
+						
+				case Orientation.EAST:
+						return RW;
+					//break;
+				default: //South
+					return FW;
+				}
+		
+		case Orientation.EAST:
+				switch (this.orientation.orientation) {
+				
+				case Orientation.NORTH:
+					return FW;
+				
+				case Orientation.WEST:
+						return RW;	
+						
+				case Orientation.EAST:
+						return LW;
+					//break;
+				default: //South
+					return BW;
+				}
+				
+		case Orientation.NORTH:
+				switch (this.orientation.orientation) {
+				
+					case Orientation.NORTH:
+						return LW;
+					
+					case Orientation.WEST:
+							return FW;	
+							
+					case Orientation.EAST:
+							return BW;
+						//break;
+					default: //South
+						return RW;
+				}
+		default:  //South
+			
+			switch (this.orientation.orientation) {
+			
+				case Orientation.NORTH:
+					return RW;
+				
+				case Orientation.WEST:
+						return BW;	
+						
+				case Orientation.EAST:
+						return FW;
+					//break;
+				default: //South
+					return LW;
+			}
+		}
+	}
+	
+	public boolean verifyRightWall( int orientation ){
+		//return genericCheck((orientation.orientation + Orientation.EAST ) % 4);
+		switch (orientation) {
+		case Orientation.NORTH:
+			
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return BW;
+			
+			case Orientation.EAST:
+					return FW;
+			
+			case Orientation.NORTH:
+					return RW;
+
+			default: //South
+					return LW;
+			
+			}
+
+		case Orientation.WEST:
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return RW;
+			
+			case Orientation.EAST:
+					return LW;
+			
+			case Orientation.NORTH:
+					return FW;
+
+			default: //South
+					return BW;
+			
+			}
+		
+		case Orientation.EAST:
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return LW;
+			
+			case Orientation.EAST:
+					return RW;
+			
+			case Orientation.NORTH:
+					return BW;
+
+			default: //South
+					return FW;
+			
+			}
+			
+		default:
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return FW;
+			
+			case Orientation.EAST:
+					return BW;
+			
+			case Orientation.NORTH:
+					return LW;
+
+			default: //South
+					return RW;
+			
+			}
+		}
+	}
+	
+	public boolean verifyBackWall( int orientation ){
+		//return genericCheck((orientation.orientation + Orientation.SOUTH ) % 4);
+		switch (orientation) {
+		case Orientation.NORTH:
+			
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return LW;
+			
+			case Orientation.EAST:
+					return RW;
+			
+			case Orientation.NORTH:
+					return BW;
+
+			default: //South
+					return FW;
+			
+			}
+
+		case Orientation.WEST:
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return BW;
+			
+			case Orientation.EAST:
+					return FW;
+			
+			case Orientation.NORTH:
+					return RW;
+
+			default: //South
+					return LW;
+			
+			}
+		
+		case Orientation.EAST:
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return FW;
+			
+			case Orientation.EAST:
+					return BW;
+			
+			case Orientation.NORTH:
+					return LW;
+
+			default: //South
+					return RW;
+			
+			}
+			
+		default:
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return RW;
+			
+			case Orientation.EAST:
+					return LW;
+			
+			case Orientation.NORTH:
+					return FW;
+
+			default: //South
+					return BW;
+			
+			}
+		}
+	}
+	
+	public boolean verifyFrontWall( int orientation ){
+		//return genericCheck((orientation.orientation + Orientation.NORTH ) % 4);
+		switch (orientation) {
+		case Orientation.NORTH:
+			
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return RW;
+			
+			case Orientation.EAST:
+					return LW;
+			
+			case Orientation.NORTH:
+					return FW;
+
+			default: //South
+					return BW;
+			
+			}
+
+		case Orientation.WEST:
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return FW;
+			
+			case Orientation.EAST:
+					return BW;
+			
+			case Orientation.NORTH:
+					return LW;
+
+			default: //South
+					return RW;
+			
+			}
+		
+		case Orientation.EAST:
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return BW;
+			
+			case Orientation.EAST:
+					return FW;
+			
+			case Orientation.NORTH:
+					return RW;
+
+			default: //South
+					return LW;
+			
+			}
+			
+		default:
+			switch (this.orientation.orientation) {
+			case Orientation.WEST:
+					return LW;
+			
+			case Orientation.EAST:
+					return RW;
+			
+			case Orientation.NORTH:
+					return BW;
+
+			default: //South
+					return FW;
+			
+			}
+		}
 	}
 	
 	

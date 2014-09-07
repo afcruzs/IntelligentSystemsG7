@@ -13,6 +13,10 @@ public class Orientation {
 		this.orientation = NORTH;
 	}
 	
+	private Orientation(int o){
+		this.orientation = o;
+	}
+	
 	public void goToWest(){
 		orientation = (orientation + WEST) % 4;
 		//orientation = ( 4 - (orientation - WEST) )%4;
@@ -36,5 +40,10 @@ public class Orientation {
 	public String toString(){
 		return String.valueOf(orientation);
 	}
+	
+	public Orientation clone(){
+		return new Orientation(this.orientation);
+	}
+	
 	
 }	
