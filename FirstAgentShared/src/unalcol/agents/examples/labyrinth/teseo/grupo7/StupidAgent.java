@@ -19,7 +19,7 @@ import unalcol.agents.Percept;
 import unalcol.agents.simulate.util.SimpleLanguage;
 
 
-public class FirstAgent implements AgentProgram {
+public class StupidAgent implements AgentProgram {
 	protected SimpleLanguage language;
 	protected Vector<String> cmd = new Vector<String>();
 	protected Orientation orientation;
@@ -42,10 +42,9 @@ public class FirstAgent implements AgentProgram {
 	protected LabyrinthMap map = new LabyrinthMap();
 	protected Debug debug;
 
-	public FirstAgent() {
+	public StupidAgent(){
 		init();
 	}
-
 	public void setLanguage(SimpleLanguage _language) {
 		language = _language;
 	}
@@ -58,11 +57,9 @@ public class FirstAgent implements AgentProgram {
 		lastCriticalCoordinate = null;
 		map = new LabyrinthMap();
 		pathInBuilding = new LinkedList<>();
-		debug = new Debug(this);
 	}
 	
-	public int rotate(boolean FW, boolean RW, boolean BW, boolean LW, 
-						boolean FA, boolean RA, boolean BA, boolean LA, boolean T) {
+	public int rotate(boolean FW, boolean RW, boolean BW, boolean LW, boolean T) {
 		debug.repaint();
 		if (T)
 			return -1;		
@@ -80,10 +77,10 @@ public class FirstAgent implements AgentProgram {
 		if (FW == false && map.visit.containsKey(current.coordToUp(orientation)) ) { visited++; }
 		if (BW == false && map.visit.containsKey(current.coordToDown(orientation)) ) { visited++; }
 		
-		if (LW == false && !map.visit.containsKey(current.coordToLeft(orientation)) && LA == false ) { posibleDirections.add(3); }
-		if (RW == false && !map.visit.containsKey(current.coordToRight(orientation))  && RA == false ) { posibleDirections.add(1); }
-		if (FW == false && !map.visit.containsKey(current.coordToUp(orientation))  && FA == false ) { posibleDirections.add(0); }
-		if (BW == false && !map.visit.containsKey(current.coordToDown(orientation))  && BA == false  ) { posibleDirections.add(2); }
+		if (LW == false && !map.visit.containsKey(current.coordToLeft(orientation)) ) { posibleDirections.add(3); }
+		if (RW == false && !map.visit.containsKey(current.coordToRight(orientation)) ) { posibleDirections.add(1); }
+		if (FW == false && !map.visit.containsKey(current.coordToUp(orientation)) ) { posibleDirections.add(0); }
+		if (BW == false && !map.visit.containsKey(current.coordToDown(orientation)) ) { posibleDirections.add(2); }
 		
 		current.updateInfo(amount, FW, RW, BW, LW, orientation.clone() );
 		map.visit.put(current.clone(), current.clone());
@@ -448,58 +445,7 @@ public class FirstAgent implements AgentProgram {
 	 * @return Action[]
 	 */
 	public Action compute(Percept p) {
-		System.out.println(p);
-		if (cmd.size() == 0) {
-
-			/*
-			 * Captura percepciones
-			 */
-			boolean FW = ((Boolean) p.getAttribute(language.getPercept(0)))
-					.booleanValue();
-			boolean RW = ((Boolean) p.getAttribute(language.getPercept(1)))
-					.booleanValue();
-			boolean BW = ((Boolean) p.getAttribute(language.getPercept(2)))
-					.booleanValue();
-			boolean LW = ((Boolean) p.getAttribute(language.getPercept(3)))
-					.booleanValue();
-			boolean T = ((Boolean) p.getAttribute(language.getPercept(4)))
-					.booleanValue();
-			boolean FA = ((Boolean) p.getAttribute(language.getPercept(5)))
-					.booleanValue();
-			boolean RA = ((Boolean) p.getAttribute(language.getPercept(6)))
-					.booleanValue();
-			boolean BA = ((Boolean) p.getAttribute(language.getPercept(7)))
-					.booleanValue();
-			boolean LA = ((Boolean) p.getAttribute(language.getPercept(8)))
-					.booleanValue();
-
-			int d = rotate(FW, RW, BW, LW, FA, RA, BA, LA, T );
-			if (0 <= d && d < 4) {
-				for (int i = 1; i <= d; i++) {
-					cmd.add(language.getAction(ROTATE)); // rotate
-					
-				}
-				cmd.add(language.getAction(ADVANCE)); // advance
-
-			} else if( d == DIE ){
-				cmd.add(language.getAction(DIE)); // die
-			}
-		}
-		/*
-		 * Meter percepciones de agente
-		 */
-
-		String x = cmd.get(0);
-		if (x.equals(language.getAction(ADVANCE))) {
-			updateCoordinate();
-		} else if(x.equals(language.getAction(ROTATE)) ) {
-			/* Actualiza la orientacion */
-			orientation.orientation = (orientation.orientation + 1)%4;
-		}
-
-		cmd.remove(0);		
-		debug.repaint();
-		return new Action(x);
+		return new Action("no_op");
 	}
 	
 	class ShortestPathNode implements Comparable<ShortestPathNode>{

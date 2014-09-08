@@ -21,4 +21,8 @@ public class Percept {
   public void setAttribute( String key, Object value ){
     table.put(key, value);
   }
+  
+  public String toString(){
+	  return table.toString();
+  }
 }

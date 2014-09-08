@@ -8,6 +8,8 @@ import unalcol.agents.Agent;
 import unalcol.agents.AgentProgram;
 import unalcol.agents.examples.labyrinth.Labyrinth;
 import unalcol.agents.examples.labyrinth.LabyrinthDrawer;
+import unalcol.agents.examples.labyrinth.teseo.grupo7.FirstAgent;
+import unalcol.agents.examples.labyrinth.teseo.grupo7.StupidAgent;
 import unalcol.agents.simulate.util.SimpleLanguage;
 import unalcol.types.collection.vector.Vector;
 
@@ -22,9 +24,13 @@ public class MultiTeseoMain {
 
   public static void main( String[] argv ){
      AgentProgram[] teseo = new AgentProgram[12];
-     /* Equipo: Perceptron * /
-     teseo[0] = new SimpleTeseoAgentProgramPerceptron();
-     ((SimpleTeseoAgentProgramPerceptron)teseo[0]).setLanguage(getLanguage());
+      //Equipo: Perceptron F
+      teseo[0] = new FirstAgent();
+     ((FirstAgent)teseo[0]).setLanguage(getLanguage());
+     
+     teseo[1] = new StupidAgent();
+     ((StupidAgent)teseo[1]).setLanguage(getLanguage());
+     
      /* Equipo: SinGrupo * /
      teseo[1] = new ProgAgenteSinGrupo(getLanguage());     
      /* Equipo: Los Resucitados * /
@@ -52,8 +58,8 @@ public class MultiTeseoMain {
      teseo[10] = new TesoCai();
      ((TesoCai)teseo[10]).setLanguage(getLanguage());                              
     */  
-    int index1 = 10;
-    int index2 = 4;
+    int index1 = 0;
+    int index2 = 1;
     
     LabyrinthDrawer.DRAW_AREA_SIZE = 600;
     LabyrinthDrawer.CELL_SIZE = 40;
@@ -68,6 +74,7 @@ public class MultiTeseoMain {
     agent.add(agent2);
 //    Agent agent = new Agent( new RandomReflexTeseoAgentProgram( getLanguage() ) );
     MultiAgentLabyrinthMainFrame frame = new MultiAgentLabyrinthMainFrame( agent, getLanguage() );
+    frame.setSize(800, 700);
     frame.setVisible(true); 
   }
 }

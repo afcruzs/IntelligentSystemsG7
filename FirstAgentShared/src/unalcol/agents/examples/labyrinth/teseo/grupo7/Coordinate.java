@@ -85,6 +85,7 @@ public class Coordinate implements Comparable<Coordinate> {
 		}
 		
 	}
+	
 	public boolean verifyLeftWall( int orientation ){
 		//return genericCheck(( orientation.orientation + Orientation.WEST ) % 4);
 		switch (orientation) {
@@ -459,6 +460,6 @@ public class Coordinate implements Comparable<Coordinate> {
 	}
 	
 	public String toString(){
-		return "(x: " + x + ", y: " + y+", amount: "+amount+")";
+		return "(x: " + x + ", y: " + y+", percepts: "+FW+","+RW+","+BW+","+LW+")";
 	}
 }

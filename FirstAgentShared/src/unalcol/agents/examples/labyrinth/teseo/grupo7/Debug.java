@@ -21,7 +21,7 @@ public class Debug extends JFrame {
 		add(new DebugPanel());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	
+
 	class DebugPanel extends JPanel{
 		
 		 @Override
@@ -29,39 +29,39 @@ public class Debug extends JFrame {
 			 
 			 setTitle("ORIENTATION: " + agent.orientation);
 			 for( Coordinate c : agent.map.visit.keySet() ){
-				 g.drawOval(Math.abs(c.x)*space, Math.abs(c.y)*space, space, space);
+				 g.drawOval( Math.abs(c.x)*space,  Math.abs(c.y)*space, space, space);
 			 }
 			 
 			 g.setColor(Color.RED);
 			 
 			 for( Coordinate c : agent.map.graph.keySet() ){
-				 g.drawOval(Math.abs(c.x)*space, Math.abs(c.y)*space, space, space);
+				 g.drawOval( Math.abs(c.x)*space, Math.abs(c.y)*space, space, space);
 			 }
 			 
-			 g.setColor(Color.YELLOW);
+			 g.setColor(Color.CYAN);
 			 
 			 for( Coordinate c : agent.pathInBuilding ){
-				 g.drawOval(Math.abs(c.x)*space, Math.abs(c.y)*space, space, space);
+				 g.drawOval( Math.abs(c.x)*space, Math.abs(c.y)*space, space, space);
 			 }
 			 
 			 g.setColor(Color.BLACK);
 			 for( Coordinate u : agent.map.graph.keySet() ){
 				 for( Coordinate v : agent.map.getNeighbors(u).keySet() ){
-					 g.drawLine(Math.abs(u.x)*space + space/2 , Math.abs(u.y)*space + space/2
-							 , Math.abs(v.x)*space + space/2, Math.abs(v.y)*space + space/2);
+					 g.drawLine( Math.abs(u.x)*space + space/2 , Math.abs(u.y)*space + space/2
+							 ,  Math.abs(v.x)*space + space/2, Math.abs(v.y)*space + space/2);
 					 
-					 g.fillOval(Math.abs(u.x)*space + space/4, Math.abs(u.y)*space + space/4, space/2, space/2);
-					 g.fillOval(Math.abs(v.x)*space + space/4, Math.abs(v.y)*space + space/4, space/2, space/2);
+					 g.fillOval( Math.abs(u.x)*space + space/4, Math.abs(u.y)*space + space/4, space/2, space/2);
+					 g.fillOval( Math.abs(v.x)*space + space/4, Math.abs(v.y)*space + space/4, space/2, space/2);
 				 }
 			 }
 			 
 			 g.setColor(Color.MAGENTA);
 			 Coordinate t = agent.lastCriticalCoordinate;
 			 if(t!=null)
-			 g.drawOval(Math.abs(t.x)*space + space/4, Math.abs(t.y)*space + space/4, space/2, space/2);
+			 g.drawOval( Math.abs(t.x)*space + space/4, Math.abs(t.y)*space + space/4, space/2, space/2);
 			 
 			 g.setColor(Color.BLUE);
-			 g.drawOval(Math.abs(agent.current.x)*space, Math.abs(agent.current.y)*space, space, space);
+			 g.drawOval( Math.abs(agent.current.x)*space, Math.abs(agent.current.y)*space, space, space);
 			 
 		 }
 		

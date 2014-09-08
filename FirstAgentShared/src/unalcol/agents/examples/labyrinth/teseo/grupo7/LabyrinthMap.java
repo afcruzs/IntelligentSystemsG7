@@ -48,7 +48,7 @@ public class LabyrinthMap {
 		return ll;
 	}
 	
-	public String  toString(){
+	public String  toString() {
 		return graph.toString();
 	}
 
@@ -66,9 +66,15 @@ public class LabyrinthMap {
 
 	public void breakEdge(Coordinate current2,
 			Coordinate lastCriticalCoordinate2) {
-		System.out.println( "Breakeada " + current2 + " " + lastCriticalCoordinate2 + " " + graph.get(current2).remove(lastCriticalCoordinate2) );
+		TreeMap<Coordinate, Edge> current = graph.get(current2);
+		current.remove(lastCriticalCoordinate2);
+		TreeMap<Coordinate, Edge> lastCriticalCoordinate = graph.get(lastCriticalCoordinate2);
+		lastCriticalCoordinate.remove(current2);
 		
-		System.out.println( "Breakeada " + current2 + " " + lastCriticalCoordinate2 + " "+ graph.get(lastCriticalCoordinate2).remove(current2) );
+		if( current.isEmpty() )
+			graph.remove(current2);
+		if( lastCriticalCoordinate.isEmpty() )
+			graph.remove(lastCriticalCoordinate2);
 	}
 	
 	public boolean contains(Coordinate c) {
