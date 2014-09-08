@@ -1,6 +1,7 @@
 package unalcol.agents.examples.labyrinth.teseo.grupo7;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
@@ -86,19 +87,24 @@ public class FirstAgent implements AgentProgram {
 		current.updateInfo(amount, FW, RW, BW, LW, orientation.clone() );
 		map.visit.put(current.clone(), current.clone());
 		//System.out.println(current + " -- " + amount + " " + visited + " " + posibleDirections);
-		 
+		
+		
+		
 		//Cantidad de paredes libres es mas que dos es un critical node
 		//si la cantidad disponible es mayor que los visitados
 		//hay algun camino posible
 		if (visited > amount) JOptionPane.showMessageDialog(null, "THIS IS SHIIIT ");
 		
-		if (amount > 2 && amount > visited)
+		if (amount > 2 && amount > visited){
 			save(true);
+			verifyAdjacents();
 		//En este caso ya todo esta visitado, se debe guardar
 		//y luego ir al nodo mas cercano que tenga opciones de explorar algo nuevo
-		else if( amount > 2 && amount == visited ) {
+		}else if( amount > 2 && amount == visited ) {
 			save(true);
-			goToClosestOpenNode();
+			verifyAdjacents();
+			lastCriticalCoordinate = goToClosestOpenNode();
+			//lastCriticalCoordinate = current.clone();
 			return GOTO_SIGNAL;
 		}
 		//En este caso vamos por un tunel 
@@ -109,28 +115,34 @@ public class FirstAgent implements AgentProgram {
 		else if(amount == 2 && visited == 2) {
 			//JOptionPane.showMessageDialog(null, "caso");
 			save(false);
+			verifyAdjacents();
 			if( current.equals(lastCriticalCoordinate) )
 				System.out.println("iguales");
-			goToClosestOpenNode();
+			
+			Coordinate next;
+			lastCriticalCoordinate = goToClosestOpenNode();
+			//lastCriticalCoordinate = current.clone();
 			breakEdge(current, lastCriticalCoordinate);
 			return GOTO_SIGNAL;
 		}
 		//Caso especial, cuando empieza en un tunel (La mitad de una arista)
-		else if( amount == 2 && visited == 0 )
+		else if( amount == 2 && visited == 0 ){
 			save(true);
+			verifyAdjacents();
 		//Caso especial 2, cuando empieza en el inicio de un tunel
-		else if( amount == 1 && visited == 0 )
+		}else if( amount == 1 && visited == 0 ){
 			save(true);
+			verifyAdjacents();
 		//En este caso llegamos a un callejon sin salida y deberiamos
 		//devolvernos al ultimo critical node
-		else if(amount == 1) {
+		}else if(amount == 1) {
 			save(false);
 			goBack(orientation.orientation);
 			breakEdge( current, lastCriticalCoordinate );
 			return GOTO_SIGNAL;
 		} else{
 			JOptionPane.showMessageDialog(null, "else: "+amount+" " + visited);
-			goToClosestOpenNode();
+			lastCriticalCoordinate = goToClosestOpenNode();
 			return GOTO_SIGNAL;
 		}
 
@@ -146,14 +158,11 @@ public class FirstAgent implements AgentProgram {
 	 * */
 	public void save(boolean updateLast) {
 		
-		
-		if (lastCriticalCoordinate != null) {
-			System.out.println("lastCritical no es Null");
-			if( current.equals(lastCriticalCoordinate) )
-				return;
+		if (lastCriticalCoordinate != null && !current.equals(lastCriticalCoordinate) ) {
+			
 			map.addEdge(lastCriticalCoordinate.clone(), current.clone(), pathInBuilding);
 			pathInBuilding = new LinkedList<>();
-		}else System.out.println("lastCritical no Null");
+		}// else System.out.println("lastCritical no Null");
 		if( updateLast )
 			lastCriticalCoordinate = current.clone();
 	}
@@ -169,28 +178,29 @@ public class FirstAgent implements AgentProgram {
 	 * aun no ha sido creado el enlace con esta
 	 *  */
 	private void verifyAdjacents() {
-		Coordinate c = current.coordinateTo(Orientation.NORTH);
-		System.out.println(current);
-		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) ){
-			System.out.println("\t" + c);
+		System.out.println("Verify adjacents");
+		Coordinate c = map.visit.get( current.coordinateTo(Orientation.NORTH) );
+		//System.out.println(current);
+		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) && !current.verifyFrontWall(Orientation.NORTH) ){
+			System.out.println("\tAdjacent added: " + c);
 			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
 		}
 
-		c = current.coordinateTo(Orientation.WEST);
-		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) ) {
-			System.out.println("\t" + c);
+		c = map.visit.get( current.coordinateTo(Orientation.WEST) );
+		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) && !current.verifyLeftWall(Orientation.NORTH) ) {
+			System.out.println("\tAdjacent added: " + c);
 			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
 		}
 
-		c = current.coordinateTo(Orientation.EAST);
-		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) ) {
-			System.out.println("\t" + c);
+		c = map.visit.get( current.coordinateTo(Orientation.EAST) );
+		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) && !current.verifyRightWall(Orientation.NORTH) ) {
+			System.out.println("\tAdjacent added: t" + c);
 			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
 		}
 
-		c = current.coordinateTo(Orientation.SOUTH);
-		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) ) {
-			System.out.println("\t" + c);
+		c = map.visit.get( current.coordinateTo(Orientation.SOUTH) );
+		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) && !current.verifyBackWall(Orientation.NORTH) ) {
+			System.out.println("\tAdjacent added: t" + c);
 			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
 		}
 	}
@@ -199,11 +209,9 @@ public class FirstAgent implements AgentProgram {
 	 * */
 	private int visitedNeighbors( Coordinate coordinate ) {
 		int visited = 0;
-		//System.out.println(coordinate);
 		Coordinate c = coordinate.coordinateTo(Orientation.NORTH);
 		coordinate = map.visit.get(coordinate);
-		//System.out.println("\t" + c );
-		if( map.visit.containsKey(c) && !coordinate.verifyFrontWall(Orientation.NORTH)  )
+		if( map.visit.containsKey(c) && !coordinate.verifyFrontWall(Orientation.NORTH)   )
 			visited++;
 		
 		c = coordinate.coordinateTo(Orientation.WEST);
@@ -226,40 +234,40 @@ public class FirstAgent implements AgentProgram {
 	}
 	
 	/*
-	 * Revisa el caso en que la coordenada mmas cercana está adyacente
+	 * Revisa el caso en que la coordenada mas cercana está adyacente
 	 * */
-	private boolean checkTrivialCase() {
+	private Coordinate checkTrivialCase() {
 		System.out.println("Checking Trivial Case");
 		ArrayList<Coordinate> t = new ArrayList<>();
 		
 		
 		Coordinate c = current.coordinateTo(Orientation.NORTH);
-		c = map.visit.get(c); //Esto no estaba, creo que faltaba :v
-		if( map.contains(c) && c.getAmount() - visitedNeighbors(c) > 0 )
+		c = map.visit.get(c);
+		if( map.contains(c) && !current.verifyFrontWall(Orientation.NORTH) && c.getAmount() - visitedNeighbors(c) > 0 )
 			t.add(c);
 
 		c = current.coordinateTo(Orientation.WEST);
-		c = map.visit.get(c); //Esto no estaba, creo que faltaba :v
-		if( map.contains(c) && c.getAmount() - visitedNeighbors(c) > 0 )
+		c = map.visit.get(c);
+		if( map.contains(c) && !current.verifyFrontWall(Orientation.WEST) && c.getAmount() - visitedNeighbors(c) > 0 )
 			t.add(c);
 		
 		c = current.coordinateTo(Orientation.EAST);
-		c = map.visit.get(c); //Esto no estaba, creo que faltaba :v
-		if( map.contains(c) && c.getAmount() - visitedNeighbors(c) > 0 )
+		c = map.visit.get(c);
+		if( map.contains(c) && !current.verifyFrontWall(Orientation.EAST) && c.getAmount() - visitedNeighbors(c) > 0 )
 			t.add(c);
 
 		c = current.coordinateTo(Orientation.SOUTH);
-		c = map.visit.get(c); //Esto no estaba, creo que faltaba :v
-		if( map.contains(c) && c.getAmount() - visitedNeighbors(c) > 0 )
+		c = map.visit.get(c);
+		if( map.contains(c) && !current.verifyFrontWall(Orientation.SOUTH) && c.getAmount() - visitedNeighbors(c) > 0 )
 			t.add(c);
 		
 		if( t.size() == 0 )
-			return false;
+			return null;
 		
 		Coordinate next = t.get( r.nextInt( t.size() ) );
 		addActions(new LinkedList<Coordinate>(), current, next, orientation.orientation);
 		
-		return true;
+		return next;
 	}
 	
 	/*
@@ -267,14 +275,14 @@ public class FirstAgent implements AgentProgram {
 	 * se escoge una en la cual haya al menos una direccion disponible
 	 * para explorar
 	 * */
-	private void goToClosestOpenNode() {
+	private Coordinate goToClosestOpenNode() {
 		//JOptionPane.showMessageDialog(null, "closest");
 		System.out.println("goToClosestNode");
-		/*verifyAdjacents();
-		if( checkTrivialCase() ) return;*/
-		
-		System.out.print("Dijkstra from: ");
 		System.out.println("\t"+current);
+
+		Coordinate adjacentSolution = checkTrivialCase();
+		if(adjacentSolution!= null) return adjacentSolution;
+
 		PriorityQueue<ShortestPathNode> q = new PriorityQueue<>();
 		q.add( new ShortestPathNode(current, 0) );
 		
@@ -285,7 +293,17 @@ public class FirstAgent implements AgentProgram {
 		/*
 		 * Cola de prioridad para extraer los posibles destinos
 		 * */
+		/*
+		Comparator<ShortestPathNode> xd = new Comparator<FirstAgent.ShortestPathNode>() {
+
+			@Override
+			public int compare(ShortestPathNode arg0, ShortestPathNode arg1) {
+				return (int) (arg0.getValue() - arg1.getValue());
+			}
+		};*/
+		
 		PriorityQueue<ShortestPathNode> posibleCoordinates = new PriorityQueue<>();
+		
 		
 		TreeMap<Coordinate, Integer> distances = new TreeMap<>();
 		TreeMap<Coordinate, Integer> distancesSoFar = new TreeMap<>();
@@ -346,11 +364,12 @@ public class FirstAgent implements AgentProgram {
 					o = addActions( map.getPath(next, c), next, c, o );
 					next = c;
 				}
-				return;
+				return coordinate.clone();
 			}
 		}
 		/* TODO el mapa ha sido explorado */
 		cmd.add(language.getAction(DIE));
+		return null;
 	}
 
 	private void goBack(int orientation) {
@@ -488,9 +507,15 @@ public class FirstAgent implements AgentProgram {
 			this.coordinate = coo;
 			this.weight = weight;
 		}
+		
+		public double getValue(){
+			return (coordinate.getAmount() - visitedNeighbors(coordinate))/Math.max(weight,1);
+		}
+		
 		@Override
 		public int compareTo(ShortestPathNode sn) {
 			return weight - sn.weight;
+			//return (int) (getValue() - sn.getValue());
 		}
 	}
 }
