@@ -67,7 +67,7 @@ public class Solver {
 			}
 		}
 		
-		return null;
+		return new LinkedList<>();
 	}
 
 	static List<Integer> DFS( State init ){
@@ -88,7 +88,7 @@ public class Solver {
 				}
 			}
 		}
-		return null;
+		return new LinkedList<>();
 	}
 	
 	static List<Integer> limitedDFS( State init, int l ){
@@ -141,8 +141,24 @@ public class Solver {
 		}
 		System.out.println(current);
 	}
-	
+	/*
+	 * 
+	 * 7 2 4
+	 * 5   6
+	 * 8 3 1
+	 * BFS: 4149 ms, 20 movements.
+	   DFS: 11046 ms, 66056 movements.
+	   Limited DFS (max depth = 28): 1007 ms, 26 movements.
+	   Iterative Deepining (max depth = 28): 11951 ms, 26 movements.
+	   
+
+	   Limited DFS (max depth = 50): 2103 ms, 50 movements.
+       Iterative Deepining (max depth = 50): 12035 ms, 26 movements.
+	   
+
+	 */
 	public static void main(String[] args) {
+		List<Integer> ans = null;
 		long time = System.currentTimeMillis(), time2;
 		int size = BFS(rootState).size();
 		time2 = System.currentTimeMillis();
@@ -152,13 +168,17 @@ public class Solver {
 		time2 = System.currentTimeMillis();
 		System.out.println( "DFS: " + (time2-time) + " ms, " + size + " movements." );
 		time = time2;
-		size = limitedDFS(rootState,28).size();
+		ans = limitedDFS(rootState,50);
 		time2 = System.currentTimeMillis();
-		System.out.println( "Limited DFS (max depth = 28): "+(time2-time) + " ms, " + size + " movements." );
+		if(ans != null)
+			System.out.println( "Limited DFS (max depth = 28): "+(time2-time) + " ms, " + ans.size() + " movements." );
+		else System.out.println("No solution found with Limited Depth Search and given depth");
 		time = time2;
-		size = iterativeDeepining(rootState,28).size();
+		ans = iterativeDeepining(rootState,50);
 		time2 = System.currentTimeMillis();
-		System.out.println( "Iterative Deepining (max depth = 28): " + (time2-time) + " ms, " + size + " movements." );
+		if(ans != null)
+			System.out.println( "Iterative Deepining (max depth = 28): " + (time2-time) + " ms, " + ans.size() + " movements." );
+		else System.out.println("No solution found with Iterative Deepining and given depth");
 	}
 
 }
