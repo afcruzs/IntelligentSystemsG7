@@ -67,39 +67,107 @@ public class SecondAgent implements AgentProgram, Grupo7If  {
 		if (T)
 			return -1;		
 		
-		int rot = 0, amount = 0;
-		if (LW == false) { amount++; }
-		if (RW == false) { amount++; }
-		if (FW == false) { amount++; }
-		if (BW == false) { amount++; }
-		
-		int visited = 0;
+		int amount = 0, visited = 0;
 		ArrayList<Integer> posibleDirections = new ArrayList<>(); 
-		if (LW == false && map.visit.containsKey(current.coordToLeft(orientation)) ) { visited++; }
-		if (RW == false && map.visit.containsKey(current.coordToRight(orientation)) ) { visited++; }
-		if (FW == false && map.visit.containsKey(current.coordToUp(orientation)) ) { visited++; }
-		if (BW == false && map.visit.containsKey(current.coordToDown(orientation)) ) { visited++; }
-		
-		if (LW == false && !map.visit.containsKey(current.coordToLeft(orientation)) && LA == false ) { posibleDirections.add(3); }
-		if (RW == false && !map.visit.containsKey(current.coordToRight(orientation))  && RA == false ) { posibleDirections.add(1); }
-		if (FW == false && !map.visit.containsKey(current.coordToUp(orientation))  && FA == false ) { posibleDirections.add(0); }
-		if (BW == false && !map.visit.containsKey(current.coordToDown(orientation))  && BA == false  ) { posibleDirections.add(2); }
+		if( !LW ) { 
+			amount++;
+			if( map.visit.containsKey(current.coordToLeft(orientation)) )
+				visited++;
+			else if( !LA )
+				posibleDirections.add(3);				
+		}
+		if (!RW) { 
+			amount++;
+			if( map.visit.containsKey(current.coordToRight(orientation)) )
+				visited++;
+			else if( !RA )
+				posibleDirections.add(1);
+		}
+		if (!FW) { 
+			amount++;
+			if( map.visit.containsKey(current.coordToUp(orientation)) )
+				visited++;
+			else if( !FA )
+				posibleDirections.add(0);
+		}
+		if (!BW) { 
+			amount++;
+			if( map.visit.containsKey(current.coordToDown(orientation)) )
+				visited++;
+			else if( !BA )
+				posibleDirections.add(2);
+		}
 		
 		current.updateInfo(amount, FW, RW, BW, LW, orientation.clone() );
 		map.visit.put(current.clone(), current.clone());
-		//System.out.println(current + " -- " + amount + " " + visited + " " + posibleDirections);
 		
+		if( !LA && !RA && !FA && !BA )
+			return rotateWithoutAgent(amount, visited, posibleDirections); 
 		
+		return rotateWithAgent(amount, visited, posibleDirections);
+	}
+	
+	private int rotateWithAgent( int amount, int visited, ArrayList<Integer> posibleDirections ) {
+		//Sin direcciones posibles para avanzar
+		if( posibleDirections.size() == 0 ) {
+			//Puede calcular el nodo mas cercano o esperar
+			if( amount > visited ) {
+				//Caso de critical node
+				if( amount > 2 ) {
+					save(true);
+					verifyAdjacents();
+					lastCriticalCoordinate = goToClosestOpenNode();
+					//goBack is a option
+				} else {
+					save(false);
+					verifyAdjacents();
+					if( lastCriticalCoordinate != null ) {
+						lastCriticalCoordinate = goToClosestOpenNode();
+						breakEdge(current, lastCriticalCoordinate);
+					} else {
+						goBack(orientation.orientation);
+					}
+				}
+				return GOTO_SIGNAL;
+			}
+			//Puede calcular el nodo mas cercano, pero en el camino puede estar el otro agente
+			//La funcion de contigencia en compute podria arreglarlo 
+			else {
+				if( amount > 2 ) {
+					save(true);
+					verifyAdjacents();
+					lastCriticalCoordinate = goToClosestOpenNode();
+					//goBack is a option
+				} else {
+					save(false);
+					verifyAdjacents();
+					if( lastCriticalCoordinate != null ) {
+						lastCriticalCoordinate = goToClosestOpenNode();
+						breakEdge(current, lastCriticalCoordinate);
+					} else {
+						goBack(orientation.orientation);
+					}
+				}
+				return GOTO_SIGNAL;
+			}
+		}
+	
+		//Siempre es nodo critico
+		save(true);
+		verifyAdjacents();
+		return posibleDirections.get( r.nextInt(posibleDirections.size()) );
+	}
+	
+	public int rotateWithoutAgent( int amount, int visited, ArrayList<Integer> posibleDirections ) {
 		//Cantidad de paredes libres es mas que dos es un critical node
 		//si la cantidad disponible es mayor que los visitados
 		//hay algun camino posible
-		
-		if (amount > 2 && amount > visited){
+		if (amount > 2 && amount > visited ){
 			save(true);
 			verifyAdjacents();
 		//En este caso ya todo esta visitado, se debe guardar
 		//y luego ir al nodo mas cercano que tenga opciones de explorar algo nuevo
-		}else if( amount > 2 && amount == visited ) {
+		} else if( amount > 2 && amount == visited ) {
 			save(true);
 			verifyAdjacents();
 			lastCriticalCoordinate = goToClosestOpenNode();
@@ -107,19 +175,18 @@ public class SecondAgent implements AgentProgram, Grupo7If  {
 			return GOTO_SIGNAL;
 		}
 		//En este caso vamos por un tunel 
-		else if(amount == 2 && visited == 1){
+		else if( amount == 2 && visited == 1 ){
 			pathInBuilding.add( current.clone() );			
 		}
 		//En este caso vamos por el tunel pero nos encontramos con un 
 		//pedazo del tunel que ya ha sido visitado
-		else if(amount == 2 && visited == 2) {
+		else if( amount == 2 && visited == 2 ) {
 			//JOptionPane.showMessageDialog(null, "caso");
 			save(false);
 			verifyAdjacents();
 			if( current.equals(lastCriticalCoordinate) )
 				System.out.println("iguales");
 			
-			Coordinate next;
 			lastCriticalCoordinate = goToClosestOpenNode();
 			//lastCriticalCoordinate = current.clone();
 			breakEdge(current, lastCriticalCoordinate);
@@ -135,7 +202,7 @@ public class SecondAgent implements AgentProgram, Grupo7If  {
 			verifyAdjacents();
 		//En este caso llegamos a un callejon sin salida y deberiamos
 		//devolvernos al ultimo critical node
-		}else if(amount == 1) {
+		} else if(amount == 1) {
 			save(false);
 			goBack(orientation.orientation);
 			breakEdge( current, lastCriticalCoordinate );
@@ -145,28 +212,21 @@ public class SecondAgent implements AgentProgram, Grupo7If  {
 			lastCriticalCoordinate = goToClosestOpenNode();
 			return GOTO_SIGNAL;
 		}
-
-		/*
-		 * Cambia la orientacion de acuerdo a lo que escoja aleatoriamente
-		 */
-		rot = posibleDirections.get( r.nextInt(posibleDirections.size()) );
-		return rot;
+		return posibleDirections.get( r.nextInt(posibleDirections.size()) );	
 	}
 	
 	/*
 	 * Guarda una nueva coordenada critica encontrada
 	 * */
 	public void save(boolean updateLast) {
-		
 		if (lastCriticalCoordinate != null && !current.equals(lastCriticalCoordinate) ) {
 			map.addEdge(lastCriticalCoordinate.clone(), current.clone(), pathInBuilding);
 			pathInBuilding = new LinkedList<>();
-		}// else System.out.println("lastCritical no Null");
+		}
 		if( updateLast )
 			lastCriticalCoordinate = current.clone();
 	}
 
-	
 	private void breakEdge(Coordinate current2,
 			Coordinate lastCriticalCoordinate2) {
 		if( current2.equals(lastCriticalCoordinate2) ) JOptionPane.showMessageDialog(null, "Ambos son iguales en break edge " + current2);
@@ -177,28 +237,28 @@ public class SecondAgent implements AgentProgram, Grupo7If  {
 	 * aun no ha sido creado el enlace con esta
 	 *  */
 	private void verifyAdjacents() {
-		System.out.println("Verify adjacents");
+		System.out.println("Verify adjacents" + current);
 		Coordinate c = map.visit.get( current.coordinateTo(Orientation.NORTH) );
 		//System.out.println(current);
-		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) && !current.verifyFrontWall(Orientation.NORTH) ){
+		if( map.contains(c) && !current.verifyFrontWall(Orientation.NORTH) ){
 			System.out.println("\tAdjacent added: " + c);
 			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
 		}
 
 		c = map.visit.get( current.coordinateTo(Orientation.WEST) );
-		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) && !current.verifyLeftWall(Orientation.NORTH) ) {
+		if( map.contains(c) && !current.verifyLeftWall(Orientation.NORTH) ) {
 			System.out.println("\tAdjacent added: " + c);
 			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
 		}
 
 		c = map.visit.get( current.coordinateTo(Orientation.EAST) );
-		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) && !current.verifyRightWall(Orientation.NORTH) ) {
+		if( map.contains(c) && !current.verifyRightWall(Orientation.NORTH) ) {
 			System.out.println("\tAdjacent added: t" + c);
 			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
 		}
 
 		c = map.visit.get( current.coordinateTo(Orientation.SOUTH) );
-		if( map.contains(c) && !map.getNeighbors(current).containsKey(c) && !current.verifyBackWall(Orientation.NORTH) ) {
+		if( map.contains(c) && !current.verifyBackWall(Orientation.NORTH) ) {
 			System.out.println("\tAdjacent added: t" + c);
 			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
 		}
@@ -214,21 +274,17 @@ public class SecondAgent implements AgentProgram, Grupo7If  {
 			visited++;
 		
 		c = coordinate.coordinateTo(Orientation.WEST);
-		//System.out.println("\t" + c );
 		if( map.visit.containsKey(c) && !coordinate.verifyLeftWall(Orientation.NORTH) )
 			visited++;
 		
 		c = coordinate.coordinateTo(Orientation.EAST);
-		//System.out.println("\t" + c );
 		if( map.visit.containsKey(c) && !coordinate.verifyRightWall(Orientation.NORTH) )
 			visited++;
 		
 		c = coordinate.coordinateTo(Orientation.SOUTH);
-		//System.out.println("\t" + c );
 		if( map.visit.containsKey(c)  && !coordinate.verifyBackWall(Orientation.NORTH) )
 			visited++;
 		
-		//System.out.println(map.visit);
 		return visited;
 	}
 	
@@ -448,11 +504,18 @@ public class SecondAgent implements AgentProgram, Grupo7If  {
 	 * @return Action[]
 	 */
 	public Action compute(Percept p) {
+		//Percepciones sobre otro agente son siempre necesarias
+		boolean FA = ((Boolean) p.getAttribute(language.getPercept(5)))
+				.booleanValue();
+		boolean RA = ((Boolean) p.getAttribute(language.getPercept(6)))
+				.booleanValue();
+		boolean BA = ((Boolean) p.getAttribute(language.getPercept(7)))
+				.booleanValue();
+		boolean LA = ((Boolean) p.getAttribute(language.getPercept(8)))
+				.booleanValue(); 
+		
 		if (cmd.size() == 0) {
 
-			/*
-			 * Captura percepciones
-			 */
 			boolean FW = ((Boolean) p.getAttribute(language.getPercept(0)))
 					.booleanValue();
 			boolean RW = ((Boolean) p.getAttribute(language.getPercept(1)))
@@ -463,14 +526,6 @@ public class SecondAgent implements AgentProgram, Grupo7If  {
 					.booleanValue();
 			boolean T = ((Boolean) p.getAttribute(language.getPercept(4)))
 					.booleanValue();
-			boolean FA = ((Boolean) p.getAttribute(language.getPercept(5)))
-					.booleanValue();
-			boolean RA = ((Boolean) p.getAttribute(language.getPercept(6)))
-					.booleanValue();
-			boolean BA = ((Boolean) p.getAttribute(language.getPercept(7)))
-					.booleanValue();
-			boolean LA = ((Boolean) p.getAttribute(language.getPercept(8)))
-					.booleanValue(); 
 
 			int d = rotate(FW, RW, BW, LW, FA, RA, BA, LA, T );
 			if (0 <= d && d < 4) {
@@ -484,16 +539,17 @@ public class SecondAgent implements AgentProgram, Grupo7If  {
 				cmd.add(language.getAction(DIE)); // die
 			}
 		}
-		/*
-		 * Meter percepciones de agente
-		 */
-
+		
 		String x = cmd.get(0);
-		if (x.equals(language.getAction(ADVANCE))) {
-			updateCoordinate();
-		} else if(x.equals(language.getAction(ROTATE)) ) {
-			/* Actualiza la orientacion */
-			orientation.orientation = (orientation.orientation + 1)%4;
+		if( !LA && !RA && !FA && !BA ) {
+			if (x.equals(language.getAction(ADVANCE))) {
+				updateCoordinate();
+			} else if(x.equals(language.getAction(ROTATE)) ) {
+				/* Actualiza la orientacion */
+				orientation.orientation = (orientation.orientation + 1)%4;
+			}
+		} else {
+			
 		}
 
 		cmd.remove(0);		

@@ -19,7 +19,7 @@ import unalcol.agents.Percept;
 import unalcol.agents.simulate.util.SimpleLanguage;
 
 
-public class FirstAgent implements AgentProgram {
+public class FirstAgent implements AgentProgram, Grupo7If {
 	protected SimpleLanguage language;
 	protected Vector<String> cmd = new Vector<String>();
 	protected Orientation orientation;
@@ -58,7 +58,7 @@ public class FirstAgent implements AgentProgram {
 		lastCriticalCoordinate = null;
 		map = new LabyrinthMap();
 		pathInBuilding = new LinkedList<>();
-		debug = new Debug(this);
+		//debug = new Debug(this);
 	}
 	
 	public int rotate(boolean FW, boolean RW, boolean BW, boolean LW, 
@@ -520,4 +520,33 @@ public class FirstAgent implements AgentProgram {
 			//return (int) (getValue() - sn.getValue());
 		}
 	}
+	
+	@Override
+	public LabyrinthMap getMap() {
+		return map;
+	}
+
+	@Override
+	public LinkedList<Coordinate> getPathInBuilding() {
+		return pathInBuilding;
+	}
+
+	@Override
+	public Orientation getOrientation() {
+		// TODO Auto-generated method stub
+		return orientation;
+	}
+
+	@Override
+	public Coordinate getLastCoordinate() {
+		// TODO Auto-generated method stub
+		return lastCriticalCoordinate;
+	}
+
+	@Override
+	public Coordinate getCurrent() {
+		// TODO Auto-generated method stub
+		return current;
+	}
+
 }

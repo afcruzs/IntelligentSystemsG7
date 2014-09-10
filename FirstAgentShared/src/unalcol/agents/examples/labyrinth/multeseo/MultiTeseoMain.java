@@ -25,11 +25,11 @@ public class MultiTeseoMain {
   public static void main( String[] argv ){
      AgentProgram[] teseo = new AgentProgram[12];
       //Equipo: Perceptron F
-      teseo[0] = new Grupo7Agent();
-     ((Grupo7Agent)teseo[0]).setLanguage(getLanguage());
+      teseo[1] = new Grupo7Agent();
+     ((Grupo7Agent)teseo[1]).setLanguage(getLanguage());
      
-     teseo[1] = new StupidAgent();
-     ((StupidAgent)teseo[1]).setLanguage(getLanguage());
+     teseo[0] = new StupidAgent();
+     ((StupidAgent)teseo[0]).setLanguage(getLanguage());
      
      /* Equipo: SinGrupo * /
      teseo[1] = new ProgAgenteSinGrupo(getLanguage());     

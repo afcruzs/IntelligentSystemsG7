@@ -183,7 +183,7 @@ public class Grupo7Agent implements AgentProgram, Grupo7If {
 		System.out.println("Verify adjacents" + current);
 		Coordinate c = map.visit.get( current.coordinateTo(Orientation.NORTH) );
 		//System.out.println(current);
-		if( map.contains(c) &&  !current.verifyFrontWall(Orientation.NORTH) ){
+		if( map.contains(c) && !current.verifyFrontWall(Orientation.NORTH) ){
 			System.out.println("\tAdjacent added: " + c);
 			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
 		}
