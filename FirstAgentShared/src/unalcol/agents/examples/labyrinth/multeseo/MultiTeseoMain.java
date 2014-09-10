@@ -8,7 +8,7 @@ import unalcol.agents.Agent;
 import unalcol.agents.AgentProgram;
 import unalcol.agents.examples.labyrinth.Labyrinth;
 import unalcol.agents.examples.labyrinth.LabyrinthDrawer;
-import unalcol.agents.examples.labyrinth.teseo.grupo7.FirstAgent;
+import unalcol.agents.examples.labyrinth.teseo.grupo7.Grupo7Agent;
 import unalcol.agents.examples.labyrinth.teseo.grupo7.StupidAgent;
 import unalcol.agents.simulate.util.SimpleLanguage;
 import unalcol.types.collection.vector.Vector;
@@ -25,8 +25,8 @@ public class MultiTeseoMain {
   public static void main( String[] argv ){
      AgentProgram[] teseo = new AgentProgram[12];
       //Equipo: Perceptron F
-      teseo[0] = new FirstAgent();
-     ((FirstAgent)teseo[0]).setLanguage(getLanguage());
+      teseo[0] = new Grupo7Agent();
+     ((Grupo7Agent)teseo[0]).setLanguage(getLanguage());
      
      teseo[1] = new StupidAgent();
      ((StupidAgent)teseo[1]).setLanguage(getLanguage());
