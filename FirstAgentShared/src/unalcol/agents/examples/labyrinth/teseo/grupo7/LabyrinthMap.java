@@ -57,7 +57,14 @@ public class LabyrinthMap {
 	}
 	
 	public LinkedList<Coordinate> getPath( Coordinate from, Coordinate to ) {
+		
 		return graph.get(from).get(to).getPath();
+	}
+	
+	public boolean isEdge( Coordinate from, Coordinate to ){
+		if( graph.get(from) == null || graph.get(to) == null ) return false;
+		
+		return graph.get(from).get(to) != null;
 	}
 
 	public int size() {

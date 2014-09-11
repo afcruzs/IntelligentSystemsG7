@@ -21,12 +21,12 @@ import unalcol.agents.simulate.util.SimpleLanguage;
 
 public class Grupo7Agent implements AgentProgram, Grupo7If {
 	protected SimpleLanguage language;
-	protected Vector<String> cmd = new Vector<String>();
+	protected Vector<String> cmd ;
 	protected Orientation orientation;
 	
-	protected Coordinate current = new Coordinate(0,0);
-	protected Coordinate lastCriticalCoordinate = null;
-	protected Random r = new Random();
+	protected Coordinate current;
+	protected Coordinate lastCriticalCoordinate;
+	protected Random r;
 	
 	protected final int NO_OP = 0;
 	protected final int DIE = 1;
@@ -39,9 +39,9 @@ public class Grupo7Agent implements AgentProgram, Grupo7If {
 	protected final int INFINITY = 1000000000;
 	
 
-	protected LinkedList<Coordinate> pathInBuilding = new LinkedList<>();
+	protected LinkedList<Coordinate> pathInBuilding;
 
-	protected LabyrinthMap map = new LabyrinthMap();
+	protected LabyrinthMap map;
 	protected Debug debug;
 
 	public Grupo7Agent() {
@@ -272,6 +272,49 @@ public class Grupo7Agent implements AgentProgram, Grupo7If {
 		return next;
 	}
 	
+
+	/*
+	 * Cuenta las rotaciones para llegar de current a next dada una rotacion
+	 */
+	private int countRotationsToAdjacent( Coordinate current, Coordinate next, int orientation) {
+		int o, dir = orientation;
+		if( next.equals(current.coordinateTo(Orientation.NORTH)) )
+			o = Orientation.NORTH;
+
+		else if( next.equals(current.coordinateTo(Orientation.WEST)) )
+			o = Orientation.WEST;
+
+		else if( next.equals(current.coordinateTo(Orientation.EAST) ) ) 
+			o = Orientation.EAST;
+
+		else 
+			o = Orientation.SOUTH;
+
+		return numberOfRotationsTo(dir, o);
+
+	}
+	
+	/*
+	 * Cuenta la cantidad de rotaciones totales en un path 
+	 */
+	private int countRotationsInPath(LinkedList<Coordinate> path, 
+			Coordinate from, Coordinate to){
+		if(path==null || from == null || to == null) return 0;
+		int orientation = this.orientation.orientation;
+		
+		Coordinate current = from;
+		int r,ans=0;
+		for( Coordinate c : path ) {
+			r = countRotationsToAdjacent(current, c, orientation);
+			ans += r;
+			for(int i=0; i<r; i++) orientation = (orientation+1)%4;
+			current = c;
+		}
+		
+		return ans;
+	}
+	
+	
 	/*
 	 * En caso de que todos las coordenadas adyacentes esten visitadas
 	 * se escoge una en la cual haya al menos una direccion disponible
@@ -286,11 +329,11 @@ public class Grupo7Agent implements AgentProgram, Grupo7If {
 		if(adjacentSolution!= null) return adjacentSolution;
 
 		PriorityQueue<ShortestPathNode> q = new PriorityQueue<>();
-		q.add( new ShortestPathNode(current, 0) );
+		q.add( new ShortestPathNode( current, 0,0 ) );
 		
 		ShortestPathNode current = null;
 		Coordinate u = null ,v = null;
-		int vd, w, ud;
+		int vd, w, ud, rot; // rot -> rotations
 		
 		/*
 		 * Cola de prioridad para extraer los posibles destinos
@@ -330,13 +373,14 @@ public class Grupo7Agent implements AgentProgram, Grupo7If {
 				if( distances.containsKey(v) ) continue;
 				
 				vd = distancesSoFar.containsKey(v) ? distancesSoFar.get(v) : INFINITY;
+				rot = countRotationsInPath(map.getPath(u, x.getKey()), u, x.getKey());
 				w = x.getValue().getWeight();
 				
 				//System.out.println("U: " + u + " V: " + v+ " W: "+ w);
-				if( vd > ud + w ){
-					distancesSoFar.put( v, w + ud );
+				if( vd > ud + w + rot ){
+					distancesSoFar.put( v, w + ud + rot );
 					parent.put(v, u);		
-					q.add(new ShortestPathNode( v, w + ud ));
+					q.add(new ShortestPathNode( v, w + ud, rot ));
 				}
 			}
 		}
@@ -506,6 +550,7 @@ public class Grupo7Agent implements AgentProgram, Grupo7If {
 		return new Action(x);
 	}
 	
+	
 	//Cuenta los nodos a los que puede seguir visitando
 	private int countFreeNodes(Coordinate c){
 		return c.getAmount() - visitedNeighbors(c);
@@ -516,14 +561,17 @@ public class Grupo7Agent implements AgentProgram, Grupo7If {
 	class ShortestPathNode implements Comparable<ShortestPathNode>{
 		protected Coordinate coordinate;
 		protected int weight;
-		public ShortestPathNode(Coordinate coo, int weight){
+		protected int rotations;
+		public ShortestPathNode(Coordinate coo, int weight,int rotations){
 			this.coordinate = coo;
 			this.weight = weight;
+			this.rotations = rotations;
+			
 		}
 		
 		@Override
 		public int compareTo(ShortestPathNode sn) {
-			if( weight != sn.weight ) return weight - sn.weight;
+			if( weight + rotations != sn.weight + sn.rotations ) return (weight+rotations) - (sn.weight+sn.rotations);
 			Coordinate a = map.visit.get(coordinate);
 			Coordinate b = map.visit.get(sn.coordinate);
 			return countFreeNodes(b) - countFreeNodes(a);
