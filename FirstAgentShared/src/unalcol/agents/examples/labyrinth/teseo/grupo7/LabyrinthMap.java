@@ -98,5 +98,9 @@ public class LabyrinthMap {
 				return c;
 		return null;*/
 	}
+	public int getWeight(Coordinate from, Coordinate to) {
+		// TODO Auto-generated method stub
+		return getPath(from, to).size()+2;
+	}
 
 }

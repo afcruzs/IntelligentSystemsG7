@@ -2,6 +2,8 @@ package unalcol.agents.examples.labyrinth.teseo.grupo7;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,11 +25,21 @@ public class Debug extends JFrame {
 	}
 
 	class DebugPanel extends JPanel{
-		
+			
+		public DebugPanel(){
+			setBackground(Color.WHITE);
+		}
 		 @Override
 		 public void paintComponent(Graphics g){
-			 
+		     super.paintComponent(g);
+		     Graphics2D g2d = (Graphics2D)g;
+		     
+		     g2d.setRenderingHint(
+		    		    RenderingHints.KEY_ANTIALIASING,
+		    		    RenderingHints.VALUE_ANTIALIAS_ON);
+		     
 			 setTitle("ORIENTATION: " + agent.getOrientation());
+			 g.setColor(Color.GRAY);
 			 for( Coordinate c : agent.getMap().visit.keySet() ){
 				 g.drawOval( Math.abs(c.x)*space,  Math.abs(c.y)*space, space, space);
 			 }
@@ -36,6 +48,7 @@ public class Debug extends JFrame {
 			 
 			 for( Coordinate c : agent.getMap().graph.keySet() ){
 				 g.drawOval( Math.abs(c.x)*space, Math.abs(c.y)*space, space, space);
+				 
 			 }
 			 
 			 g.setColor(Color.CYAN);
@@ -47,11 +60,21 @@ public class Debug extends JFrame {
 			 g.setColor(Color.BLACK);
 			 for( Coordinate u : agent.getMap().graph.keySet() ){
 				 for( Coordinate v : agent.getMap().getNeighbors(u).keySet() ){
-					 g.drawLine( Math.abs(u.x)*space + space/2 , Math.abs(u.y)*space + space/2
-							 ,  Math.abs(v.x)*space + space/2, Math.abs(v.y)*space + space/2);
 					 
 					 g.fillOval( Math.abs(u.x)*space + space/4, Math.abs(u.y)*space + space/4, space/2, space/2);
 					 g.fillOval( Math.abs(v.x)*space + space/4, Math.abs(v.y)*space + space/4, space/2, space/2);
+					 
+					 g.drawLine( Math.abs(u.x)*space + space/2 , Math.abs(u.y)*space + space/2
+							 ,  Math.abs(v.x)*space + space/2, Math.abs(v.y)*space + space/2);
+					 
+					 Color prev = g.getColor();
+					 g.setColor(Color.MAGENTA);
+					 int a = (int) ( Math.abs(u.x)*space +  Math.abs(v.x)*space+ space)/2;
+					 int b = (int) ( Math.abs(u.y)*space +  Math.abs(v.y)*space+ space)/2;
+					 g.drawString(String.valueOf(agent.getMap().getWeight(u,v))
+							 , a,b  );
+					 g.setColor(prev);
+					 
 				 }
 			 }
 			 
