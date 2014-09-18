@@ -28,8 +28,8 @@ public class MultiTeseoMain {
       teseo[1] = new Grupo7Agent();
      ((Grupo7Agent)teseo[1]).setLanguage(getLanguage());
      
-     teseo[0] = new StupidAgent();
-     ((StupidAgent)teseo[0]).setLanguage(getLanguage());
+     teseo[0] = new Grupo7Agent();
+     ((Grupo7Agent)teseo[0]).setLanguage(getLanguage());
      
      /* Equipo: SinGrupo * /
      teseo[1] = new ProgAgenteSinGrupo(getLanguage());     
