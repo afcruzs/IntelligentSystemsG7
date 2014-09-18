@@ -74,7 +74,9 @@ public class RubikAction {
 		return new RubikAction(DOWN_INVERSE);
 	}
 	
-	
+	public boolean equals(Object o){
+		return action == ((RubikAction)o).action;
+	}
 	
 	
 	

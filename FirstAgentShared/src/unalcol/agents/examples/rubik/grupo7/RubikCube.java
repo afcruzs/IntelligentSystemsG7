@@ -315,6 +315,10 @@ public class RubikCube implements Comparable<RubikCube> {
 		return toString().compareTo(a.toString());
 	}
 	
+	public RubikCube clone(){
+		return new RubikCube(copyMultiDimensionalArray(cube));	
+	}
+	
 		
 	
 }
