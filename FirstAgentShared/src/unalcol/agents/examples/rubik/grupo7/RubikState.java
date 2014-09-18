@@ -48,7 +48,7 @@ public class RubikState implements Comparable<RubikState> {
 				this, RubikAction.downInverseAction(), depth+1, cost+1) );
 		
 		q.add( new RubikState(cube.moveCube(RubikAction.frontAction()), 
-				this, RubikAction.frontAction(), depth+1, cost) );
+				this, RubikAction.frontAction(), depth+1, cost+1) );
 		
 		q.add( new RubikState(cube.moveCube(RubikAction.frontInverseAction()), 
 				this, RubikAction.frontInverseAction(), depth+1, cost+1) );
