@@ -7,7 +7,7 @@ import java.util.TreeSet;
 
 public class DepthLimitedSearch extends RubikSearch {
 
-	int limit;
+	private int limit;
 	
 	public DepthLimitedSearch(int limit){
 		this.limit = limit;
@@ -37,4 +37,8 @@ public class DepthLimitedSearch extends RubikSearch {
 		
 		return new LinkedList<>();
 	}	
+	
+	public void setLimit(int limit){
+		this.limit = limit;
+	}
 }
