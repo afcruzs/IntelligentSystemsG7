@@ -8,14 +8,16 @@ public class RubikState implements Comparable<RubikState> {
 	private RubikCube cube;
 	private RubikState parent;
 	private RubikAction action;
+	private double cost;
 	protected int depth;
 	
 	public RubikState(RubikCube cube, RubikState parent, RubikAction action,
-			int depth) {
+			int depth, double cost) {
 		this.cube = cube;
 		this.parent = parent;
 		this.action = action;
 		this.depth = depth;
+		this.cost = cost;
 	}
 
 	public boolean equals(Object o){
@@ -44,6 +46,10 @@ public class RubikState implements Comparable<RubikState> {
 
 	public RubikAction getAction() {
 		return action;
+	}
+
+	public double getCost() {
+		return cost;
 	}
 
 	

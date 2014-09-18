@@ -16,7 +16,7 @@ public class DepthLimitedSearch extends RubikSearch {
 	@Override
 	public List<RubikAction> search(RubikCube cube) {
 		Stack<RubikState> stack = new Stack<>();
-		stack.add( new  RubikState( cube, null, null, 0 ) );
+		stack.add( new  RubikState( cube, null, null, 0, 0.0 ) );
 		
 		TreeSet<RubikState> seen = new TreeSet<>();
 		

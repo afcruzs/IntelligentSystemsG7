@@ -1,5 +1,6 @@
 package unalcol.agents.examples.rubik.grupo7;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.TreeSet;
@@ -20,12 +21,18 @@ public class AStarSearch extends RubikSearch {
 		HeuristicNode current = null;
 		while(q.size() > 0){
 			current = q.poll();
-			seen.add(current);
-			
-			
+			seen.add(current);			
+			for( RubikState st : current.state.successorFunction() ){
+				if( !seen.contains(st) ){
+					if( testGoal(st) )
+						return buildSolution(st);
+					
+					seen.add( new HeuristicNode(st) );
+				}
+			}
 		}
 		
-		return null;
+		return new LinkedList<>();
 	}
 	
 	
