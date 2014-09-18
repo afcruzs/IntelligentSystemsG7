@@ -69,23 +69,36 @@ public class Grupo7Agent implements AgentProgram, Grupo7If {
 		if (T)
 			return GOAL;		
 		
-		int rot = 0, amount = 0;
-		if (LW == false) { amount++; }
-		if (RW == false) { amount++; }
-		if (FW == false) { amount++; }
-		if (BW == false) { amount++; }
-		
-		int visited = 0;
+		int amount = 0, visited = 0, rot;
 		ArrayList<Integer> posibleDirections = new ArrayList<>(); 
-		if (LW == false && map.visit.containsKey(current.coordToLeft(orientation)) ) { visited++; }
-		if (RW == false && map.visit.containsKey(current.coordToRight(orientation)) ) { visited++; }
-		if (FW == false && map.visit.containsKey(current.coordToUp(orientation)) ) { visited++; }
-		if (BW == false && map.visit.containsKey(current.coordToDown(orientation)) ) { visited++; }
-		
-		if (LW == false && !map.visit.containsKey(current.coordToLeft(orientation)) && LA == false ) { posibleDirections.add(3); }
-		if (RW == false && !map.visit.containsKey(current.coordToRight(orientation))  && RA == false ) { posibleDirections.add(1); }
-		if (FW == false && !map.visit.containsKey(current.coordToUp(orientation))  && FA == false ) { posibleDirections.add(0); }
-		if (BW == false && !map.visit.containsKey(current.coordToDown(orientation))  && BA == false  ) { posibleDirections.add(2); }
+		if( !LW ) { 
+			amount++;
+			if( map.visit.containsKey(current.coordToLeft(orientation)) )
+				visited++;
+			else if( !LA )
+				posibleDirections.add(3);				
+		}
+		if (!RW) { 
+			amount++;
+			if( map.visit.containsKey(current.coordToRight(orientation)) )
+				visited++;
+			else if( !RA )
+				posibleDirections.add(1);
+		}
+		if (!FW) { 
+			amount++;
+			if( map.visit.containsKey(current.coordToUp(orientation)) )
+				visited++;
+			else if( !FA )
+				posibleDirections.add(0);
+		}
+		if (!BW) { 
+			amount++;
+			if( map.visit.containsKey(current.coordToDown(orientation)) )
+				visited++;
+			else if( !BA )
+				posibleDirections.add(2);
+		}
 		
 		current.updateInfo(amount, FW, RW, BW, LW, orientation.clone() );
 		map.visit.put(current.clone(), current.clone());

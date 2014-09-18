@@ -34,12 +34,20 @@ public class RubikAction {
 		return new RubikAction(UP_INVERSE);
 	}
 	
-	public static RubikAction fronAction(){
+	public static RubikAction frontAction(){
 		return new RubikAction(FRONT);
 	}
 	
 	public static RubikAction frontInverseAction(){
 		return new RubikAction(FRONT_INVERSE);
+	}
+	
+	public static RubikAction backAction(){
+		return new RubikAction(BACK);
+	}
+	
+	public static RubikAction backInverseAction(){
+		return new RubikAction(BACK_INVERSE);
 	}
 	
 	public static RubikAction rightAction(){

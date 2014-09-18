@@ -120,7 +120,17 @@ public class RubikCube implements Comparable<RubikCube> {
 			
 		case RubikAction.FRONT_INVERSE:
 			
-			return null;
+			rowToCol(cube[UP][BOTTOM], LEFT, 2, copy);
+			rowToCol(cube[DOWN][TOP], RIGHT, 0, copy);
+			colToRow(cube[LEFT], 2, copy[DOWN][TOP]);
+			colToRow(cube[RIGHT], 0, copy[UP][BOTTOM]);
+		
+			
+			for (int i = 0; i < 3; i++) 
+				for (int j = 0; j < 3; j++) 
+					copy[FRONT][i][j] = cube[FRONT][j][2-i];
+			
+			return new RubikCube(copy);
 			
 		case RubikAction.RIGHT:	
 			
@@ -132,11 +142,31 @@ public class RubikCube implements Comparable<RubikCube> {
 		
 		case RubikAction.BACK:
 			
-			return null;
+			rowToCol(cube[UP][TOP], LEFT, 0, copy);
+			rowToCol(cube[DOWN][BOTTOM], RIGHT, 2, copy);
+			colToRow(cube[LEFT], 0, copy[DOWN][BOTTOM]);
+			colToRow(cube[RIGHT], 2, copy[UP][TOP]);
+		
+			
+			for (int i = 0; i < 3; i++) 
+				for (int j = 0; j < 3; j++) 
+					copy[BACK][i][j] = cube[BACK][2-j][i];
+			
+			return new RubikCube(copy);
 			
 		case RubikAction.BACK_INVERSE:
 			
-			return null;
+			rowToCol(cube[UP][TOP], RIGHT, 2, copy);
+			rowToCol(cube[DOWN][BOTTOM], LEFT, 0, copy);
+			colToRow(cube[LEFT], 0, copy[UP][TOP]);
+			colToRow(cube[RIGHT], 2, copy[DOWN][BOTTOM]);
+		
+			
+			for (int i = 0; i < 3; i++) 
+				for (int j = 0; j < 3; j++) 
+					copy[BACK][i][j] = cube[BACK][j][2-i];
+			
+			return new RubikCube(copy);
 			
 		case RubikAction.LEFT:
 			

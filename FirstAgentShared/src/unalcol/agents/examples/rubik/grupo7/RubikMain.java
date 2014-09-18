@@ -6,29 +6,29 @@ public class RubikMain {
 	
 	static RubikPerception initPerception = new RubikPerception(
 				new RubikCube(new int[][][]{
-						{ 	{ RubikCube.RED, RubikCube.YELLOW, RubikCube.GREEN },
+						{ 	{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.YELLOW },
 							{ RubikCube.YELLOW, RubikCube.BLUE, RubikCube.YELLOW },
-							{ RubikCube.ORANGE, RubikCube.YELLOW, RubikCube.WHITE } 
+							{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.YELLOW } 
 						},
-						{ 	{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.BLUE },
+						{ 	{ RubikCube.YELLOW, RubikCube.BLUE, RubikCube.ORANGE },
 							{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.BLUE },
-							{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.BLUE } 
+							{ RubikCube.RED, RubikCube.BLUE, RubikCube.GREEN } 
 						},
 						{ 	{ RubikCube.RED, RubikCube.RED, RubikCube.RED },
 							{ RubikCube.RED, RubikCube.RED, RubikCube.RED },
 							{ RubikCube.RED, RubikCube.RED, RubikCube.RED } 
 						},
-						{ 	{ RubikCube.GREEN, RubikCube.GREEN, RubikCube.GREEN },
+						{ 	{ RubikCube.YELLOW, RubikCube.GREEN, RubikCube.GREEN },
 							{ RubikCube.GREEN, RubikCube.GREEN, RubikCube.GREEN },
-							{ RubikCube.GREEN, RubikCube.GREEN, RubikCube.GREEN } 
+							{ RubikCube.RED, RubikCube.GREEN, RubikCube.ORANGE } 
 						},
 						{ 	{ RubikCube.ORANGE, RubikCube.ORANGE, RubikCube.ORANGE },
 							{ RubikCube.ORANGE, RubikCube.ORANGE, RubikCube.ORANGE },
 							{ RubikCube.ORANGE, RubikCube.ORANGE, RubikCube.ORANGE } 
 						},
-						{ 	{ RubikCube.YELLOW, RubikCube.WHITE, RubikCube.WHITE },
+						{ 	{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.WHITE },
 							{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.WHITE },
-							{ RubikCube.RED, RubikCube.WHITE, RubikCube.GREEN } 
+							{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.WHITE } 
 						},
 						
 				})
@@ -39,7 +39,7 @@ public class RubikMain {
 	public static void main(String[] args) {
 		
 		System.out.println(initPerception.getCube());
-		System.out.println( initPerception.getCube().moveCube( RubikAction.downInverseAction() ) );
+		System.out.println( initPerception.getCube().moveCube( RubikAction.backInverseAction()) );
 	}
 
 }
