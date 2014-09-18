@@ -6,29 +6,29 @@ public class RubikMain {
 	
 	static RubikPerception initPerception = new RubikPerception(
 				new RubikCube(new int[][][]{
-						{ 	{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.YELLOW },
-							{ RubikCube.YELLOW, RubikCube.BLUE, RubikCube.YELLOW },
-							{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.YELLOW } 
+						{ 	{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.BLUE },
+							{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.BLUE },
+							{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.BLUE } 
 						},
-						{ 	{ RubikCube.YELLOW, RubikCube.BLUE, RubikCube.ORANGE },
-							{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.BLUE },
-							{ RubikCube.RED, RubikCube.BLUE, RubikCube.GREEN } 
+						{ 	{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.WHITE },
+							{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.WHITE },
+							{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.WHITE } 
 						},
 						{ 	{ RubikCube.RED, RubikCube.RED, RubikCube.RED },
 							{ RubikCube.RED, RubikCube.RED, RubikCube.RED },
 							{ RubikCube.RED, RubikCube.RED, RubikCube.RED } 
 						},
 						{ 	{ RubikCube.YELLOW, RubikCube.GREEN, RubikCube.GREEN },
-							{ RubikCube.GREEN, RubikCube.GREEN, RubikCube.GREEN },
-							{ RubikCube.RED, RubikCube.GREEN, RubikCube.ORANGE } 
+							{ RubikCube.YELLOW, RubikCube.GREEN, RubikCube.GREEN },
+							{ RubikCube.YELLOW, RubikCube.GREEN, RubikCube.GREEN } 
 						},
 						{ 	{ RubikCube.ORANGE, RubikCube.ORANGE, RubikCube.ORANGE },
 							{ RubikCube.ORANGE, RubikCube.ORANGE, RubikCube.ORANGE },
 							{ RubikCube.ORANGE, RubikCube.ORANGE, RubikCube.ORANGE } 
 						},
-						{ 	{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.WHITE },
-							{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.WHITE },
-							{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.WHITE } 
+						{ 	{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.GREEN },
+							{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.GREEN },
+							{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.GREEN } 
 						},
 						
 				})
@@ -37,9 +37,11 @@ public class RubikMain {
 	
 	
 	public static void main(String[] args) {
-		
-		System.out.println(initPerception.getCube());
-		System.out.println( initPerception.getCube().moveCube( RubikAction.backInverseAction()) );
+		//System.out.println(initPerception.getCube());
+		DepthLimitedSearch dls = new DepthLimitedSearch(4);
+		System.out.println(dls.search(initPerception.getCube().clone()));
+		//System.out.println(initPerception.getCube());
+		//System.out.println( initPerception.getCube().moveCube( RubikAction.leftAction()) );
 	}
 
 }

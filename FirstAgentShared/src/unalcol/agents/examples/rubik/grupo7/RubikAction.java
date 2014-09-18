@@ -78,6 +78,8 @@ public class RubikAction {
 		return action == ((RubikAction)o).action;
 	}
 	
-	
+	public String toString(){
+		return action+"";
+	}
 	
 }

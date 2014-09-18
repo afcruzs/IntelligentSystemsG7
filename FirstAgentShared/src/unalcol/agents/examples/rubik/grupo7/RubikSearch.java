@@ -46,6 +46,6 @@ public abstract class RubikSearch {
 	}
 	
 	protected boolean testGoal(RubikState state){
-		return state.equals(goalState);
+		return goalState.equals(state.getCube());
 	}
 }
