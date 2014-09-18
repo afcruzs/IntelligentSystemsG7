@@ -6,21 +6,21 @@ public class RubikMain {
 	
 	static RubikPerception initPerception = new RubikPerception(
 				new RubikCube(new int[][][]{
-						{ 	{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.YELLOW },
-							{ RubikCube.YELLOW, RubikCube.BLUE, RubikCube.YELLOW },
-							{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.YELLOW } 
+						{ 	{ RubikCube.YELLOW, RubikCube.YELLOW, 10 },
+							{ RubikCube.YELLOW, RubikCube.BLUE, 20 },
+							{ RubikCube.YELLOW, RubikCube.YELLOW, 30 } 
 						},
-						{ 	{ RubikCube.YELLOW, RubikCube.BLUE, RubikCube.ORANGE },
+						{ 	{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.BLUE },
 							{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.BLUE },
-							{ RubikCube.RED, RubikCube.BLUE, RubikCube.GREEN } 
+							{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.BLUE } 
 						},
-						{ 	{ RubikCube.RED, RubikCube.RED, RubikCube.RED },
+						{ 	{ RubikCube.YELLOW, RubikCube.RED, RubikCube.RED },
 							{ RubikCube.RED, RubikCube.RED, RubikCube.RED },
-							{ RubikCube.RED, RubikCube.RED, RubikCube.RED } 
+							{ RubikCube.BLUE, RubikCube.RED, RubikCube.GREEN } 
 						},
-						{ 	{ RubikCube.YELLOW, RubikCube.GREEN, RubikCube.GREEN },
+						{ 	{ RubikCube.GREEN, RubikCube.GREEN, RubikCube.GREEN },
 							{ RubikCube.GREEN, RubikCube.GREEN, RubikCube.GREEN },
-							{ RubikCube.RED, RubikCube.GREEN, RubikCube.ORANGE } 
+							{ RubikCube.GREEN, RubikCube.GREEN, RubikCube.GREEN } 
 						},
 						{ 	{ RubikCube.ORANGE, RubikCube.ORANGE, RubikCube.ORANGE },
 							{ RubikCube.ORANGE, RubikCube.ORANGE, RubikCube.ORANGE },
@@ -39,7 +39,7 @@ public class RubikMain {
 	public static void main(String[] args) {
 		
 		System.out.println(initPerception.getCube());
-		System.out.println( initPerception.getCube().moveCube( RubikAction.backInverseAction()) );
+		System.out.println( initPerception.getCube().moveCube( RubikAction.rightInverseAction()) );
 	}
 
 }
