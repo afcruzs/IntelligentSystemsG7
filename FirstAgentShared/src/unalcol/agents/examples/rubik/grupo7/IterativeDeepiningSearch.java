@@ -16,11 +16,12 @@ public class IterativeDeepiningSearch  extends RubikSearch {
 
 
 	@Override
-	public List<RubikAction> search(RubikCube cube) {
+	public List<RubikAction> doSearch(RubikCube cube) {
 		List<RubikAction> t = null;
 		for(int i=1; i<=limit; i++){
-			depthLimited.setLimit(i);
+			depthLimited = new DepthLimitedSearch(i);
 			t = depthLimited.search(cube.clone());
+			expandedNodes += depthLimited.expandedNodes;
 			if(t.size() > 0)
 				return t;
 		}

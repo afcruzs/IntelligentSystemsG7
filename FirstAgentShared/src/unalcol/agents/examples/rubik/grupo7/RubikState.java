@@ -1,7 +1,8 @@
 package unalcol.agents.examples.rubik.grupo7;
 
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
 
 public class RubikState implements Comparable<RubikState> {
 	
@@ -10,6 +11,7 @@ public class RubikState implements Comparable<RubikState> {
 	private RubikAction action;
 	private double cost;
 	protected int depth;
+	private int hash;
 	
 	public RubikState(RubikCube cube, RubikState parent, RubikAction action,
 			int depth, double cost) {
@@ -18,6 +20,7 @@ public class RubikState implements Comparable<RubikState> {
 		this.action = action;
 		this.depth = depth;
 		this.cost = cost;
+		this.hash = cube.toString().hashCode();
 	}
 
 	public boolean equals(Object o){
@@ -34,42 +37,45 @@ public class RubikState implements Comparable<RubikState> {
 	}
 
 	public Iterable<RubikState> successorFunction(){
-		Queue<RubikState> q = new LinkedList<>();
-		q.add( new RubikState(cube.moveCube(RubikAction.backAction()), 
+		List<RubikState> q = new LinkedList<>();
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.backAction()), 
 				this, RubikAction.backAction(), depth+1, cost+1) );
 		
-		q.add( new RubikState(cube.moveCube(RubikAction.backInverseAction()), 
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.backInverseAction()), 
 				this, RubikAction.backInverseAction(), depth+1, cost+1) );
 		
-		q.add( new RubikState(cube.moveCube(RubikAction.downAction()), 
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.downAction()), 
 				this, RubikAction.downAction(), depth+1, cost+1) );
 		
-		q.add( new RubikState(cube.moveCube(RubikAction.downInverseAction()), 
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.downInverseAction()), 
 				this, RubikAction.downInverseAction(), depth+1, cost+1) );
 		
-		q.add( new RubikState(cube.moveCube(RubikAction.frontAction()), 
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.frontAction()), 
 				this, RubikAction.frontAction(), depth+1, cost+1) );
 		
-		q.add( new RubikState(cube.moveCube(RubikAction.frontInverseAction()), 
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.frontInverseAction()), 
 				this, RubikAction.frontInverseAction(), depth+1, cost+1) );
 		
-		q.add( new RubikState(cube.moveCube(RubikAction.leftAction()), 
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.leftAction()), 
 				this, RubikAction.leftAction(), depth+1, cost+1) );
 		
-		q.add( new RubikState(cube.moveCube(RubikAction.leftInverseAction()), 
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.leftInverseAction()), 
 				this, RubikAction.leftInverseAction(), depth+1, cost+1) );
 		
-		q.add( new RubikState(cube.moveCube(RubikAction.rightAction()), 
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.rightAction()), 
 				this, RubikAction.rightAction(), depth+1, cost+1) );
 		
-		q.add( new RubikState(cube.moveCube(RubikAction.rightInverseAction()), 
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.rightInverseAction()), 
 				this, RubikAction.rightInverseAction(), depth+1, cost+1) );
 		
-		q.add( new RubikState(cube.moveCube(RubikAction.upAction()), 
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.upAction()), 
 				this, RubikAction.upAction(), depth+1, cost+1) );
 		
-		q.add( new RubikState(cube.moveCube(RubikAction.upInverseAction()), 
+		q.add( new RubikState(cube.clone().moveCube(RubikAction.upInverseAction()), 
 				this, RubikAction.upInverseAction(), depth+1, cost+1) );
+		
+		
+		Collections.shuffle(q);
 		return q;
 	}
 
@@ -84,6 +90,10 @@ public class RubikState implements Comparable<RubikState> {
 
 	public double getCost() {
 		return cost;
+	}
+	
+	public int hashCode(){
+		return hash;
 	}
 
 	

@@ -23,9 +23,12 @@ public class RubikCube implements Comparable<RubikCube> {
 	public static final int MIDDLE = 1;
 	public static final int BOTTOM = 2;
 	
-	
 	public RubikCube(int[][][] cube) {
 		this.cube = cube;
+	}
+	
+	public RubikCube(){
+		this.cube = new int[6][3][3]; 
 	}
 	
 	private void rowToCol( int row[], int face, int col, 
@@ -288,6 +291,7 @@ public class RubikCube implements Comparable<RubikCube> {
 		}
 	}
 	
+	
 	public String toString(){
 		StringBuilder out = new StringBuilder();
 		
@@ -343,6 +347,14 @@ public class RubikCube implements Comparable<RubikCube> {
 	
 	public RubikCube clone(){
 		return new RubikCube(copyMultiDimensionalArray(cube));	
+	}
+
+	public int getColorCenter(int i) {
+		return cube[i][1][1];
+	}
+
+	public void setAt(int face, int i, int j, int color) {
+		cube[face][i][j] = color;
 	}
 	
 		

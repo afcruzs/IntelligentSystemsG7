@@ -79,7 +79,28 @@ public class RubikAction {
 	}
 	
 	public String toString(){
-		return action+"";
+		switch (action) {
+		case UP:
+			return "U";
+		case UP_INVERSE:
+			return "U'";
+		case LEFT:
+			return "L";
+		case LEFT_INVERSE:
+			return "L'";
+		case RIGHT:
+			return "R";
+		case RIGHT_INVERSE:
+			return "R'";
+		case DOWN:
+			return "D";
+		case DOWN_INVERSE:
+			return "D'";
+		case BACK:
+			return "B";
+		default: //BACK_INVERSE
+			return "B'";
+		}
 	}
 	
 }

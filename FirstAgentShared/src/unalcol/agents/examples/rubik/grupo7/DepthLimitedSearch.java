@@ -1,9 +1,10 @@
 package unalcol.agents.examples.rubik.grupo7;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
-import java.util.TreeSet;
 
 public class DepthLimitedSearch extends RubikSearch {
 
@@ -14,27 +15,36 @@ public class DepthLimitedSearch extends RubikSearch {
 	}
 	
 	@Override
-	public List<RubikAction> search(RubikCube cube) {
+	public List<RubikAction> doSearch(RubikCube cube) {
 		Stack<RubikState> stack = new Stack<>();
 		stack.add( new  RubikState( cube, null, null, 0, 0.0 ) );
 		
-		TreeSet<RubikState> seen = new TreeSet<>();
+		Set<RubikState> seen = new HashSet<>();
 		
 		RubikState current = null;
+		int it = 0;
 		while(!stack.isEmpty()){
+			it++;
 			current = stack.pop();
-			if( current.depth == limit ) continue;
-			seen.add(current);
-			for( RubikState state : current.successorFunction() ){
-				if( !seen.contains(state) ){
-					if( testGoal(state) )
-						return buildSolution(state);
-					
-					stack.add(state);
+			System.out.println(current.depth);
+			expandedNodes++;
+			//if( current.depth < limit ){
+				seen.add(current);
+				for( RubikState state : current.successorFunction() ){
+					if( !seen.contains(state) ){
+						if( testGoal(state) ){
+							System.out.println(it);
+							return buildSolution(state);
+						}
+						
+						if( state.depth <= limit )
+							stack.add(state);
+					}
 				}
-			}
+			//}
 		}
 		
+		System.out.println(it);
 		return new LinkedList<>();
 	}	
 	

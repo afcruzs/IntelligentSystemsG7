@@ -14,28 +14,30 @@ public class AStarSearch extends RubikSearch {
 	}
 
 	@Override
-	public List<RubikAction> search(RubikCube cube) {
+	public List<RubikAction> doSearch(RubikCube cube) {
 		PriorityQueue<HeuristicNode> q = new PriorityQueue<>();
-		TreeSet<HeuristicNode> seen = new TreeSet<>();
-		
+		TreeSet<RubikState> seen = new TreeSet<>();
+		q.add(new HeuristicNode(new RubikState(cube, null, null, 0, 0.0)));
 		HeuristicNode current = null;
-		while(q.size() > 0){
+		
+		while( !q.isEmpty() ){
 			current = q.poll();
-			seen.add(current);			
+			expandedNodes++;
+			seen.add(current.state);			
 			for( RubikState st : current.state.successorFunction() ){
+				
 				if( !seen.contains(st) ){
 					if( testGoal(st) )
 						return buildSolution(st);
 					
-					seen.add( new HeuristicNode(st) );
+					q.add(new HeuristicNode(st) );
+					seen.add( st );
 				}
 			}
 		}
 		
 		return new LinkedList<>();
 	}
-	
-	
 	
 	class HeuristicNode implements Comparable<HeuristicNode>{
 		
@@ -46,7 +48,7 @@ public class AStarSearch extends RubikSearch {
 		}
 		
 		private double f(){
-			return heuristic.cost(state) + state.getCost();
+			return heuristic.h(state) + state.getCost();
 		}
 
 		@Override

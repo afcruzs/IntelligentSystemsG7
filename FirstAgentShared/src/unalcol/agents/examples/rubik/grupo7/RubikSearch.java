@@ -4,35 +4,32 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class RubikSearch {
+	protected int expandedNodes;
+	public RubikCube goalState;
 	
-	private static RubikCube goalState = new RubikCube(new int[][][]{
-			{ 	{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.YELLOW },
-				{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.YELLOW },
-				{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.YELLOW } 
-			},
-			{ 	{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.BLUE },
-				{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.BLUE },
-				{ RubikCube.BLUE, RubikCube.BLUE, RubikCube.BLUE } 
-			},
-			{ 	{ RubikCube.RED, RubikCube.RED, RubikCube.RED },
-				{ RubikCube.RED, RubikCube.RED, RubikCube.RED },
-				{ RubikCube.RED, RubikCube.RED, RubikCube.RED } 
-			},
-			{ 	{ RubikCube.GREEN, RubikCube.GREEN, RubikCube.GREEN },
-				{ RubikCube.GREEN, RubikCube.GREEN, RubikCube.GREEN },
-				{ RubikCube.GREEN, RubikCube.GREEN, RubikCube.GREEN } 
-			},
-			{ 	{ RubikCube.ORANGE, RubikCube.ORANGE, RubikCube.ORANGE },
-				{ RubikCube.ORANGE, RubikCube.ORANGE, RubikCube.ORANGE },
-				{ RubikCube.ORANGE, RubikCube.ORANGE, RubikCube.ORANGE } 
-			},
-			{ 	{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.WHITE },
-				{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.WHITE },
-				{ RubikCube.WHITE, RubikCube.WHITE, RubikCube.WHITE } 
-			},
-			
-	} );
-	public abstract List<RubikAction> search( RubikCube cube );
+	public RubikSearch(){
+		this.expandedNodes = 0;
+		
+	}
+	
+	private void updateCube( RubikCube cube ){
+		goalState = new RubikCube();
+		for (int i = 0; i < 6; i++) {
+			int color = cube.getColorCenter(i);
+			for (int j = 0; j < 3; j++)
+				for (int k = 0; k < 3; k++)
+					goalState.setAt(i,j,k,color);
+		}
+		
+	}
+	
+	public List<RubikAction> search( RubikCube cube ){
+		updateCube(cube);
+		return doSearch( cube );
+	}
+	
+	public abstract List<RubikAction> doSearch( RubikCube cube );
+	
 	
 	protected List<RubikAction> buildSolution(RubikState finalState){
 		
@@ -43,6 +40,10 @@ public abstract class RubikSearch {
 			finalState = finalState.getParent();
 		}
 		return l;
+	}
+	
+	public int getExpandedNodes(){
+		return expandedNodes;
 	}
 	
 	protected boolean testGoal(RubikState state){

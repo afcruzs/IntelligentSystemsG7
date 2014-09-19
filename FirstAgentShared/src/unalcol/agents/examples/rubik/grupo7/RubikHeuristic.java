@@ -5,5 +5,5 @@ public interface RubikHeuristic {
 	 * This should compute the estimate 
 	 * cost from state to the GOAL state.
 	 */
-	double cost(RubikState state);
+	double h(RubikState state);
 }
