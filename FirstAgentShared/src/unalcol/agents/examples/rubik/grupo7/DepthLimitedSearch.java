@@ -26,7 +26,7 @@ public class DepthLimitedSearch extends RubikSearch {
 		while(!stack.isEmpty()){
 			it++;
 			current = stack.pop();
-			System.out.println(current.depth);
+			//System.out.println(current.depth);
 			expandedNodes++;
 			//if( current.depth < limit ){
 				seen.add(current);

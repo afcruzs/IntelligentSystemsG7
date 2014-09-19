@@ -51,18 +51,7 @@ public class RubikCube implements Comparable<RubikCube> {
 				cloneRow[i] = matrix[2-i][col];
 	}
 	
-<<<<<<< HEAD
-	private void colToCol( int producerMatrix[][], int producerCol, int cloneMatrix[][], int targetCol, boolean inverse){
-		for (int i = 0; i < cloneMatrix.length; i++){
-			if (inverse)
-				cloneMatrix[i][targetCol]=producerMatrix[2-i][producerCol];
-			else
-				cloneMatrix[i][targetCol]=producerMatrix[i][producerCol];
-		}
-		
-	}
-	
-=======
+
 	
 	private void colToCol( int matrix[][], int col1, 
 			int clone[][], int col2, boolean inverse ){
@@ -76,7 +65,6 @@ public class RubikCube implements Comparable<RubikCube> {
 	
 	
 	
->>>>>>> 0e8420c96fdd734206abc6e93a31ca7940d3f5f3
 	private int[][][] copyMultiDimensionalArray( int[][][] source ){
 		int [][][] goal = new int[source.length][source[0].length][source[0][0].length];
 		for (int i = 0; i < goal.length; i++) {
@@ -193,41 +181,19 @@ public class RubikCube implements Comparable<RubikCube> {
 			colToCol(cube[BACK], 0, copy[DOWN], 2, true);
 			colToCol(cube[DOWN], 2, copy[FRONT], 2, false);
 			
-<<<<<<< HEAD
-			colToCol(cube[UP],2,copy[BACK],0,true);
-			colToCol(cube[BACK], 0, copy[DOWN], 2,true);
-			colToCol(cube[DOWN],2,copy[FRONT],2,false);
-			colToCol(cube[FRONT], 2, copy[UP], 2,false);
-		
-			for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
-					copy[RIGHT][i][j] = cube[RIGHT][2-j][i];
-=======
 			rotateFace(cube[RIGHT], copy[RIGHT], false);
->>>>>>> 0e8420c96fdd734206abc6e93a31ca7940d3f5f3
 			
 			return new RubikCube(copy);
 			
 		case RubikAction.RIGHT_INVERSE:
 			
-<<<<<<< HEAD
-			colToCol(cube[UP],2,copy[FRONT],2,false);
-			colToCol(cube[FRONT], 2, copy[DOWN], 2,false);
-			colToCol(cube[DOWN],2,copy[BACK],0,true);
-			colToCol(cube[BACK], 0, copy[UP], 2,true);
-		
-			for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
-					copy[RIGHT][i][j] = cube[RIGHT][j][2-i];
-			
-=======
+
 			colToCol(cube[UP], 2, copy[FRONT], 2, false);
 			colToCol(cube[FRONT], 2, copy[DOWN], 2, false);
 			colToCol(cube[DOWN], 2, copy[BACK], 0, true);
 			colToCol(cube[BACK], 0, copy[UP], 2, true);
 			
 			rotateFace(cube[RIGHT], copy[RIGHT], true);
->>>>>>> 0e8420c96fdd734206abc6e93a31ca7940d3f5f3
 			return new RubikCube(copy);
 		
 		case RubikAction.BACK:
@@ -264,23 +230,13 @@ public class RubikCube implements Comparable<RubikCube> {
 			
 		case RubikAction.LEFT:
 			
-<<<<<<< HEAD
-			colToCol(cube[UP],0,copy[FRONT],0,false);
-			colToCol(cube[FRONT], 0, copy[DOWN], 0,false);
-			colToCol(cube[DOWN],0,copy[BACK],2,true);
-			colToCol(cube[BACK], 2, copy[UP], 0,true);
-		
-			for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
-					copy[LEFT][i][j] = cube[LEFT][2-j][i];
-=======
+
 			colToCol(cube[UP], 0, copy[FRONT], 0, false);
 			colToCol(cube[FRONT], 0, copy[DOWN], 0, false);
 			colToCol(cube[DOWN], 0, copy[BACK], 2, true);
 			colToCol(cube[BACK], 2, copy[UP], 0, true);
 			
 			rotateFace(cube[LEFT], copy[LEFT], false);
->>>>>>> 0e8420c96fdd734206abc6e93a31ca7940d3f5f3
 			
 			return new RubikCube(copy);
 			
@@ -292,18 +248,6 @@ public class RubikCube implements Comparable<RubikCube> {
 			
 			rotateFace(cube[LEFT], copy[LEFT], true);
 			
-<<<<<<< HEAD
-			colToCol(cube[UP],0,copy[BACK],2,true);
-			colToCol(cube[BACK], 2, copy[DOWN], 0,true);
-			colToCol(cube[DOWN],0,copy[FRONT],0,false);
-			colToCol(cube[FRONT], 0, copy[UP], 0,false);
-		
-			for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
-					copy[LEFT][i][j] = cube[LEFT][j][2-i];
-			
-=======
->>>>>>> 0e8420c96fdd734206abc6e93a31ca7940d3f5f3
 			return new RubikCube(copy);
 			
 		case RubikAction.DOWN:
