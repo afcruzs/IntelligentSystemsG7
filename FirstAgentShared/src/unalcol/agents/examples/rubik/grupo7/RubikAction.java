@@ -98,6 +98,10 @@ public class RubikAction {
 			return "D'";
 		case BACK:
 			return "B";
+		case FRONT:
+			return "F";
+		case FRONT_INVERSE:
+			return "F'";
 		default: //BACK_INVERSE
 			return "B'";
 		}

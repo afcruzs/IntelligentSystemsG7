@@ -6,11 +6,9 @@ import java.util.List;
 public class IterativeDeepiningSearch  extends RubikSearch {
 	
 	private int limit;
-	private DepthLimitedSearch depthLimited;
 	
 	public IterativeDeepiningSearch(int limit) {
 		this.limit = limit;
-		depthLimited = new DepthLimitedSearch(0);
 	}
 
 
@@ -18,7 +16,9 @@ public class IterativeDeepiningSearch  extends RubikSearch {
 	@Override
 	public List<RubikAction> doSearch(RubikCube cube) {
 		List<RubikAction> t = null;
+		DepthLimitedSearch depthLimited;
 		for(int i=1; i<=limit; i++){
+			System.out.println(i);
 			depthLimited = new DepthLimitedSearch(i);
 			t = depthLimited.search(cube.clone());
 			expandedNodes += depthLimited.expandedNodes;

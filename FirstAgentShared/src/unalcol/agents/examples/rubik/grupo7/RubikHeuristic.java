@@ -6,4 +6,10 @@ public interface RubikHeuristic {
 	 * cost from state to the GOAL state.
 	 */
 	double h(RubikState state);
+	
+	/*
+	 * Sets the goalState in order to
+	 * compute correctly the h value.
+	 */
+	void setGoalCube(RubikCube goal);
 }

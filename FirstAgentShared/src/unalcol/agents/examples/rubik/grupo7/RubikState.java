@@ -22,6 +22,13 @@ public class RubikState implements Comparable<RubikState> {
 		this.cost = cost;
 		this.hash = cube.toString().hashCode();
 	}
+	
+	public String toString(){
+		if( action != null )
+			return action.toString();
+		else
+			return "No action";
+	}
 
 	public boolean equals(Object o){
 		return compareTo( (RubikState) o ) == 0;
@@ -36,8 +43,10 @@ public class RubikState implements Comparable<RubikState> {
 		return cube.compareTo(o.cube);
 	}
 
-	public Iterable<RubikState> successorFunction(){
+	public List<RubikState> successorFunction(){
 		List<RubikState> q = new LinkedList<>();
+		
+		
 		q.add( new RubikState(cube.clone().moveCube(RubikAction.backAction()), 
 				this, RubikAction.backAction(), depth+1, cost+1) );
 		
@@ -74,8 +83,7 @@ public class RubikState implements Comparable<RubikState> {
 		q.add( new RubikState(cube.clone().moveCube(RubikAction.upInverseAction()), 
 				this, RubikAction.upInverseAction(), depth+1, cost+1) );
 		
-		
-		Collections.shuffle(q);
+	//	Collections.shuffle(q);
 		return q;
 	}
 

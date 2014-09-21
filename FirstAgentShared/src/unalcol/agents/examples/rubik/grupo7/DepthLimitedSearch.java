@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
 
 public class DepthLimitedSearch extends RubikSearch {
 
@@ -14,37 +15,53 @@ public class DepthLimitedSearch extends RubikSearch {
 		this.limit = limit;
 	}
 	
-	@Override
-	public List<RubikAction> doSearch(RubikCube cube) {
-		Stack<RubikState> stack = new Stack<>();
-		stack.add( new  RubikState( cube, null, null, 0, 0.0 ) );
-		
-		Set<RubikState> seen = new HashSet<>();
-		
-		RubikState current = null;
-		int it = 0;
-		while(!stack.isEmpty()){
-			it++;
-			current = stack.pop();
-			//System.out.println(current.depth);
+	private List<RubikAction> recSearch(RubikState state, Set<RubikState> seen){
+	//	System.out.println(state.getCube());
+		if( state.depth >= 0 ){
+			seen.add(state);
 			expandedNodes++;
-			//if( current.depth < limit ){
-				seen.add(current);
-				for( RubikState state : current.successorFunction() ){
-					if( !seen.contains(state) ){
-						if( testGoal(state) ){
-							System.out.println(it);
-							return buildSolution(state);
-						}
-						
-						if( state.depth <= limit )
-							stack.add(state);
-					}
+			if( testGoal(state) )
+				return buildSolution(state);
+			for(RubikState st: state.successorFunction()){
+				if( !seen.contains(st) ){
+					List<RubikAction> t = recSearch(new RubikState(st.getCube(), state, st.getAction(), 
+											state.depth-1, st.getCost()), seen);
+					if(t.size() > 0) return t;
 				}
-			//}
+			}
 		}
 		
-		System.out.println(it);
+		return new LinkedList<>();
+	}
+	public List<RubikAction> doSearch2(RubikCube cube) {
+		return recSearch(new RubikState(cube, null, null, limit, 0.0), new HashSet<RubikState>());
+	}
+	
+	public List<RubikAction> doSearch(RubikCube cube) {
+		Stack<RubikState> q = new Stack<>();
+		Set<RubikState> seen = new TreeSet<RubikState>( );
+		q.add(new RubikState(cube, null, null, 1, 0.0));
+		RubikState current = null;
+		
+		while( !q.isEmpty() ){
+			current = q.pop();
+			expandedNodes++;
+			seen.add(current);
+		//	System.out.println(current.getCube());
+			if( current.depth > limit ) continue;
+			for( RubikState st : current.successorFunction() ){
+				
+				if( !seen.contains(st) ){
+					if( testGoal(st) ){
+						System.out.println("The depth is: " + current.depth);
+						return buildSolution(st);
+					}
+					
+					q.add( st );
+				}
+			}
+		}
+		
 		return new LinkedList<>();
 	}	
 	

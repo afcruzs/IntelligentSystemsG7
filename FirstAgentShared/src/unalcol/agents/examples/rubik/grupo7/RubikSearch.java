@@ -12,7 +12,7 @@ public abstract class RubikSearch {
 		
 	}
 	
-	private void updateCube( RubikCube cube ){
+	protected void updateCube( RubikCube cube ){
 		goalState = new RubikCube();
 		for (int i = 0; i < 6; i++) {
 			int color = cube.getColorCenter(i);

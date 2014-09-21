@@ -1,9 +1,10 @@
 package unalcol.agents.examples.rubik.grupo7;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.TreeSet;
+import java.util.Set;
 
 public class AStarSearch extends RubikSearch {
 	
@@ -12,12 +13,19 @@ public class AStarSearch extends RubikSearch {
 	public AStarSearch(RubikHeuristic heuristic) {
 		this.heuristic = heuristic;
 	}
+	
+	public List<RubikAction> search( RubikCube cube ){
+		super.updateCube(cube);
+		heuristic.setGoalCube(super.goalState);
+		return doSearch( cube );
+	}
+	
 
 	@Override
 	public List<RubikAction> doSearch(RubikCube cube) {
 		PriorityQueue<HeuristicNode> q = new PriorityQueue<>();
-		TreeSet<RubikState> seen = new TreeSet<>();
-		q.add(new HeuristicNode(new RubikState(cube, null, null, 0, 0.0)));
+		Set<RubikState> seen = new HashSet<>();
+		q.add(new HeuristicNode(new RubikState(cube, null, null, 1, 0.0)));
 		HeuristicNode current = null;
 		
 		while( !q.isEmpty() ){
@@ -27,11 +35,12 @@ public class AStarSearch extends RubikSearch {
 			for( RubikState st : current.state.successorFunction() ){
 				
 				if( !seen.contains(st) ){
-					if( testGoal(st) )
+					if( testGoal(st) ){
+						System.out.println("The depth is: " + current.state.depth);
 						return buildSolution(st);
+					}
 					
 					q.add(new HeuristicNode(st) );
-					seen.add( st );
 				}
 			}
 		}

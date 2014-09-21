@@ -1,6 +1,8 @@
 package unalcol.agents.examples.rubik.grupo7;
 
+import java.util.List;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class RubikCube implements Comparable<RubikCube> {
 
@@ -29,6 +31,69 @@ public class RubikCube implements Comparable<RubikCube> {
 	
 	public RubikCube(){
 		this.cube = new int[6][3][3]; 
+	}
+	
+	public List<Block> getBlocks(){
+		LinkedList<Block> blocks = new LinkedList<>();
+		int NO_COLOR = Block.NO_COLOR;
+		
+		//UP BlOCKS
+		blocks.add( new Block(blocks.size(), cube[UP][TOP][0], NO_COLOR, NO_COLOR, cube[BACK][TOP][2], cube[LEFT][TOP][0], NO_COLOR) );
+		
+		blocks.add( new Block(blocks.size(), cube[UP][TOP][1], NO_COLOR, NO_COLOR, cube[BACK][TOP][1], NO_COLOR, NO_COLOR) );
+		
+		blocks.add( new Block(blocks.size(), cube[UP][TOP][2], NO_COLOR, cube[RIGHT][TOP][2], cube[BACK][TOP][0], NO_COLOR, NO_COLOR) );
+		
+		blocks.add( new Block(blocks.size(), cube[UP][MIDDLE][0], NO_COLOR, NO_COLOR, NO_COLOR, cube[LEFT][TOP][1], NO_COLOR) );
+			
+		blocks.add( new Block(blocks.size(), cube[UP][MIDDLE][2], NO_COLOR, cube[RIGHT][TOP][1], NO_COLOR, NO_COLOR, NO_COLOR) );
+		
+		blocks.add( new Block(blocks.size(), cube[UP][BOTTOM][0], cube[FRONT][TOP][0], NO_COLOR, NO_COLOR, cube[LEFT][TOP][2], NO_COLOR) );
+		
+		blocks.add( new Block(blocks.size(), cube[UP][BOTTOM][1], cube[FRONT][TOP][1], NO_COLOR, NO_COLOR, NO_COLOR, NO_COLOR) );
+		
+		blocks.add( new Block(blocks.size(), cube[UP][BOTTOM][2], cube[FRONT][TOP][2], cube[RIGHT][TOP][0], NO_COLOR, NO_COLOR, NO_COLOR) );
+		
+		//FRONT BLOCKS
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, cube[FRONT][MIDDLE][0], NO_COLOR, NO_COLOR, cube[LEFT][MIDDLE][2], NO_COLOR) );
+				
+		blocks.add( new Block(blocks.size(), NO_COLOR, cube[FRONT][MIDDLE][2], cube[RIGHT][MIDDLE][0], NO_COLOR, NO_COLOR, NO_COLOR) );
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, cube[FRONT][BOTTOM][0], NO_COLOR, NO_COLOR, cube[LEFT][BOTTOM][2], cube[DOWN][TOP][0]) );
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, cube[FRONT][BOTTOM][1], NO_COLOR, NO_COLOR, NO_COLOR, cube[DOWN][TOP][1]) );
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, cube[FRONT][BOTTOM][2], cube[RIGHT][BOTTOM][0], NO_COLOR, NO_COLOR, cube[DOWN][TOP][1] ) );
+		
+		//RIGHT BLOCKS
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, NO_COLOR, cube[RIGHT][MIDDLE][2], cube[BACK][MIDDLE][0], NO_COLOR, NO_COLOR) );
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, NO_COLOR, cube[RIGHT][BOTTOM][1], NO_COLOR, NO_COLOR, cube[DOWN][MIDDLE][2]) );
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, NO_COLOR, cube[RIGHT][BOTTOM][2], cube[BACK][BOTTOM][0], NO_COLOR, cube[DOWN][BOTTOM][2]) );
+		
+		//BACK BLOCKS
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, NO_COLOR, cube[BACK][MIDDLE][2], cube[LEFT][MIDDLE][0], NO_COLOR, NO_COLOR) );
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, NO_COLOR, cube[BACK][BOTTOM][1], NO_COLOR, NO_COLOR, cube[DOWN][BOTTOM][1] ) );
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, NO_COLOR, cube[BACK][BOTTOM][2], cube[LEFT][BOTTOM][0], NO_COLOR, cube[DOWN][BOTTOM][0] ) );
+		
+		//lEFT BLOCKS
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, cube[FRONT][MIDDLE][0], NO_COLOR, NO_COLOR, cube[LEFT][MIDDLE][2], NO_COLOR) );
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, NO_COLOR, NO_COLOR, NO_COLOR, cube[LEFT][BOTTOM][1], cube[DOWN][MIDDLE][0] ) );
+		
+		blocks.add( new Block(blocks.size(), NO_COLOR, cube[FRONT][BOTTOM][0], NO_COLOR, NO_COLOR, cube[LEFT][BOTTOM][2], cube[DOWN][TOP][0]) );
+		
+		//DOWN BLOCKS (There is no down blocks, because the other faces already covered them :)
+
+		
+		return blocks;
 	}
 	
 	private void rowToCol( int row[], int face, int col, 
@@ -262,16 +327,14 @@ public class RubikCube implements Comparable<RubikCube> {
 			copy[BACK][BOTTOM] = rightCopy;
 			copy[RIGHT][BOTTOM] = frontCopy;
 			
-			/*for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
-					copy[DOWN][i][j] = cube[DOWN][2-j][i];-*/
 			
 			rotateFace(cube[DOWN], copy[DOWN], false);
 			
 			return new RubikCube(copy);
 			
+			
 
-		default: //RubikAction.DOWN_INVERSE
+		case RubikAction.DOWN_INVERSE: //RubikAction.DOWN_INVERSE
 			
 			frontCopy = Arrays.copyOf(cube[FRONT][BOTTOM], cube[FRONT][BOTTOM].length);
 			leftCopy = Arrays.copyOf(cube[LEFT][BOTTOM], cube[LEFT][BOTTOM].length);
@@ -283,13 +346,13 @@ public class RubikCube implements Comparable<RubikCube> {
 			copy[BACK][BOTTOM] = leftCopy;
 			copy[RIGHT][BOTTOM] = backCopy;
 
-			/*for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
-					copy[DOWN][i][j] = cube[DOWN][j][2-i];*/
 			
 			rotateFace(cube[DOWN], copy[DOWN], true);
 			
 			return new RubikCube(copy);
+		
+			default:
+				throw new IllegalArgumentException();
 			
 		}
 	}

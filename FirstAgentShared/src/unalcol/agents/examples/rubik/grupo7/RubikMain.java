@@ -1,6 +1,5 @@
 package unalcol.agents.examples.rubik.grupo7;
 
-import java.util.Iterator;
 
 public class RubikMain {
 	
@@ -40,18 +39,20 @@ public class RubikMain {
 	
 	public static void main(String[] args) {
 		
-		System.out.println(cube);
-		System.out.println( cube.moveCube( RubikAction.backAction() ) );
-		System.out.println(cube);
-		cube = cube.moveCube( RubikAction.backAction() );
-		//cube = cube.moveCube( RubikAction.rightAction() );
+		//System.out.println(cube);
+		//cube = cube.moveCube( RubikAction.backAction() );
 		cube = cube.moveCube( RubikAction.rightAction() );
 		cube = cube.moveCube( RubikAction.upAction() );
-		//cube = cube.moveCube( RubikAction.upAction() );
-		//cube = cube.moveCube( RubikAction.upAction() );
-		//cube = cube.moveCube( RubikAction.downAction() );
+		cube = cube.moveCube( RubikAction.downAction() );
+		cube = cube.moveCube( RubikAction.rightAction() );
+		cube = cube.moveCube( RubikAction.upAction() );
+		cube = cube.moveCube( RubikAction.downAction() );
+		cube = cube.moveCube( RubikAction.upAction() );
+		cube = cube.moveCube( RubikAction.upAction() );
+		cube = cube.moveCube( RubikAction.downAction() );
+		cube = cube.moveCube( RubikAction.rightAction() );
 		
-		//cube = cube.moveCube( RubikAction.rightAction() );
+		
 		//cube = cube.moveCube( RubikAction.upAction() );
 		//cube = cube.moveCube( RubikAction.upAction() );
 		/*cube = cube.moveCube( RubikAction.downAction() );
@@ -59,16 +60,14 @@ public class RubikMain {
 		cube = cube.moveCube( RubikAction.leftAction() );
 		cube = cube.moveCube( RubikAction.rightInverseAction() ); 
 		*/
-		RubikSearch dls = new DepthLimitedSearch(3);
 		
-		/*dls = new AStarSearch(new RubikHeuristic() {
-			
-			@Override
-			public double h(RubikState state) {
-				
-				return 0;
-			}
-		});*/
+		System.out.println(cube);
+		RubikSearch dls = new DepthLimitedSearch(5);
+	
+		dls = new AStarSearch(new RudeKidHeuristic());
+		//dls = new AStarSearch(new UniformCostHeuristic());
+		
+		//dls = new IterativeDeepiningSearch(7);
 		
 		long time = System.currentTimeMillis();
 		System.out.println(dls.search(cube));
