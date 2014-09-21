@@ -2,12 +2,12 @@ package unalcol.agents.examples.rubik.grupo7;
 
 public class Block {
 	
-	public static int NO_COLOR = -1;
+	public static byte NO_COLOR = -1;
 	
 	private int index;
-	private int up,front,right,back,left,down;
+	private byte up,front,right,back,left,down;
 	
-	public Block(int index, int up,int front, int right, int back, int left, int down) {
+	public Block(int index, byte up,byte front, byte right, byte back, byte left, byte down) {
 		super();
 		this.index = index;
 		this.up = up;

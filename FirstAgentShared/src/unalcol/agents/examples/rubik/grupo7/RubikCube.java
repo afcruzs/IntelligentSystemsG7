@@ -6,36 +6,36 @@ import java.util.LinkedList;
 
 public class RubikCube implements Comparable<RubikCube> {
 
-	private int cube[][][];
-	public static final int UP = 0; //Amarillo
-	public static final int FRONT = 1; // Azul
-	public static final int RIGHT = 2; // Rojo
-	public static final int BACK = 3; // verde
-	public static final int LEFT = 4; // naranja
-	public static final int DOWN = 5; // blanco
+	private byte cube[][][];
+	public static final byte UP = 0; //Amarillo
+	public static final byte FRONT = 1; // Azul
+	public static final byte RIGHT = 2; // Rojo
+	public static final byte BACK = 3; // verde
+	public static final byte LEFT = 4; // naranja
+	public static final byte DOWN = 5; // blanco
 	
-	public static final int YELLOW = 0;
-	public static final int BLUE = 1;
-	public static final int RED = 2;
-	public static final int GREEN = 3;
-	public static final int ORANGE = 4;
-	public static final int WHITE = 5;
+	public static final byte YELLOW = 0;
+	public static final byte BLUE = 1;
+	public static final byte RED = 2;
+	public static final byte GREEN = 3;
+	public static final byte ORANGE = 4;
+	public static final byte WHITE = 5;
 	
-	public static final int TOP = 0;
-	public static final int MIDDLE = 1;
-	public static final int BOTTOM = 2;
+	public static final byte TOP = 0;
+	public static final byte MIDDLE = 1;
+	public static final byte BOTTOM = 2;
 	
-	public RubikCube(int[][][] cube) {
+	public RubikCube(byte[][][] cube) {
 		this.cube = cube;
 	}
 	
 	public RubikCube(){
-		this.cube = new int[6][3][3]; 
+		this.cube = new byte[6][3][3]; 
 	}
 	
 	public List<Block> getBlocks(){
 		LinkedList<Block> blocks = new LinkedList<>();
-		int NO_COLOR = Block.NO_COLOR;
+		byte NO_COLOR = Block.NO_COLOR;
 		
 		//UP BlOCKS
 		blocks.add( new Block(blocks.size(), cube[UP][TOP][0], NO_COLOR, NO_COLOR, cube[BACK][TOP][2], cube[LEFT][TOP][0], NO_COLOR) );
@@ -96,45 +96,45 @@ public class RubikCube implements Comparable<RubikCube> {
 		return blocks;
 	}
 	
-	private void rowToCol( int row[], int face, int col, 
-			int clone[][][], boolean inverse ){
+	private void rowToCol( byte row[], byte face, byte col, 
+			byte clone[][][], boolean inverse ){
 		if( !inverse )
-			for (int i = 0; i < row.length; i++) 
+			for (byte i = 0; i < row.length; i++) 
 				clone[face][i][col] = row[i];
 		else
-			for (int i = 0; i < row.length; i++) 
+			for (byte i = 0; i < row.length; i++) 
 				clone[face][i][col] = row[2-i];
 	}
 	
-	private void colToRow( int matrix[][], int col, 
-			int cloneRow[], boolean inverse ){
+	private void colToRow( byte matrix[][], byte col, 
+			byte cloneRow[], boolean inverse ){
 		if( !inverse )
-			for (int i = 0; i < matrix.length; i++) 
+			for (byte i = 0; i < matrix.length; i++) 
 				cloneRow[i] = matrix[i][col];
 		else
-			for (int i = 0; i < matrix.length; i++) 
+			for (byte i = 0; i < matrix.length; i++) 
 				cloneRow[i] = matrix[2-i][col];
 	}
 	
 
 	
-	private void colToCol( int matrix[][], int col1, 
-			int clone[][], int col2, boolean inverse ){
+	private void colToCol( byte matrix[][], byte col1, 
+			byte clone[][], byte col2, boolean inverse ){
 		if( !inverse )
-			for (int i = 0; i < matrix.length; i++) 
+			for (byte i = 0; i < matrix.length; i++) 
 				clone[i][col2] = matrix[i][col1];
 		else
-			for (int i = 0; i < matrix.length; i++) 
+			for (byte i = 0; i < matrix.length; i++) 
 				clone[i][col2] = matrix[2-i][col1];
 	}
 	
 	
 	
-	private int[][][] copyMultiDimensionalArray( int[][][] source ){
-		int [][][] goal = new int[source.length][source[0].length][source[0][0].length];
-		for (int i = 0; i < goal.length; i++) {
-			for (int j = 0; j < goal[0].length; j++) {
-				for (int k = 0; k < goal[0].length; k++) {
+	private byte[][][] copyMultiDimensionalArray( byte[][][] source ){
+		byte [][][] goal = new byte[source.length][source[0].length][source[0][0].length];
+		for (byte i = 0; i < goal.length; i++) {
+			for (byte j = 0; j < goal[0].length; j++) {
+				for (byte k = 0; k < goal[0].length; k++) {
 					goal[i][j][k] = source[i][j][k];
 				}
 			}
@@ -143,26 +143,26 @@ public class RubikCube implements Comparable<RubikCube> {
 		return goal;
 	}
 	
-	private void rotateFace(int matrix[][], int copy[][], boolean inverse){
+	private void rotateFace(byte matrix[][], byte copy[][], boolean inverse){
 		if(!inverse)
-			for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
+			for (byte i = 0; i < 3; i++) 
+				for (byte j = 0; j < 3; j++) 
 					copy[i][j] = matrix[2-j][i];
 		else
-			for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
+			for (byte i = 0; i < 3; i++) 
+				for (byte j = 0; j < 3; j++) 
 					copy[i][j] = matrix[j][2-i];
 	}
 	
 	public RubikCube moveCube( RubikAction ra ){
 		
-		int [] frontCopy;
-		int [] leftCopy;
-		int [] backCopy;
-		int [] rightCopy;
-		int [] upCopy;
-		int [] downCopy;
-		int copy [][][]= copyMultiDimensionalArray(cube); 
+		byte [] frontCopy;
+		byte [] leftCopy;
+		byte [] backCopy;
+		byte [] rightCopy;
+		byte [] upCopy;
+		byte [] downCopy;
+		byte copy [][][]= copyMultiDimensionalArray(cube); 
 		
 		
 		
@@ -179,8 +179,8 @@ public class RubikCube implements Comparable<RubikCube> {
 			copy[BACK][TOP] = leftCopy;
 			copy[RIGHT][TOP] = backCopy;
 			
-			/*for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++){ 
+			/*for (byte i = 0; i < 3; i++) 
+				for (byte j = 0; j < 3; j++){ 
 					copy[UP][i][j] = cube[UP][2-j][i];
 				}*/
 			rotateFace(cube[UP], copy[UP], false);
@@ -199,8 +199,8 @@ public class RubikCube implements Comparable<RubikCube> {
 			copy[BACK][TOP] = rightCopy;
 			copy[RIGHT][TOP] = frontCopy;
 			
-			/*for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
+			/*for (byte i = 0; i < 3; i++) 
+				for (byte j = 0; j < 3; j++) 
 					copy[UP][i][j] = cube[UP][j][2-i];*/
 			
 			rotateFace(cube[UP], copy[UP], true);
@@ -208,15 +208,16 @@ public class RubikCube implements Comparable<RubikCube> {
 			return new RubikCube(copy);
 		
 		case RubikAction.FRONT:
+			byte plz = 0;
 			
-			rowToCol(cube[UP][BOTTOM], RIGHT, 0, copy, false);
-			rowToCol(cube[DOWN][TOP], LEFT, 2, copy, false);
-			colToRow(cube[LEFT], 2, copy[UP][BOTTOM], false);
-			colToRow(cube[RIGHT], 0, copy[DOWN][TOP], false);
+			rowToCol(cube[UP][BOTTOM], RIGHT, (byte) 0, copy, false);
+			rowToCol(cube[DOWN][TOP], LEFT, (byte) 2, copy, false);
+			colToRow(cube[LEFT], (byte) 2, copy[UP][BOTTOM], false);
+			colToRow(cube[RIGHT], (byte) 0, copy[DOWN][TOP], false);
 		
 			
-			/*for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
+			/*for (byte i = 0; i < 3; i++) 
+				for (byte j = 0; j < 3; j++) 
 					copy[FRONT][i][j] = cube[FRONT][2-j][i];*/
 			
 			
@@ -226,14 +227,14 @@ public class RubikCube implements Comparable<RubikCube> {
 			
 		case RubikAction.FRONT_INVERSE:
 			
-			rowToCol(cube[UP][BOTTOM], LEFT, 2, copy, true);
-			rowToCol(cube[DOWN][TOP], RIGHT, 0, copy, true);
-			colToRow(cube[LEFT], 2, copy[DOWN][TOP], true);
-			colToRow(cube[RIGHT], 0, copy[UP][BOTTOM], true);
+			rowToCol(cube[UP][BOTTOM], LEFT, (byte) 2, copy, true);
+			rowToCol(cube[DOWN][TOP], RIGHT, (byte) 0, copy, true);
+			colToRow(cube[LEFT], (byte) 2, copy[DOWN][TOP], true);
+			colToRow(cube[RIGHT], (byte) 0, copy[UP][BOTTOM], true);
 		
 			
-			/*for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
+			/*for (byte i = 0; i < 3; i++) 
+				for (byte j = 0; j < 3; j++) 
 					copy[FRONT][i][j] = cube[FRONT][j][2-i];*/
 			
 			rotateFace(cube[FRONT], copy[FRONT], true);
@@ -241,10 +242,10 @@ public class RubikCube implements Comparable<RubikCube> {
 			return new RubikCube(copy);
 			
 		case RubikAction.RIGHT:	
-			colToCol(cube[FRONT], 2, copy[UP], 2, false);
-			colToCol(cube[UP], 2, copy[BACK], 0, true);
-			colToCol(cube[BACK], 0, copy[DOWN], 2, true);
-			colToCol(cube[DOWN], 2, copy[FRONT], 2, false);
+			colToCol(cube[FRONT], (byte)2, copy[UP], (byte)2, false);
+			colToCol(cube[UP], (byte)2, copy[BACK], (byte)0, true);
+			colToCol(cube[BACK], (byte)0, copy[DOWN], (byte)2, true);
+			colToCol(cube[DOWN], (byte)2, copy[FRONT], (byte)2, false);
 			
 			rotateFace(cube[RIGHT], copy[RIGHT], false);
 			
@@ -253,24 +254,24 @@ public class RubikCube implements Comparable<RubikCube> {
 		case RubikAction.RIGHT_INVERSE:
 			
 
-			colToCol(cube[UP], 2, copy[FRONT], 2, false);
-			colToCol(cube[FRONT], 2, copy[DOWN], 2, false);
-			colToCol(cube[DOWN], 2, copy[BACK], 0, true);
-			colToCol(cube[BACK], 0, copy[UP], 2, true);
+			colToCol(cube[UP], (byte)2, copy[FRONT], (byte)2, false);
+			colToCol(cube[FRONT], (byte)2, copy[DOWN], (byte)2, false);
+			colToCol(cube[DOWN], (byte)2, copy[BACK], (byte)0, true);
+			colToCol(cube[BACK], (byte)0, copy[UP], (byte)2, true);
 			
 			rotateFace(cube[RIGHT], copy[RIGHT], true);
 			return new RubikCube(copy);
 		
 		case RubikAction.BACK:
 			
-			rowToCol(cube[UP][TOP], LEFT, 0, copy, true);
-			rowToCol(cube[DOWN][BOTTOM], RIGHT, 2, copy, true);
-			colToRow(cube[LEFT], 0, copy[DOWN][BOTTOM], false);
-			colToRow(cube[RIGHT], 2, copy[UP][TOP], false);
+			rowToCol(cube[UP][TOP], LEFT, (byte)0, copy, true);
+			rowToCol(cube[DOWN][BOTTOM], RIGHT, (byte)2, copy, true);
+			colToRow(cube[LEFT], (byte)0, copy[DOWN][BOTTOM], false);
+			colToRow(cube[RIGHT], (byte)2, copy[UP][TOP], false);
 		
 			
-			/*for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
+			/*for (byte i = 0; i < 3; i++) 
+				for (byte j = 0; j < 3; j++) 
 					copy[BACK][i][j] = cube[BACK][2-j][i];*/
 			
 			rotateFace(cube[BACK], copy[BACK], false);
@@ -279,14 +280,14 @@ public class RubikCube implements Comparable<RubikCube> {
 			
 		case RubikAction.BACK_INVERSE:
 			
-			rowToCol(cube[UP][TOP], RIGHT, 2, copy, false);
-			rowToCol(cube[DOWN][BOTTOM], LEFT, 0, copy, false);
-			colToRow(cube[LEFT], 0, copy[UP][TOP], true);
-			colToRow(cube[RIGHT], 2, copy[DOWN][BOTTOM], true);
+			rowToCol(cube[UP][TOP], RIGHT, (byte)2, copy, false);
+			rowToCol(cube[DOWN][BOTTOM], LEFT, (byte)0, copy, false);
+			colToRow(cube[LEFT], (byte)0, copy[UP][TOP], true);
+			colToRow(cube[RIGHT], (byte)2, copy[DOWN][BOTTOM], true);
 		
 			
-			/*for (int i = 0; i < 3; i++) 
-				for (int j = 0; j < 3; j++) 
+			/*for (byte i = 0; i < 3; i++) 
+				for (byte j = 0; j < 3; j++) 
 					copy[BACK][i][j] = cube[BACK][j][2-i];*/
 			
 			rotateFace(cube[BACK], copy[BACK], true);
@@ -296,20 +297,20 @@ public class RubikCube implements Comparable<RubikCube> {
 		case RubikAction.LEFT:
 			
 
-			colToCol(cube[UP], 0, copy[FRONT], 0, false);
-			colToCol(cube[FRONT], 0, copy[DOWN], 0, false);
-			colToCol(cube[DOWN], 0, copy[BACK], 2, true);
-			colToCol(cube[BACK], 2, copy[UP], 0, true);
+			colToCol(cube[UP], (byte)0, copy[FRONT], (byte)0, false);
+			colToCol(cube[FRONT], (byte)0, copy[DOWN], (byte)0, false);
+			colToCol(cube[DOWN], (byte)0, copy[BACK], (byte)2, true);
+			colToCol(cube[BACK], (byte)2, copy[UP], (byte)0, true);
 			
 			rotateFace(cube[LEFT], copy[LEFT], false);
 			
 			return new RubikCube(copy);
 			
 		case RubikAction.LEFT_INVERSE:
-			colToCol(cube[FRONT], 0, copy[UP], 0, false);
-			colToCol(cube[UP], 0, copy[BACK], 2, true);
-			colToCol(cube[BACK], 2, copy[DOWN], 0, true);
-			colToCol(cube[DOWN], 0, copy[FRONT], 0, false);
+			colToCol(cube[FRONT], (byte)0, copy[UP], (byte)0, false);
+			colToCol(cube[UP], (byte)0, copy[BACK], (byte)2, true);
+			colToCol(cube[BACK], (byte)2, copy[DOWN], (byte)0, true);
+			colToCol(cube[DOWN], (byte)0, copy[FRONT], (byte)0, false);
 			
 			rotateFace(cube[LEFT], copy[LEFT], true);
 			
@@ -361,10 +362,10 @@ public class RubikCube implements Comparable<RubikCube> {
 	public String toString(){
 		StringBuilder out = new StringBuilder();
 		
-		int currentFace = UP;
+		byte currentFace = UP;
 		out.append("Up\n");
-		for (int i = 0; i < cube[currentFace].length; i++) {
-			for (int j = 0; j < cube[currentFace][i].length; j++) {
+		for (byte i = 0; i < cube[currentFace].length; i++) {
+			for (byte j = 0; j < cube[currentFace][i].length; j++) {
 				out.append( cube[currentFace][i][j] + " " );
 			}
 			out.append("\n");
@@ -372,8 +373,8 @@ public class RubikCube implements Comparable<RubikCube> {
 		out.append("\n");
 		int n = cube[currentFace].length;
 		out.append("Front    Right    Back     Left\n"  );
-		for (int i = 0; i < n; i++) {
-			for ( int j = 0; currentFace != DOWN; ) {
+		for (byte i = 0; i < n; i++) {
+			for ( byte j = 0; currentFace != DOWN; ) {
 				if( j % n == 0 ){
 					currentFace++;
 					j = 0;
@@ -390,8 +391,8 @@ public class RubikCube implements Comparable<RubikCube> {
 		out.append("\n");
 		out.append("Down\n");
 		currentFace = DOWN;
-		for (int i = 0; i < cube[currentFace].length; i++) {
-			for (int j = 0; j < cube[currentFace][i].length; j++) {
+		for (byte i = 0; i < cube[currentFace].length; i++) {
+			for (byte j = 0; j < cube[currentFace][i].length; j++) {
 				out.append( cube[currentFace][i][j] + " " );
 			}
 			out.append("\n");
@@ -415,11 +416,11 @@ public class RubikCube implements Comparable<RubikCube> {
 		return new RubikCube(copyMultiDimensionalArray(cube));	
 	}
 
-	public int getColorCenter(int i) {
+	public byte getColorCenter(byte i) {
 		return cube[i][1][1];
 	}
 
-	public void setAt(int face, int i, int j, int color) {
+	public void setAt(byte face, byte i, byte j, byte color) {
 		cube[face][i][j] = color;
 	}
 	

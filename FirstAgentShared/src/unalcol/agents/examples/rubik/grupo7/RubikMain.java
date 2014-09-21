@@ -5,7 +5,7 @@ public class RubikMain {
 	
 
 	static RubikCube cube = new RubikCube(
-			new int[][][]{
+			new byte[][][]{
 
 					{ 	{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.YELLOW },
 						{ RubikCube.YELLOW, RubikCube.YELLOW, RubikCube.YELLOW },
@@ -50,8 +50,8 @@ public class RubikMain {
 		cube = cube.moveCube( RubikAction.upAction() );
 		cube = cube.moveCube( RubikAction.upAction() );
 		cube = cube.moveCube( RubikAction.downAction() );
-		cube = cube.moveCube( RubikAction.rightAction() );
-		
+		cube = cube.moveCube( RubikAction.rightAction() );		
+	//	cube = cube.moveCube( RubikAction.downAction() );
 		
 		//cube = cube.moveCube( RubikAction.upAction() );
 		//cube = cube.moveCube( RubikAction.upAction() );

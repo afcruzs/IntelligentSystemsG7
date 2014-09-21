@@ -14,10 +14,10 @@ public abstract class RubikSearch {
 	
 	protected void updateCube( RubikCube cube ){
 		goalState = new RubikCube();
-		for (int i = 0; i < 6; i++) {
-			int color = cube.getColorCenter(i);
-			for (int j = 0; j < 3; j++)
-				for (int k = 0; k < 3; k++)
+		for (byte i = 0; i < 6; i++) {
+			byte color = cube.getColorCenter(i);
+			for (byte j = 0; j < 3; j++)
+				for (byte k = 0; k < 3; k++)
 					goalState.setAt(i,j,k,color);
 		}
 		
