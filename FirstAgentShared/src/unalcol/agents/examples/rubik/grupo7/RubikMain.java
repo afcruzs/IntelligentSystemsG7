@@ -48,9 +48,9 @@ public class RubikMain {
 		cube = cube.moveCube( RubikAction.upAction() );
 		cube = cube.moveCube( RubikAction.downAction() );
 		cube = cube.moveCube( RubikAction.upAction() );
-		cube = cube.moveCube( RubikAction.upAction() );
-		cube = cube.moveCube( RubikAction.downAction() );
-		cube = cube.moveCube( RubikAction.rightAction() );		
+	//	cube = cube.moveCube( RubikAction.upAction() );
+	//	cube = cube.moveCube( RubikAction.downAction() );
+	//	cube = cube.moveCube( RubikAction.rightAction() );		
 	//	cube = cube.moveCube( RubikAction.downAction() );
 		
 		//cube = cube.moveCube( RubikAction.upAction() );
@@ -65,6 +65,7 @@ public class RubikMain {
 		RubikSearch dls = new DepthLimitedSearch(5);
 	
 		dls = new AStarSearch(new RudeKidHeuristic());
+		//dls = new AStarSearch(new CountColoursHeuristic());
 		//dls = new AStarSearch(new UniformCostHeuristic());
 		
 		//dls = new IterativeDeepiningSearch(7);

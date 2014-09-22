@@ -423,6 +423,10 @@ public class RubikCube implements Comparable<RubikCube> {
 	public void setAt(byte face, byte i, byte j, byte color) {
 		cube[face][i][j] = color;
 	}
+
+	public byte getAt(byte face, byte i, byte j) {
+		return cube[face][i][j];
+	}
 	
 		
 	
