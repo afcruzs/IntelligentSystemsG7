@@ -25,6 +25,7 @@ public abstract class RubikSearch {
 	
 	public List<RubikAction> search( RubikCube cube ){
 		updateCube(cube);
+		if( goalState.equals(cube)  ) return new LinkedList<>();
 		return doSearch( cube );
 	}
 	

@@ -16,6 +16,7 @@ public class AStarSearch extends RubikSearch {
 	
 	public List<RubikAction> search( RubikCube cube ){
 		super.updateCube(cube);
+		if( goalState.equals(cube)  ) return new LinkedList<>();
 		heuristic.setGoalCube(super.goalState);
 		return doSearch( cube );
 	}
