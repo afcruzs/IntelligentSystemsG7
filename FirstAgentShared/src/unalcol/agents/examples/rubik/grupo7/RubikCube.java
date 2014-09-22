@@ -1,5 +1,6 @@
 package unalcol.agents.examples.rubik.grupo7;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -34,7 +35,7 @@ public class RubikCube implements Comparable<RubikCube> {
 	}
 	
 	public List<Block> getBlocks(){
-		LinkedList<Block> blocks = new LinkedList<>();
+		ArrayList<Block> blocks = new ArrayList<>(20);
 		byte NO_COLOR = Block.NO_COLOR;
 		
 		//UP BlOCKS
@@ -84,15 +85,14 @@ public class RubikCube implements Comparable<RubikCube> {
 		
 		//lEFT BLOCKS
 		
-		blocks.add( new Block(blocks.size(), NO_COLOR, cube[FRONT][MIDDLE][0], NO_COLOR, NO_COLOR, cube[LEFT][MIDDLE][2], NO_COLOR) );
+//		blocks.add( new Block(blocks.size(), NO_COLOR, cube[FRONT][MIDDLE][0], NO_COLOR, NO_COLOR, cube[LEFT][MIDDLE][2], NO_COLOR) );
 		
 		blocks.add( new Block(blocks.size(), NO_COLOR, NO_COLOR, NO_COLOR, NO_COLOR, cube[LEFT][BOTTOM][1], cube[DOWN][MIDDLE][0] ) );
 		
-		blocks.add( new Block(blocks.size(), NO_COLOR, cube[FRONT][BOTTOM][0], NO_COLOR, NO_COLOR, cube[LEFT][BOTTOM][2], cube[DOWN][TOP][0]) );
+	//	blocks.add( new Block(blocks.size(), NO_COLOR, cube[FRONT][BOTTOM][0], NO_COLOR, NO_COLOR, cube[LEFT][BOTTOM][2], cube[DOWN][TOP][0]) );
 		
 		//DOWN BLOCKS (There is no down blocks, because the other faces already covered them :)
 
-		
 		return blocks;
 	}
 	

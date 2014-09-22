@@ -7,7 +7,7 @@ public class CountColoursHeuristic implements RubikHeuristic {
 	@Override
 	public double h(RubikState state) {
 		
-		int count = 0;
+		double count = 0;
 		RubikCube actual = state.getCube();
 		for (byte i = 0; i < 6; i++) {
 			for (byte j = 0; j < 3; j++)
@@ -16,7 +16,8 @@ public class CountColoursHeuristic implements RubikHeuristic {
 						count++;
 		}
 		
-		return Math.ceil(count/24.0);
+		//return Math.ceil(count/3.0);
+		return count/24.0;
 	}
 
 	@Override

@@ -43,6 +43,7 @@ public class RubikMain {
 		Random r = new Random();
 		for (int i = 0; i < n; i++){
 			RubikAction ra = new RubikAction(r.nextInt(12));
+			
 			System.out.println(ra);
 			cube = cube.moveCube( ra );
 			//System.out.println(cube);
@@ -105,12 +106,6 @@ public class RubikMain {
 			R'
 		 */
 		
-		cube = cube.moveCube( RubikAction.frontAction() );
-		cube = cube.moveCube( RubikAction.rightAction() );
-		cube = cube.moveCube( RubikAction.upInverseAction() );
-		cube = cube.moveCube( RubikAction.rightInverseAction() );
-		
-		System.out.println(cube);
 		
 		RubikSearch dls = new DepthLimitedSearch(4);
 	
@@ -124,12 +119,111 @@ public class RubikMain {
 	//	System.out.println(cube);
 		//System.out.println(cube);
 		//dls = new DepthLimitedSearch(4);
+
+		int n = 5;
+		cube = randomCube(cube.clone(), n);
+		long time;
+		/*dls = new AStarSearch(new UniformCostHeuristic());
 		
-		long time = System.currentTimeMillis();
-		System.out.println(dls.search(cube));
+		long time = System.currentTimeMillis();	
+		System.out.println(dls.search(cube.clone()));
+		System.out.println( dls.getExpandedNodes() + " expanded nodes." );
+		time = System.currentTimeMillis() - time;
+		System.out.println(time + " ms.");*/
+		
+		System.out.println("\nMulti heuristic");
+		MultiHeuristic multiHeuristic = new MultiHeuristic();
+		multiHeuristic.addHeuristic( new CornersAndEdgeHeuristic() );
+		multiHeuristic.addHeuristic( new CountColoursHeuristic() );
+		multiHeuristic.addHeuristic( new RudeKidHeuristic() );
+		multiHeuristic.addHeuristic( new Manhattan3DHeuristic() );
+		dls = new AStarSearch(multiHeuristic);
+		time = System.currentTimeMillis();
+		System.out.println(dls.search(cube.clone()));
 		System.out.println( dls.getExpandedNodes() + " expanded nodes." );
 		time = System.currentTimeMillis() - time;
 		System.out.println(time + " ms.");
+		
+		RubikHeuristic bestHeuristic = multiHeuristic;
+		int minExapanded = dls.getExpandedNodes();
+		long time2 = time;
+		
+		System.out.println("\nCorners and Edges");
+		dls = new AStarSearch(new CornersAndEdgeHeuristic());
+		time = System.currentTimeMillis();
+		System.out.println(dls.search(cube.clone()));
+		System.out.println( dls.getExpandedNodes() + " expanded nodes." );
+		time = System.currentTimeMillis() - time;
+		System.out.println(time + " ms.");
+		
+		if(minExapanded > dls.getExpandedNodes()){
+			bestHeuristic = new CornersAndEdgeHeuristic();
+			minExapanded = dls.getExpandedNodes();
+			time2 = time;
+		}
+		
+		System.out.println("\nManhattan");
+		dls = new AStarSearch(new Manhattan3DHeuristic());
+		time = System.currentTimeMillis();
+		System.out.println(dls.search(cube.clone()));
+		System.out.println( dls.getExpandedNodes() + " expanded nodes." );
+		time = System.currentTimeMillis() - time;
+		System.out.println(time + " ms.");
+		
+		if(minExapanded > dls.getExpandedNodes()){
+			bestHeuristic = new Manhattan3DHeuristic();
+			minExapanded = dls.getExpandedNodes();
+			time2 = time;
+		}
+		
+		System.out.println("\nRude kid");
+		dls = new AStarSearch(new RudeKidHeuristic());
+		time = System.currentTimeMillis();
+		System.out.println(dls.search(cube.clone()));
+		System.out.println( dls.getExpandedNodes() + " expanded nodes." );
+		time = System.currentTimeMillis() - time;
+		System.out.println(time + " ms.");
+		
+		if(minExapanded > dls.getExpandedNodes()){
+			bestHeuristic = new RudeKidHeuristic();
+			minExapanded = dls.getExpandedNodes();
+			time2 = time;
+		}
+		
+		System.out.println("\nCount Color");
+		dls = new AStarSearch(new CountColoursHeuristic());
+		time = System.currentTimeMillis();
+		System.out.println(dls.search(cube.clone()));
+		System.out.println( dls.getExpandedNodes() + " expanded nodes." );
+		time = System.currentTimeMillis() - time;
+		System.out.println(time + " ms.");
+		
+		if(minExapanded > dls.getExpandedNodes()){
+			bestHeuristic = new CountColoursHeuristic();
+			minExapanded = dls.getExpandedNodes();
+			time2 = time;
+		}
+		
+		System.out.println("\nIterative A*");
+		System.out.println(bestHeuristic.getClass().getName());
+		dls = new IterativeAStar(bestHeuristic,n);
+		time = System.currentTimeMillis();
+		System.out.println(dls.search(cube.clone()));
+		System.out.println( dls.getExpandedNodes() + " expanded nodes." );
+		time = System.currentTimeMillis() - time;
+		System.out.println(time + " ms.");
+		
+		
+		
+		/*System.out.println("\nUniform Cost");
+		dls = new AStarSearch(new UniformCostHeuristic());
+		time = System.currentTimeMillis();
+		System.out.println(dls.search(cube.clone()));
+		System.out.println( dls.getExpandedNodes() + " expanded nodes." );
+		time = System.currentTimeMillis() - time;
+		System.out.println(time + " ms.");*/
+		
+		
 	}
 
 }
