@@ -22,7 +22,7 @@ public class RubikAction {
 	
 	protected int action;
 
-	private RubikAction(int action) {
+	protected RubikAction(int action) {
 		this.action = action;
 	}
 	

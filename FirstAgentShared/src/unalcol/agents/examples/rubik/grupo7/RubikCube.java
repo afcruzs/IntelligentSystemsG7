@@ -208,12 +208,11 @@ public class RubikCube implements Comparable<RubikCube> {
 			return new RubikCube(copy);
 		
 		case RubikAction.FRONT:
-			byte plz = 0;
 			
 			rowToCol(cube[UP][BOTTOM], RIGHT, (byte) 0, copy, false);
 			rowToCol(cube[DOWN][TOP], LEFT, (byte) 2, copy, false);
-			colToRow(cube[LEFT], (byte) 2, copy[UP][BOTTOM], false);
-			colToRow(cube[RIGHT], (byte) 0, copy[DOWN][TOP], false);
+			colToRow(cube[LEFT], (byte) 2, copy[UP][BOTTOM], true);
+			colToRow(cube[RIGHT], (byte) 0, copy[DOWN][TOP], true);
 		
 			
 			/*for (byte i = 0; i < 3; i++) 
@@ -229,8 +228,8 @@ public class RubikCube implements Comparable<RubikCube> {
 			
 			rowToCol(cube[UP][BOTTOM], LEFT, (byte) 2, copy, true);
 			rowToCol(cube[DOWN][TOP], RIGHT, (byte) 0, copy, true);
-			colToRow(cube[LEFT], (byte) 2, copy[DOWN][TOP], true);
-			colToRow(cube[RIGHT], (byte) 0, copy[UP][BOTTOM], true);
+			colToRow(cube[LEFT], (byte) 2, copy[DOWN][TOP], false);
+			colToRow(cube[RIGHT], (byte) 0, copy[UP][BOTTOM], false);
 		
 			
 			/*for (byte i = 0; i < 3; i++) 

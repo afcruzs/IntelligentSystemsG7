@@ -1,5 +1,7 @@
 package unalcol.agents.examples.rubik.grupo7;
 
+import java.util.Random;
+
 
 public class RubikMain {
 	
@@ -36,21 +38,56 @@ public class RubikMain {
 				);
 	
 	
+	static RubikCube randomCube(RubikCube root, int n){
+		RubikCube cube = root.clone();
+		Random r = new Random();
+		for (int i = 0; i < n; i++){
+			RubikAction ra = new RubikAction(r.nextInt(12));
+			System.out.println(ra);
+			cube = cube.moveCube( ra );
+			//System.out.println(cube);
+		}
+		
+		return cube;
+	}
 	
 	public static void main(String[] args) {
 		
+		/*
+		 * R
+			F
+		 */
+	//	System.out.println(cube);
+	//	cube = cube.moveCube( RubikAction.rightAction() );
+	//	cube = cube.moveCube( RubikAction.frontAction() );		
+		
+		//cube = cube.moveCube( RubikAction.rightInverseAction() );
+		//cube = cube.moveCube( RubikAction.frontAction() );
+		
+	//	System.out.println(cube);
+	//	cube = cube.moveCube( RubikAction.frontAction() );
+		
 		//System.out.println(cube);
-		//cube = cube.moveCube( RubikAction.backAction() );
-		cube = cube.moveCube( RubikAction.rightAction() );
+	//	cube = cube.moveCube( RubikAction.rightAction() );
+		
+		/*cube = cube.moveCube( RubikAction.rightAction() );
 		cube = cube.moveCube( RubikAction.upAction() );
 		cube = cube.moveCube( RubikAction.downAction() );
 		cube = cube.moveCube( RubikAction.rightAction() );
 		cube = cube.moveCube( RubikAction.upAction() );
 		cube = cube.moveCube( RubikAction.downAction() );
 		cube = cube.moveCube( RubikAction.upAction() );
+<<<<<<< HEAD
 	//	cube = cube.moveCube( RubikAction.upAction() );
 	//	cube = cube.moveCube( RubikAction.downAction() );
 	//	cube = cube.moveCube( RubikAction.rightAction() );		
+=======
+		cube = cube.moveCube( RubikAction.upAction() );
+		cube = cube.moveCube( RubikAction.downAction() );
+		cube = cube.moveCube( RubikAction.rightAction() );	*/
+		
+		
+>>>>>>> 00902501dea5cbc8d39b0d049e0334f3e453ec24
 	//	cube = cube.moveCube( RubikAction.downAction() );
 		
 		//cube = cube.moveCube( RubikAction.upAction() );
@@ -61,14 +98,36 @@ public class RubikMain {
 		cube = cube.moveCube( RubikAction.rightInverseAction() ); 
 		*/
 		
+		
+		/*
+		 * F
+			R
+			U'
+			R'
+		 */
+		
+		cube = cube.moveCube( RubikAction.frontAction() );
+		cube = cube.moveCube( RubikAction.rightAction() );
+		cube = cube.moveCube( RubikAction.upInverseAction() );
+		cube = cube.moveCube( RubikAction.rightInverseAction() );
+		
 		System.out.println(cube);
-		RubikSearch dls = new DepthLimitedSearch(5);
+		
+		RubikSearch dls = new DepthLimitedSearch(4);
 	
 		dls = new AStarSearch(new RudeKidHeuristic());
+<<<<<<< HEAD
 		//dls = new AStarSearch(new CountColoursHeuristic());
 		//dls = new AStarSearch(new UniformCostHeuristic());
+=======
+		dls = new AStarSearch(new UniformCostHeuristic());
+>>>>>>> 00902501dea5cbc8d39b0d049e0334f3e453ec24
 		
-		//dls = new IterativeDeepiningSearch(7);
+		//dls = new IterativeDeepiningSearch(7);	
+	//	cube = randomCube(cube, 4);
+	//	System.out.println(cube);
+		//System.out.println(cube);
+		//dls = new DepthLimitedSearch(4);
 		
 		long time = System.currentTimeMillis();
 		System.out.println(dls.search(cube));
