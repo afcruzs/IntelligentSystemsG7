@@ -55,7 +55,7 @@ public class RubikMain {
 	
 	public static void main(String[] args) {
 		
-		int n = 6;
+		int n = 5;
 		cube = randomCube(cube.clone(), n);
 		RubikAgent agent = new RubikAgent();
 		
@@ -76,6 +76,9 @@ public class RubikMain {
 		System.out.println( agent.solve(cube.clone()) + "\n"  );
 		
 		agent.setSearch(new IterativeDeepiningSearch(n));
+		System.out.println( agent.solve(cube.clone()) + "\n"  );
+		
+		agent.setSearch(new UniformCostSearch());
 		System.out.println( agent.solve(cube.clone()) + "\n"  );
 		
 	}

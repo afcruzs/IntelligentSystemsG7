@@ -18,7 +18,7 @@ public class IterativeDeepiningSearch  extends RubikSearch {
 		List<RubikAction> t = null;
 		DepthLimitedSearch depthLimited;
 		for(int i=1; i<=limit; i++){
-			System.out.println(i);
+			//System.out.println(i);
 			depthLimited = new DepthLimitedSearch(i);
 			t = depthLimited.search(cube.clone());
 			expandedNodes += depthLimited.expandedNodes;
