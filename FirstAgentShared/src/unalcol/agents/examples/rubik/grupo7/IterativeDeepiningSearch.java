@@ -27,5 +27,10 @@ public class IterativeDeepiningSearch  extends RubikSearch {
 		}
 		return new LinkedList<>();
 	}
+	
+	@Override
+	public String getPresentationName() {
+		return "Iterative Deepining Search";
+	}
 
 }

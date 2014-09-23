@@ -29,4 +29,9 @@ public class MultiHeuristic implements RubikHeuristic {
 			rh.setGoalCube(goal);
 	}
 
+	@Override
+	public String getName() {
+		return "MultiHeuristic";
+	}
+
 }

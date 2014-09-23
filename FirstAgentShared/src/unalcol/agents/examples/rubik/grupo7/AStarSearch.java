@@ -72,4 +72,9 @@ public class AStarSearch extends RubikSearch {
 		
 	}
 
+	@Override
+	public String getPresentationName() {
+		return "A* - " + heuristic.getName();
+	}
+
 }

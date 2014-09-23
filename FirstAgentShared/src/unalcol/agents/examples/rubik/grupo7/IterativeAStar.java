@@ -76,4 +76,9 @@ public class IterativeAStar extends RubikSearch{
 		
 	}
 
+	@Override
+	public String getPresentationName() {
+		return "Iterative A* - " + heuristic.getName();
+	}
+
 }

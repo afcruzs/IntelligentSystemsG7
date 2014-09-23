@@ -12,4 +12,9 @@ public class UniformCostHeuristic implements RubikHeuristic {
 
 	}
 
+	@Override
+	public String getName() {
+		return "Uniform Cost";
+	}
+
 }

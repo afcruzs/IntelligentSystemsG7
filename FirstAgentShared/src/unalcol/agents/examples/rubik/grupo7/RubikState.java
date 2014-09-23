@@ -83,7 +83,7 @@ public class RubikState implements Comparable<RubikState> {
 		q.add( new RubikState(cube.clone().moveCube(RubikAction.upInverseAction()), 
 				this, RubikAction.upInverseAction(), depth+1, cost+1) );
 		
-	//	Collections.shuffle(q);
+		Collections.shuffle(q);
 		return q;
 	}
 

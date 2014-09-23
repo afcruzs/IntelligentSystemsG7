@@ -31,6 +31,7 @@ public abstract class RubikSearch {
 	
 	public abstract List<RubikAction> doSearch( RubikCube cube );
 	
+	public abstract String getPresentationName();
 	
 	protected List<RubikAction> buildSolution(RubikState finalState){
 		

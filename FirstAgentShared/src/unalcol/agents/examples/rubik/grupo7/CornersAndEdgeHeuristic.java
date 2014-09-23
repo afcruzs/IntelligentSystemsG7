@@ -64,4 +64,11 @@ public class CornersAndEdgeHeuristic implements RubikHeuristic {
 			correctBlocks.put(block, new Trio(block.x,block.y,block.z));
 		}
 	}
+
+
+
+	@Override
+	public String getName() {
+		return "Corners and Edges Heuristic";
+	}
 }

@@ -46,4 +46,11 @@ public class Manhattan3DHeuristic implements RubikHeuristic {
 		}
 	}
 
+
+
+	@Override
+	public String getName() {
+		return "Manhattan 3D Heuristic";
+	}
+
 }

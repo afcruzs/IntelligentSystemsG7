@@ -4,12 +4,26 @@ import java.util.List;
 
 public class RubikAgent  {
 
-		
-		public RubikAgent(){
-		}
-		
-		public List<RubikAction> solve( RubikPerception perception ){
-			
-			return null;
-		}
+	private RubikSearch search;
+	
+	public RubikAgent() {
+		super();
+		this.search = new AStarSearch(new RudeKidHeuristic());
+	}
+	
+
+
+	public void setSearch(RubikSearch search) {
+		this.search = search;
+	}
+
+
+	public List<RubikAction> solve( RubikCube cube ){
+		long time = System.currentTimeMillis();
+		System.out.println( search.getPresentationName() );
+		List<RubikAction> answer = search.search(cube);
+		time = System.currentTimeMillis() - time;
+		System.out.println(search.getExpandedNodes()+ " expanded nodes.");
+		return answer;
+	}
 }

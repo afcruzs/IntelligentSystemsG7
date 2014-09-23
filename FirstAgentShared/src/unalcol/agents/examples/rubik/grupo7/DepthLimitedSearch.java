@@ -68,4 +68,9 @@ public class DepthLimitedSearch extends RubikSearch {
 	public void setLimit(int limit){
 		this.limit = limit;
 	}
+
+	@Override
+	public String getPresentationName() {
+		return "Depth Limited Search";
+	}
 }

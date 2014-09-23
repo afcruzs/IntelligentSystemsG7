@@ -12,4 +12,6 @@ public interface RubikHeuristic {
 	 * compute correctly the h value.
 	 */
 	void setGoalCube(RubikCube goal);
+	
+	String getName();
 }

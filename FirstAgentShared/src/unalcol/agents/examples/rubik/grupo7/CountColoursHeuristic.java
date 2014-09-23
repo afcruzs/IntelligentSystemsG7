@@ -17,13 +17,18 @@ public class CountColoursHeuristic implements RubikHeuristic {
 		}
 		
 		//return Math.ceil(count/3.0);
-		return count/24.0;
+		return Math.ceil(count/24.0);
 	}
 
 	@Override
 	public void setGoalCube(RubikCube goal) {
 		this.goal  = goal ;
 
+	}
+	
+	@Override
+	public String getName() {
+		return "Count colors Heuristic";
 	}
 
 }
