@@ -24,6 +24,7 @@ public class RubikAgent  {
 		List<RubikAction> answer = search.search(cube);
 		time = System.currentTimeMillis() - time;
 		System.out.println(search.getExpandedNodes()+ " expanded nodes.");
+		System.out.println( time + "ms elapsed." );
 		return answer;
 	}
 }

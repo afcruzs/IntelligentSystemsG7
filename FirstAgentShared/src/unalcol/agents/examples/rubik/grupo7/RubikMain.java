@@ -75,6 +75,9 @@ public class RubikMain {
 		agent.setSearch( new AStarSearch(multi) );
 		System.out.println( agent.solve(cube.clone()) + "\n"  );
 		
+		agent.setSearch(new IterativeDeepiningSearch(n));
+		System.out.println( agent.solve(cube.clone()) + "\n"  );
+		
 	}
 
 }
