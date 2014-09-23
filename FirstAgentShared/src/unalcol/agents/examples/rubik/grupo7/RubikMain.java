@@ -55,7 +55,7 @@ public class RubikMain {
 	
 	public static void main(String[] args) {
 		
-		int n = 5;
+		int n = 8;
 		cube = randomCube(cube.clone(), n);
 		RubikAgent agent = new RubikAgent();
 		
@@ -80,6 +80,47 @@ public class RubikMain {
 		
 		agent.setSearch(new UniformCostSearch());
 		System.out.println( agent.solve(cube.clone()) + "\n"  );
+		
+		/*
+		 * [F', D, R', F', D, D', F', B]
+
+			A* - Rude kid heuristic
+			The depth is: 6
+			1268 expanded nodes.
+			811ms elapsed.
+			[F', F', B', R, D', F]
+			
+			A* - Count colors Heuristic
+			The depth is: 6
+			2737 expanded nodes.
+			791ms elapsed.
+			[F', B', F', R, D', F]
+			
+			A* - Manhattan 3D Heuristic
+			The depth is: 6
+			20700 expanded nodes.
+			9773ms elapsed.
+			[F', B', F', R, D', F]
+			
+			A* - MultiHeuristic
+			The depth is: 6
+			431 expanded nodes.
+			199ms elapsed.
+			[F', B', F', R, D', F]
+			
+			Iterative Deepining Search
+			The depth is: 8
+			1063279 expanded nodes.
+			483123ms elapsed.
+			[F, B', B', F, B, R, D', F]
+			
+			Uniform Cost Search
+			The depth is: 6
+			17435 expanded nodes.
+			4490ms elapsed.
+			[F', B', F', R, D', F]
+
+		 */
 		
 	}
 
