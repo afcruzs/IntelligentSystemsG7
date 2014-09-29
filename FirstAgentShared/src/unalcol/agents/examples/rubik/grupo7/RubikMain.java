@@ -55,7 +55,7 @@ public class RubikMain {
 	
 	public static void main(String[] args) {
 		
-		int n = 8;
+		int n = 10;
 		cube = randomCube(cube.clone(), n);
 		RubikAgent agent = new RubikAgent();
 		

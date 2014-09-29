@@ -460,6 +460,6 @@ public class Coordinate implements Comparable<Coordinate> {
 	}
 	
 	public String toString(){
-		return "(x: " + x + ", y: " + y+", percepts: "+FW+","+RW+","+BW+","+LW+")";
+		return "(x: " + x + ", y: " + y + ")";
 	}
 }
