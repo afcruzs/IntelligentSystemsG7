@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.swing.JOptionPane;
+
 public class LabyrinthMap {
 	
 	protected TreeMap<Coordinate, TreeMap<Coordinate, Edge> > graph;
@@ -58,7 +60,10 @@ public class LabyrinthMap {
 	
 	public LinkedList<Coordinate> getPath( Coordinate from, Coordinate to ) {
 		
-		return graph.get(from).get(to).getPath();
+		if( from.equals(to) )
+			return new LinkedList<>();
+		else
+			return graph.get(from).get(to).getPath();
 	}
 	
 	public boolean isEdge( Coordinate from, Coordinate to ){

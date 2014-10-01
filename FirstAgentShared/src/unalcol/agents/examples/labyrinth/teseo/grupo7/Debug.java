@@ -78,7 +78,7 @@ public class Debug extends JFrame {
 				 }
 			 }
 			 
-			 g.setColor(Color.MAGENTA);
+			 g.setColor(Color.CYAN);
 			 Coordinate t = agent.getLastCoordinate();
 			 if(t!=null)
 			 g.drawOval( Math.abs(t.x)*space + space/4, Math.abs(t.y)*space + space/4, space/2, space/2);

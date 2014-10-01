@@ -13,7 +13,7 @@ public class RudeKidHeuristic implements RubikHeuristic {
 		for(int i=0; i<a.size(); i++){
 			if( !a.get(i).equals(b.get(i)) ) badBlocks++;
 		}
-		return Math.ceil(badBlocks/3.0);
+		return Math.ceil(badBlocks/8.0);
 		//return badBlocks*8.0;
 	}
 

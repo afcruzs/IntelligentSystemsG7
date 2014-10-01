@@ -36,11 +36,18 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 	protected final int GOAL = -1;
 
 	protected final int INFINITY = 1000000000;
+	
+	protected int currentOperation = -1;
+	
+	protected final int GO_TO_CLOSEST = 0;
+	protected final int GO_BACK = 1;
+	protected final int SEARCHING = 2;
 
 	protected LinkedList<Coordinate> pathInBuilding;
 
 	protected LabyrinthMap map;
-	protected Debug debug;
+	//protected Debug debug;
+	private final String UPDATE_LAST_CRITICAL = "KOKO";
 
 	public SecondAgent() {
 		init();
@@ -58,12 +65,12 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		lastCriticalCoordinate = null;
 		map = new LabyrinthMap();
 		pathInBuilding = new LinkedList<>();
-		debug = new Debug(this);
+		//debug = new Debug(this);
 	}
 
 	public int rotate(boolean FW, boolean RW, boolean BW, boolean LW,
 			boolean FA, boolean RA, boolean BA, boolean LA, boolean T) {
-		debug.repaint();
+		//debug.repaint();
 		if (T)
 			return -1;
 
@@ -100,7 +107,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 
 		current.updateInfo(amount, FW, RW, BW, LW, orientation.clone());
 		map.visit.put(current.clone(), current.clone());
-
+		currentOperation = SEARCHING;
 		if (!LA && !RA && !FA && !BA)
 			return rotateWithoutAgent(amount, visited, posibleDirections);
 
@@ -123,13 +130,13 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 				if (amount > 2) {
 					save(true);
 					verifyAdjacents();
-					lastCriticalCoordinate = goToClosestOpenNode();
+					goToClosestOpenNode();
 					// goBack is an option
 				} else {
 					save(false);
 					verifyAdjacents();
 					if (lastCriticalCoordinate != null) {
-						lastCriticalCoordinate = goToClosestOpenNode();
+						goToClosestOpenNode();
 						/*if( lastCriticalCoordinate != null )
 							breakEdge(current, lastCriticalCoordinate);
 					} else {
@@ -148,13 +155,13 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 				if (amount > 2) {
 					save(true);
 					verifyAdjacents();
-					lastCriticalCoordinate = goToClosestOpenNode();
+					goToClosestOpenNode();
 					// goBack is a option
 				} else {
 					save(false);
 					verifyAdjacents();
 					if (lastCriticalCoordinate != null) {
-						lastCriticalCoordinate = goToClosestOpenNode();
+						goToClosestOpenNode();
 						/*if( lastCriticalCoordinate != null )
 							breakEdge(current, lastCriticalCoordinate);
 						//goBack(orientation.orientation);
@@ -172,7 +179,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 			
 			save(true);
 			verifyAdjacents();
-			lastCriticalCoordinate = goToClosestOpenNode();;
+			goToClosestOpenNode();
 				
 			return GOTO_SIGNAL;
 		}
@@ -197,7 +204,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		} else if (amount > 2 && amount == visited) {
 			save(true);
 			verifyAdjacents();
-			lastCriticalCoordinate = goToClosestOpenNode();
+			goToClosestOpenNode();
 			// lastCriticalCoordinate = current.clone();
 			return GOTO_SIGNAL;
 		}
@@ -215,7 +222,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 			/*if (current.equals(lastCriticalCoordinate))
 				//System.out.println("iguales");*/
 
-			lastCriticalCoordinate = goToClosestOpenNode();
+			goToClosestOpenNode();
 			// lastCriticalCoordinate = current.clone();
 			breakEdge(current, lastCriticalCoordinate);
 			return GOTO_SIGNAL;
@@ -236,9 +243,9 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 			breakEdge(current, lastCriticalCoordinate);
 			return GOTO_SIGNAL;
 		} else {
-			JOptionPane.showMessageDialog(null, "else: " + amount + " "
-					+ visited);
-			lastCriticalCoordinate = goToClosestOpenNode();
+			/*JOptionPane.showMessageDialog(null, "else: " + amount + " "
+					+ visited);*/
+			goToClosestOpenNode();
 			return GOTO_SIGNAL;
 		}
 		return posibleDirections.get(r.nextInt(posibleDirections.size()));
@@ -256,17 +263,21 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 			//System.out.println( "Path: " + pathInBuilding );
 			map.addEdge(lastCriticalCoordinate.clone(), current.clone(),
 					pathInBuilding);
-			pathInBuilding = new LinkedList<>();
+			restorePathInBuilding();
 		}// else //System.out.println("lastCritical no Null");
 		if (updateLast)
 			lastCriticalCoordinate = current.clone();
 	}
-
+	
+	private void restorePathInBuilding(){
+		pathInBuilding = new LinkedList<>();
+	}
+	
 	private void breakEdge(Coordinate current2,
 			Coordinate lastCriticalCoordinate2) {
 		if (current2.equals(lastCriticalCoordinate2))
-			JOptionPane.showMessageDialog(null,
-					"Ambos son iguales en break edge " + current2);
+			/*JOptionPane.showMessageDialog(null,
+					"Ambos son iguales en break edge " + current2);*/
 		map.breakEdge(current2, lastCriticalCoordinate2);
 	}
 
@@ -426,9 +437,12 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 	 */
 	private Coordinate goToClosestOpenNode() {
 		
-		// JOptionPane.showMessageDialog(null, "closest");
+		 //JOptionPane.showMessageDialog(null, "closest");
 		//System.out.println("goToClosestNode: " + current);
 		//System.out.println("\t" + current);
+		if( map.size() == 0 )
+			return null;
+		
 		verifyAdjacents();
 		Coordinate adjacentSolution = checkTrivialCase();
 		if (adjacentSolution != null)
@@ -507,11 +521,16 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 				Coordinate next = parent.get(coordinate);
 				//System.out.println( "Coordinate " + coordinate );
 				//System.out.println("\tPATH: " + path);
+				
+				pathInBuilding.addAll(0,  map.getPath(next, coordinate) );
 
 				while (!next.equals(this.current)) {
 					//System.out.println(next);
 					path.addFirst(next);
+					pathInBuilding.addFirst(next);
+					pathInBuilding.addAll(0,  map.getPath(parent.get(next), next) );
 					next = parent.get(next);
+					
 				}
 				// //System.out.println( "Camino al mas cercano: " + path );
 				next = this.current;
@@ -520,6 +539,9 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 					o = addActions(map.getPath(next, c), next, c, o);
 					next = c;
 				}
+				
+				lastCriticalFlag();
+				currentOperation = GO_TO_CLOSEST;
 				return coordinate.clone();
 			}
 		}
@@ -529,11 +551,17 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		cmd.add(language.getAction(NO_OP));
 		return lastCriticalCoordinate;
 	}
-
+	
+	private void lastCriticalFlag(){
+		cmd.add(UPDATE_LAST_CRITICAL);
+	}
+	
 	private void goBack(int orientation) {
 		//System.out.println("Go back");
+		// JOptionPane.showMessageDialog(null, "go back");
 		addActions(map.getPath(current, lastCriticalCoordinate), current,
 				lastCriticalCoordinate, orientation);
+		currentOperation = GO_BACK;
 	}
 
 	/* Numero de rotaciones desde una orientacion hacia otra */
@@ -560,6 +588,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 
 		for (int i = 0; i < r; i++) {
 			cmd.add(language.getAction(ROTATE));
+			
 			orientation = (orientation + 1) % 4;
 		}
 		cmd.add(language.getAction(ADVANCE));
@@ -644,6 +673,10 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 			} else if (d == DIE) {
 				cmd.add(language.getAction(DIE)); // die
 			}
+			
+			if( cmd.size() == 0 ){
+				cmd.add(language.getAction(NO_OP)); // NO OP
+			}
 		}
 
 		
@@ -652,12 +685,20 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		//if( checkAgentInPossibleUpdateCoordinate(FA, RA, BA, LA) )
 
 		String x = cmd.get(0);
-		if (x.equals(language.getAction(ADVANCE))) {
+		if( checkFlag(x) ){
+			lastCriticalCoordinate = current.clone();
+			cmd.remove(0);
+			restorePathInBuilding();
+			return compute(p);
+		}
+		
+		else if (x.equals(language.getAction(ADVANCE))) {
 			
-			//Solo si va a avanzar debería verificar
-			if( FA ) 				
+			//Solo si va a avanzar deberia verificar
+			if( FA ){
 				actWhenAgentInterrupted(FW, RW, BW, LW, FA, RA, BA, LA, T);
-			else
+				return compute(p);
+			}else
 				updateCoordinate();
 		} else if (x.equals(language.getAction(ROTATE))) {
 			/* Actualiza la orientacion */
@@ -665,29 +706,45 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		}
 
 		cmd.remove(0);
-		debug.repaint();
+		//debug.repaint();
 		return new Action(x);
+	}
+	
+	private boolean checkFlag( String x ){
+		return x.equals(UPDATE_LAST_CRITICAL);
 	}
 	
 	public void actWhenAgentInterrupted(boolean FW, boolean RW, boolean BW, boolean LW, boolean FA, boolean RA, 
 			boolean BA, boolean LA, boolean T){
 		
+		
+		
 		//Probabilidad de estar quieto
-		int p = 50;
-		if( r.nextInt(100) < p ) {
+		int p = 10;
+		if( r.nextInt(100) < p || currentOperation == GO_BACK ) {
 			System.out.println( "NO_OP" );
-			cmd.add(0, language.getAction(ADVANCE));
 			cmd.add(0, language.getAction(NO_OP));
+			
+			return;
 		}
 		
 		/* PAILAAAAS */
-		
+		System.out.println("Pailaaaas");
 		cmd.clear();
-		System.out.println( "GoBack" );
+		System.out.println( "GoBack" + current + " " + lastCriticalCoordinate );
+		System.out.println( pathInBuilding );
 		
+		Coordinate temp = null;
+		
+		do{
+			temp = pathInBuilding.pollLast();
+			System.out.println(temp);
+		}while( pathInBuilding.size() > 0 && !temp.equals(current) );
+		System.out.println(pathInBuilding);
 		save(false);
 		goBack(orientation.orientation);
 		breakEdge(current, lastCriticalCoordinate);
+		System.out.println(orientation.orientation + " cmd " + cmd);
 	}
 	
 	private Vector<String> cloneCmd(){
