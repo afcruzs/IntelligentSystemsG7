@@ -19,6 +19,10 @@ public class Coordinate implements Comparable<Coordinate> {
 		this.orientation = orientation;
 	}
 	
+	public int distance(Coordinate other){
+		return Math.abs(x-other.x) + Math.abs(y-other.y);
+	}
+	
 	public void updateInfo(int amount, boolean FW, boolean RW, 
 			boolean BW, boolean LW, Orientation orientation){
 			

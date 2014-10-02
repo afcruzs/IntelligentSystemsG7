@@ -1,10 +1,8 @@
 package unalcol.agents.examples.labyrinth.teseo.grupo7;
 
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.TreeSet;
-
-import javax.swing.JOptionPane;
 
 public class LabyrinthMap {
 	
@@ -19,17 +17,21 @@ public class LabyrinthMap {
 		updatedCoordinates = new TreeMap<>();
 		
 	}
-	public void addEdge(Coordinate lastCriticalCoordinate, Coordinate current,
+	public boolean addEdge(Coordinate lastCriticalCoordinate, Coordinate current,
 			LinkedList<Coordinate> path) {
-		
+		boolean ret = false;
 		lastCriticalCoordinate = lastCriticalCoordinate.clone();
 		current = current.clone();
 		
-		if( graph.get(lastCriticalCoordinate) == null )
+		if( graph.get(lastCriticalCoordinate) == null ){
+			ret = true;
 			graph.put(lastCriticalCoordinate, new TreeMap<Coordinate, Edge>() );
+		}
 		
-		if( graph.get(current) == null )
+		if( graph.get(current) == null ){
+			ret = true;
 			graph.put(current, new TreeMap<Coordinate, Edge>() );
+		}
 		/*
 		System.out.println( graph.get(lastCriticalCoordinate) );
 		System.out.println( graph.get(current) );
@@ -39,6 +41,7 @@ public class LabyrinthMap {
 		
 		updatedCoordinates.put(lastCriticalCoordinate, lastCriticalCoordinate);
 		updatedCoordinates.put(current, current);
+		return ret;
 	}
 	
 	
@@ -60,11 +63,9 @@ public class LabyrinthMap {
 	
 	public LinkedList<Coordinate> getPath( Coordinate from, Coordinate to ) {
 		
-		if( from.equals(to) )
-			return new LinkedList<>();
-		else
-			return graph.get(from).get(to).getPath();
+		return graph.get(from).get(to).getPath();
 	}
+
 	
 	public boolean isEdge( Coordinate from, Coordinate to ){
 		if( graph.get(from) == null || graph.get(to) == null ) return false;

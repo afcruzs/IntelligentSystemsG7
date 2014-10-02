@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package unalcol.agents.examples.labyrinth.teseo.graph;
+package unalcol.agents.examples.labyrinth.multeseo.graph;
 
 import unalcol.agents.Action;
 import unalcol.agents.AgentProgram;

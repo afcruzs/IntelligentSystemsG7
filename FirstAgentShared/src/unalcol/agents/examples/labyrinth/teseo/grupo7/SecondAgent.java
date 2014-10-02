@@ -1,11 +1,10 @@
 package unalcol.agents.examples.labyrinth.teseo.grupo7;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -42,12 +41,15 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 	protected final int GO_TO_CLOSEST = 0;
 	protected final int GO_BACK = 1;
 	protected final int SEARCHING = 2;
-
+	
+	protected int timesBlocked = 0;
+	protected final int MAX_BLOCKED_TIMES = 10;
 	protected LinkedList<Coordinate> pathInBuilding;
 
 	protected LabyrinthMap map;
-	//protected Debug debug;
+	protected Debug debug;
 	private final String UPDATE_LAST_CRITICAL = "KOKO";
+	private Queue<Coordinate> lastCriticalHistory;
 
 	public SecondAgent() {
 		init();
@@ -65,12 +67,14 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		lastCriticalCoordinate = null;
 		map = new LabyrinthMap();
 		pathInBuilding = new LinkedList<>();
-		//debug = new Debug(this);
+		timesBlocked = 0;
+		lastCriticalHistory = new LinkedList<>();
+		debug = new Debug(this);
 	}
 
 	public int rotate(boolean FW, boolean RW, boolean BW, boolean LW,
 			boolean FA, boolean RA, boolean BA, boolean LA, boolean T) {
-		//debug.repaint();
+		debug.repaint();
 		if (T)
 			return -1;
 
@@ -114,6 +118,21 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		
 		System.out.println( "AGENT FOUND " );
 		return rotateWithAgent(amount, visited, posibleDirections);
+	}
+	
+	private void printCurrentOp(){
+		System.out.println("Times blocked " + timesBlocked);
+		switch (currentOperation) {
+		case SEARCHING:
+			System.out.println("Searching");
+			break;
+
+		case GO_BACK:
+			System.out.println("Go back...");
+			break;
+		case GO_TO_CLOSEST:
+			System.out.println("Go to closest...");
+		}
 	}
 
 	private int rotateWithAgent(int amount, int visited,
@@ -261,12 +280,15 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 			
 			//System.out.println( "Saving path from " + lastCriticalCoordinate + " to " + current );
 			//System.out.println( "Path: " + pathInBuilding );
-			map.addEdge(lastCriticalCoordinate.clone(), current.clone(),
+			boolean newNode = map.addEdge(lastCriticalCoordinate.clone(), current.clone(),
 					pathInBuilding);
+			if(newNode) timesBlocked = 0;
 			restorePathInBuilding();
 		}// else //System.out.println("lastCritical no Null");
-		if (updateLast)
+		if (updateLast){
+			lastCriticalHistory.add(lastCriticalCoordinate);
 			lastCriticalCoordinate = current.clone();
+		}
 	}
 	
 	private void restorePathInBuilding(){
@@ -291,25 +313,29 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		// //System.out.println(current);
 		if (map.contains(c) && !current.verifyFrontWall(Orientation.NORTH)) {
 			////System.out.println("\tAdjacent added: " + c);
-			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
+			boolean newNode = map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
+			if(newNode) timesBlocked = 0;
 		}
 
 		c = map.visit.get(current.coordinateTo(Orientation.WEST));
 		if (map.contains(c) && !current.verifyLeftWall(Orientation.NORTH)) {
 			////System.out.println("\tAdjacent added: " + c);
-			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
+			boolean newNode = map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
+			if(newNode) timesBlocked = 0;
 		}
 
 		c = map.visit.get(current.coordinateTo(Orientation.EAST));
 		if (map.contains(c) && !current.verifyRightWall(Orientation.NORTH)) {
 			////System.out.println("\tAdjacent added: t" + c);
-			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
+			boolean newNode = map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
+			if(newNode) timesBlocked = 0;
 		}
 
 		c = map.visit.get(current.coordinateTo(Orientation.SOUTH));
 		if (map.contains(c) && !current.verifyBackWall(Orientation.NORTH)) {
 			////System.out.println("\tAdjacent added: t" + c);
-			map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
+			boolean newNode = map.addEdge(current, map.getKey(c), new LinkedList<Coordinate>());
+			if(newNode) timesBlocked = 0;
 		}
 	}
 
@@ -542,6 +568,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 				
 				lastCriticalFlag();
 				currentOperation = GO_TO_CLOSEST;
+				System.out.println("The go to closest is: " + pathInBuilding);
 				return coordinate.clone();
 			}
 		}
@@ -627,7 +654,39 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 			break;
 		}
 	}
-
+	
+	void avoidLoopByTimesBlocked(boolean FA){
+		
+		if(FA && timesBlocked >= MAX_BLOCKED_TIMES){
+			JOptionPane.showMessageDialog(null, "Machete extremo");
+			clearMemory();
+		}
+		
+		/*if(FA && timesBlocked >= MAX_BLOCKED_TIMES){
+			if( lastCriticalHistory.size() == 0 ){
+				JOptionPane.showMessageDialog(null, "Machete extremo");
+				clearMemory();
+			}else{
+				Coordinate newLast = null;
+				while( newLast != lastCriticalCoordinate && lastCriticalHistory.size() > 0 ){
+					newLast = lastCriticalHistory.poll();
+				}
+				
+				if( newLast != lastCriticalCoordinate ){
+					lastCriticalCoordinate = newLast;
+				}else{
+					JOptionPane.showMessageDialog(null, "Machete extremo");
+					clearMemory();
+				}
+			}
+		}*/
+			
+	}
+	
+	void clearMemory(){
+		init();
+	}
+	
 	/**
 	 * execute
 	 * 
@@ -636,78 +695,92 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 	 * @return Action[]
 	 */
 	public Action compute(Percept p) {
-		
-		//System.out.println("Current: " + current);
-		boolean FA = ((Boolean) p.getAttribute(language.getPercept(5))).booleanValue(); 
-		boolean RA = ((Boolean) p.getAttribute(language.getPercept(6))) .booleanValue(); 
-		boolean BA = ((Boolean) p.getAttribute(language.getPercept(7))).booleanValue(); 
-		boolean LA = ((Boolean) p.getAttribute(language.getPercept(8))) .booleanValue();
-		
-		/*
-		 * Captura percepciones
-		 */
-		boolean FW = ((Boolean) p.getAttribute(language.getPercept(0)))
-				.booleanValue();
-		boolean RW = ((Boolean) p.getAttribute(language.getPercept(1)))
-				.booleanValue();
-		boolean BW = ((Boolean) p.getAttribute(language.getPercept(2)))
-				.booleanValue();
-		boolean LW = ((Boolean) p.getAttribute(language.getPercept(3)))
-				.booleanValue();
-		boolean T = ((Boolean) p.getAttribute(language.getPercept(4)))
-				.booleanValue();
-		
-		if (cmd.size() == 0) {
-
-			int d = rotate(FW, RW, BW, LW, FA, RA, BA, LA, T );
-		//	int d = rotate(FW, RW, BW, LW, false, false, false, false, T);
-			if (d == GOAL)
-				return new Action(language.getAction(NO_OP));
-			if (0 <= d && d < 4) {
-				for (int i = 1; i <= d; i++) {
-					cmd.add(language.getAction(ROTATE)); // rotate
-
+		//try{	
+			printCurrentOp();
+			//System.out.println("Current: " + current);
+			boolean FA = ((Boolean) p.getAttribute(language.getPercept(5))).booleanValue(); 
+			boolean RA = ((Boolean) p.getAttribute(language.getPercept(6))) .booleanValue(); 
+			boolean BA = ((Boolean) p.getAttribute(language.getPercept(7))).booleanValue(); 
+			boolean LA = ((Boolean) p.getAttribute(language.getPercept(8))) .booleanValue();
+			
+			if(FA)
+				timesBlocked++;
+			avoidLoopByTimesBlocked(FA);
+			
+			/*
+			 * Captura percepciones
+			 */
+			boolean FW = ((Boolean) p.getAttribute(language.getPercept(0)))
+					.booleanValue();
+			boolean RW = ((Boolean) p.getAttribute(language.getPercept(1)))
+					.booleanValue();
+			boolean BW = ((Boolean) p.getAttribute(language.getPercept(2)))
+					.booleanValue();
+			boolean LW = ((Boolean) p.getAttribute(language.getPercept(3)))
+					.booleanValue();
+			boolean T = ((Boolean) p.getAttribute(language.getPercept(4)))
+					.booleanValue();
+			
+			if (cmd.size() == 0) {
+	
+				int d = rotate(FW, RW, BW, LW, FA, RA, BA, LA, T );
+			//	int d = rotate(FW, RW, BW, LW, false, false, false, false, T);
+				if (d == GOAL)
+					return new Action(language.getAction(NO_OP));
+				if (0 <= d && d < 4) {
+					for (int i = 1; i <= d; i++) {
+						cmd.add(language.getAction(ROTATE)); // rotate
+	
+					}
+					cmd.add(language.getAction(ADVANCE)); // advance
+	
+				} else if (d == DIE) {
+					cmd.add(language.getAction(DIE)); // die
 				}
-				cmd.add(language.getAction(ADVANCE)); // advance
-
-			} else if (d == DIE) {
-				cmd.add(language.getAction(DIE)); // die
+				
+				if( cmd.size() == 0 ){
+					cmd.add(language.getAction(NO_OP)); // NO OP
+				}
 			}
+	
 			
-			if( cmd.size() == 0 ){
-				cmd.add(language.getAction(NO_OP)); // NO OP
-			}
-		}
-
-		
-		/* METER CONTINGENCIA */
-		
-		//if( checkAgentInPossibleUpdateCoordinate(FA, RA, BA, LA) )
-
-		String x = cmd.get(0);
-		if( checkFlag(x) ){
-			lastCriticalCoordinate = current.clone();
-			cmd.remove(0);
-			restorePathInBuilding();
-			return compute(p);
-		}
-		
-		else if (x.equals(language.getAction(ADVANCE))) {
+			/* METER CONTINGENCIA */
 			
-			//Solo si va a avanzar deberia verificar
-			if( FA ){
-				actWhenAgentInterrupted(FW, RW, BW, LW, FA, RA, BA, LA, T);
+			//if( checkAgentInPossibleUpdateCoordinate(FA, RA, BA, LA) )
+	
+			String x = cmd.get(0);
+			if( checkFlag(x) ){
+				System.out.println( "Flag plz: " + cmd );
+				lastCriticalHistory.add( lastCriticalCoordinate );
+				lastCriticalCoordinate = current.clone();
+				cmd.remove(0);
+				restorePathInBuilding();
+				timesBlocked--;
 				return compute(p);
-			}else
-				updateCoordinate();
-		} else if (x.equals(language.getAction(ROTATE))) {
-			/* Actualiza la orientacion */
-			orientation.orientation = (orientation.orientation + 1) % 4;
-		}
-
-		cmd.remove(0);
-		//debug.repaint();
-		return new Action(x);
+			}
+			
+			else if (x.equals(language.getAction(ADVANCE))) {
+				
+				//Solo si va a avanzar deberia verificar
+				if( FA ){
+					actWhenAgentInterrupted(FW, RW, BW, LW, FA, RA, BA, LA, T);
+					timesBlocked--;
+					return compute(p);
+				}else{
+					updateCoordinate();
+				}
+			} else if (x.equals(language.getAction(ROTATE))) {
+				/* Actualiza la orientacion */
+				orientation.orientation = (orientation.orientation + 1) % 4;
+			}
+	
+			cmd.remove(0);
+			debug.repaint();
+			return new Action(x);
+		/*}catch(Exception e){
+			clearMemory();
+			return compute(p);
+		}*/
 	}
 	
 	private boolean checkFlag( String x ){
@@ -717,21 +790,39 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 	public void actWhenAgentInterrupted(boolean FW, boolean RW, boolean BW, boolean LW, boolean FA, boolean RA, 
 			boolean BA, boolean LA, boolean T){
 		
-		
+		System.out.println("INTERRRRRRRRRRRRRRRRRRUPPPPPPPPPPPPPPPPPTED");
 		
 		//Probabilidad de estar quieto
-		int p = 10;
-		if( r.nextInt(100) < p || currentOperation == GO_BACK ) {
-			System.out.println( "NO_OP" );
-			cmd.add(0, language.getAction(NO_OP));
+		int p = 60;
+		if( currentOperation == SEARCHING ){
 			
+			if( r.nextInt(100) < p ){
+				System.out.println( "NO_OP" );
+				cmd.add(0, language.getAction(NO_OP));
+				return;
+			}
+			JOptionPane.showMessageDialog(null, "did it!!");
+			save(false);
+			goToClosestOpenNode();
 			return;
 		}
+		
+		
+		 p = 70;
+		if( r.nextInt(100) < p || 
+				currentOperation == GO_BACK ) {
+			System.out.println( "NO_OP" );
+			cmd.add(0, language.getAction(NO_OP));
+			return;
+		}
+		
+		
+		
 		
 		/* PAILAAAAS */
 		System.out.println("Pailaaaas");
 		cmd.clear();
-		System.out.println( "GoBack" + current + " " + lastCriticalCoordinate );
+		//System.out.println( "GoBack" + current + " " + lastCriticalCoordinate );
 		System.out.println( pathInBuilding );
 		
 		Coordinate temp = null;
@@ -741,10 +832,12 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 			System.out.println(temp);
 		}while( pathInBuilding.size() > 0 && !temp.equals(current) );
 		System.out.println(pathInBuilding);
+		
 		save(false);
 		goBack(orientation.orientation);
 		breakEdge(current, lastCriticalCoordinate);
-		System.out.println(orientation.orientation + " cmd " + cmd);
+		
+		//System.out.println(orientation.orientation + " cmd " + cmd);
 	}
 	
 	private Vector<String> cloneCmd(){
