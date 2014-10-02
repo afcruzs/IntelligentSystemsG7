@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="FirstAgentShared/classes"/>
+	<classpathentry kind="src" path="FirstAgentShared/src"/>
+	<classpathentry kind="src" path="Puzzles/src"/>
+	<classpathentry kind="lib" path="FirstAgentShared/lib/gui.jar"/>
+	<classpathentry kind="lib" path="FirstAgentShared/lib/random.jar"/>
+	<classpathentry kind="lib" path="FirstAgentShared/lib/types.jar"/>
+	<classpathentry kind="lib" path="FirstAgentShared/lib/unalcol.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="Puzzles/bin"/>
+</classpath>
