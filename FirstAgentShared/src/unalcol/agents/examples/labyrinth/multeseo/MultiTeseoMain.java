@@ -34,8 +34,8 @@ public class MultiTeseoMain {
      teseo[1] = new SecondAgent();
      ((SecondAgent)teseo[1]).setLanguage(getLanguage());
      
-     /*teseo[2] = new SecondAgent( );
-     ((SecondAgent)teseo[2]).setLanguage(getLanguage());
+     /*teseo[2] = new StupidAgent( );
+     ((StupidAgent)teseo[2]).setLanguage(getLanguage());
      
      teseo[3] = new SecondAgent();
      ((SecondAgent)teseo[3]).setLanguage(getLanguage());
@@ -84,19 +84,19 @@ public class MultiTeseoMain {
     Labyrinth.DEFAULT_SIZE = 15;
     
     Agent agent1 = new Agent(teseo[index1]);    
-    Agent agent2 = new Agent(teseo[index2]);
+    Agent agent2 = new Agent(teseo[index2]);/*
     Agent agent3 = new Agent(teseo[2]);
     Agent agent4 = new Agent(teseo[3]);
     Agent agent5 = new Agent(teseo[4]);
     Agent agent6 = new Agent(teseo[5]);
-    Agent agent7 = new Agent(teseo[6]);
+    Agent agent7 = new Agent(teseo[6]);*/
     
     //Agent agent3 = new Agent(p3);
     Vector<Agent> agent = new Vector();
     agent.add(agent1);
     agent.add(agent2);
-    /*agent.add(agent3);
-    agent.add(agent4);
+  //  agent.add(agent3);
+    /*agent.add(agent4);
     agent.add(agent5);
     agent.add(agent6);
     agent.add(agent7);*/

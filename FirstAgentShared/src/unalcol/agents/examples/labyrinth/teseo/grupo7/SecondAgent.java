@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Random;
+import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -49,7 +49,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 	protected LabyrinthMap map;
 	protected Debug debug;
 	private final String UPDATE_LAST_CRITICAL = "KOKO";
-	private Queue<Coordinate> lastCriticalHistory;
+	private Stack<Coordinate> lastCriticalHistory;
 
 	public SecondAgent() {
 		init();
@@ -68,7 +68,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		map = new LabyrinthMap();
 		pathInBuilding = new LinkedList<>();
 		timesBlocked = 0;
-		lastCriticalHistory = new LinkedList<>();
+		lastCriticalHistory = new Stack<>();
 		debug = new Debug(this);
 	}
 
@@ -471,8 +471,11 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		
 		verifyAdjacents();
 		Coordinate adjacentSolution = checkTrivialCase();
-		if (adjacentSolution != null)
+		if (adjacentSolution != null){
+			lastCriticalFlag();
+			currentOperation = GO_TO_CLOSEST;
 			return adjacentSolution;
+		}
 
 		PriorityQueue<ShortestPathNode> q = new PriorityQueue<>();
 		q.add(new ShortestPathNode(current, 0, 0));
@@ -658,9 +661,10 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 	void avoidLoopByTimesBlocked(boolean FA){
 		
 		if(FA && timesBlocked >= MAX_BLOCKED_TIMES){
-			JOptionPane.showMessageDialog(null, "Machete extremo");
-			clearMemory();
+			/*JOptionPane.showMessageDialog(null, "Machete extremo");
+			clearMemory();*/
 		}
+		
 		
 		/*if(FA && timesBlocked >= MAX_BLOCKED_TIMES){
 			if( lastCriticalHistory.size() == 0 ){
@@ -668,9 +672,12 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 				clearMemory();
 			}else{
 				Coordinate newLast = null;
-				while( newLast != lastCriticalCoordinate && lastCriticalHistory.size() > 0 ){
+				do{
 					newLast = lastCriticalHistory.poll();
 				}
+				while( newLast != lastCriticalCoordinate && lastCriticalHistory.size() > 0 );
+				
+				
 				
 				if( newLast != lastCriticalCoordinate ){
 					lastCriticalCoordinate = newLast;
@@ -793,7 +800,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		System.out.println("INTERRRRRRRRRRRRRRRRRRUPPPPPPPPPPPPPPPPPTED");
 		
 		//Probabilidad de estar quieto
-		int p = 60;
+		int p = 70;
 		if( currentOperation == SEARCHING ){
 			
 			if( r.nextInt(100) < p ){
@@ -801,7 +808,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 				cmd.add(0, language.getAction(NO_OP));
 				return;
 			}
-			JOptionPane.showMessageDialog(null, "did it!!");
+			//JOptionPane.showMessageDialog(null, "did it!!");
 			save(false);
 			goToClosestOpenNode();
 			return;
@@ -839,40 +846,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 		
 		//System.out.println(orientation.orientation + " cmd " + cmd);
 	}
-	
-	private Vector<String> cloneCmd(){
-		Vector<String> v = new Vector<>();
-		for( String s : cmd )
-			v.add( s );
-		return v;
-		
-	}
-	
-	private void addWaitActions( int n ){
-		for (int i = 0; i < n; i++) {
-			cmd.add(0,language.getAction(NO_OP));
-		}
-	}
-	
-	private boolean checkAgentInPossibleUpdateCoordinate( 
-			boolean FA, boolean RA, boolean BA, boolean LA ){
-	
-			switch (orientation.orientation) {
-				case Orientation.NORTH:
-					return FA;
-				case Orientation.SOUTH:
-					return BA;
-			
-				case Orientation.EAST:
-					return RA;
-			
-				case Orientation.WEST:
-					return LA;
-			}
-			
-			throw new IllegalArgumentException("bad given orientation ");
 
-	}
 
 	// Cuenta los nodos a los que puede seguir visitando
 	private int countFreeNodes(Coordinate c) {
