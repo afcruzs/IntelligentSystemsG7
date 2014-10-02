@@ -1,4 +1,4 @@
-package unalcol.agents.examples.labyrinth.teseo.grupo7;
+package unalcol.agents.examples.labyrinth.multeseo.grupo7;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,7 +15,7 @@ import unalcol.agents.AgentProgram;
 import unalcol.agents.Percept;
 import unalcol.agents.simulate.util.SimpleLanguage;
 
-public class SecondAgent implements AgentProgram, Grupo7If {
+public class SecondAgentGrupo7 implements AgentProgram, Grupo7If {
 	protected SimpleLanguage language;
 	protected Vector<String> cmd;
 	protected Orientation orientation;
@@ -53,7 +53,7 @@ public class SecondAgent implements AgentProgram, Grupo7If {
 	private final String UPDATE_LAST_CRITICAL = "KOKO";
 	private Stack<Coordinate> lastCriticalHistory;
 
-	public SecondAgent() {
+	public SecondAgentGrupo7() {
 		init();
 	}
 

@@ -1,4 +1,4 @@
-package unalcol.agents.examples.labyrinth.teseo.grupo7;
+package unalcol.agents.examples.labyrinth.multeseo.grupo7;
 
 import java.util.LinkedList;
 import java.util.Random;
