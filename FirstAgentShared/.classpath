@@ -6,5 +6,11 @@
 	<classpathentry kind="lib" path="C:/alife/lib/random.jar"/>
 	<classpathentry kind="lib" path="C:/alife/lib/types.jar"/>
 	<classpathentry kind="lib" path="C:/alife/lib/unalcol.jar"/>
+	<classpathentry kind="lib" path="C:/alife/evolution/unalcol_core.jar"/>
+	<classpathentry kind="lib" path="C:/alife/evolution/unalcol_math.jar"/>
+	<classpathentry kind="lib" path="C:/alife/evolution/unalcol_primitives.jar"/>
+	<classpathentry kind="lib" path="C:/alife/evolution/unalcol_random.jar"/>
+	<classpathentry kind="lib" path="C:/alife/evolution/unalcol_sort.jar"/>
+	<classpathentry kind="lib" path="C:/alife/evolution/unalcol_structures.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

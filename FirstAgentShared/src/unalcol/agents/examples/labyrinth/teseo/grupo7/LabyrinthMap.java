@@ -3,7 +3,6 @@ package unalcol.agents.examples.labyrinth.teseo.grupo7;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.TreeMap;
-import sun.misc.CRC16;
 
 public class LabyrinthMap {
 	
