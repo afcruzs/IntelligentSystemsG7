@@ -1,5 +1,6 @@
 package queens;
 
+import java.util.Map.Entry;
 import java.util.*;
 public class Board implements Genotype{
 	protected int[] queens; //elemento -> fila, indice -> columna
@@ -15,6 +16,24 @@ public class Board implements Genotype{
 		else
 			emptyBoardInit();
 		computeFitness();
+	}
+	
+	
+	public Iterable<QueenPiece> getPairs(){
+		
+		Set<QueenPiece> p = new HashSet<>();
+		for(int i=0; i<queens.length; i++){
+			p.add( new QueenPiece(i, queens[i]) );
+		}
+		return p;
+	}
+	
+	class QueenPiece{
+		int col, row;
+		public QueenPiece(int col, int row){
+			this.col = col;
+			this.row = row;
+		}
 	}
 	
 	/**
@@ -184,6 +203,7 @@ public class Board implements Genotype{
 			bit2 = r.nextInt(size);
 		
 		swapBits(bit1,bit2);
+		computeFitness();
 		
 	}
 	
@@ -202,12 +222,4 @@ public class Board implements Genotype{
 	public String toString(){
 		return fitness() + " " + Arrays.toString(queens) + "\n";
 	}
-	
-	/*public static void main(String[] args) {
-		Board b = new Board(8,false);
-		b.queens = new int[]{5, 6, 1, 7, 2, 4, 0, 3};
-		Board c = new Board(8,false);
-		c.queens = new int[]{0, 4, 3, 6, 5, 7, 1, 2};
-		b.crossOver(c);
-	}*/
 }
