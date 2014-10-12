@@ -37,7 +37,7 @@ public class MultiTeseoMain {
      teseo[2] = new SecondAgentGrupo7( );
      ((SecondAgentGrupo7)teseo[2]).setLanguage(getLanguage());
      
-     teseo[3] = new SecondAgentGrupo7();
+     /*teseo[3] = new SecondAgentGrupo7();
      ((SecondAgentGrupo7)teseo[3]).setLanguage(getLanguage());
      
      teseo[4] = new SecondAgentGrupo7();
@@ -47,7 +47,7 @@ public class MultiTeseoMain {
      ((SecondAgentGrupo7)teseo[5]).setLanguage(getLanguage());
      
      teseo[6] = new SecondAgentGrupo7();
-     ((SecondAgentGrupo7)teseo[6]).setLanguage(getLanguage());
+     ((SecondAgentGrupo7)teseo[6]).setLanguage(getLanguage());*/
      
      /* Equipo: SinGrupo * /
      teseo[1] = new ProgAgenteSinGrupo(getLanguage());     
@@ -96,10 +96,10 @@ public class MultiTeseoMain {
     agent.add(agent1);
     agent.add(agent2);
     agent.add(agent3);
-    agent.add(agent4);
+    /*agent.add(agent4);
     agent.add(agent5);
     agent.add(agent6);
-    agent.add(agent7);
+    agent.add(agent7);*/
 //    Agent agent = new Agent( new RandomReflexTeseoAgentProgram( getLanguage() ) );
     MultiAgentLabyrinthMainFrame frame = new MultiAgentLabyrinthMainFrame( agent, getLanguage() );
     frame.setSize(800, 700);

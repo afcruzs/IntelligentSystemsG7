@@ -21,22 +21,27 @@ public class GeneticSearch implements Search {
 		this.population = new Population(populationSize);
 	}
 
+	public GeneticSearch(int populationSize,
+			GenotypeCreator creator) {
+		this(populationSize,Integer.MAX_VALUE,creator);
+	}
 
 
 	@Override
-	public void search( Board init ){
+	public Genotype search( Genotype init ){
 		
 		int iteration = 0;
 		while( !population.getBestIndividual().isPerfect() &&
 				iteration++ < maxIterations ) {
 			
+		//	System.out.println(  population.getBestIndividual().fitness() + " "+ population.getAverageFitness() );
 			//System.out.println( population.getBestIndividual() );
 			
 		//	System.out.println("Getting good random");
 			
 			Genotype[] parent = population.getGoodRandomIndividuals();
 			
-			System.out.println( population + "\n" );
+			//System.out.println( population + "\n" );
 		//	System.out.println("Getting bad random");
 			Integer toReplaceIndex1 = 0, toReplaceIndex2 = 0;
 			Genotype[] toReplace = population.getBadRandomIndividuals(toReplaceIndex1, toReplaceIndex2);
@@ -44,8 +49,8 @@ public class GeneticSearch implements Search {
 			//System.out.println("Fucking");
 			Genotype[] children = parent[0].crossOver(parent[1]);
 			
-			System.out.println( Arrays.toString(parent) );
-			System.out.println( Arrays.toString(children) );
+			//System.out.println( Arrays.toString(parent) );
+			//System.out.println( Arrays.toString(children) );
 			
 			
 		//	System.out.println("Mutating");
@@ -54,9 +59,9 @@ public class GeneticSearch implements Search {
 			
 		//	System.out.println("Updating");
 			population.updatePopulation(children, toReplaceIndex1, toReplaceIndex2);
-			System.out.println( population + "\n" );
+			//System.out.println( population + "\n" );
 		}	
-		
+		return population.getBestIndividual();
 	}
 	
 	class Population{
@@ -82,8 +87,14 @@ public class GeneticSearch implements Search {
 			totalFitness = 0;
 			inverseTotalFitness = 0;
 			
-			population.set(toReplaceIndex1, children[0]);
-			population.set(toReplaceIndex2, children[1]);
+			/*population.set(toReplaceIndex1, children[0]);
+			population.set(toReplaceIndex2, children[1]);*/
+			
+			population.add(children[0]);
+			population.add(children[1]);
+			Collections.sort(population);
+			population.remove(0);
+			population.remove(0);
 			
 			ranges = new ArrayList<>(size);
 			inverseRanges = new ArrayList<>(size);
@@ -157,6 +168,13 @@ public class GeneticSearch implements Search {
 		
 		public String toString(){
 			return population.toString();
+		}
+		
+		public double getAverageFitness(){
+			double avg = 0.0;
+			for( Genotype gen : population )
+				avg += gen.fitness();
+			return avg/( (double) population.size() );
 		}
 	}
 	

@@ -1,5 +1,6 @@
 package queens;
 
 public interface Search {
-	void search( Board initial );
+	//Returns the final answer :)
+	Genotype search( Genotype initial );
 }
