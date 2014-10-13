@@ -1,6 +1,5 @@
 package distributions;
 
-import main.Main;
 
 public class Uniform implements ProbabilityDistribution {
 

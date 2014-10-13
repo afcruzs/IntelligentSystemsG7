@@ -28,7 +28,7 @@ public class GeneticSearch implements Search {
 
 
 	@Override
-	public Genotype search( Board init ){
+	public Board search( Board init ){
 		
 		int iteration = 0;
 		while( !population.getBestIndividual().isPerfect() &&
@@ -61,7 +61,7 @@ public class GeneticSearch implements Search {
 			population.updatePopulation(children, toReplaceIndex1, toReplaceIndex2);
 			//System.out.println( population + "\n" );
 		}	
-		return population.getBestIndividual();
+		return (Board) population.getBestIndividual();
 	}
 	
 	class Population{
