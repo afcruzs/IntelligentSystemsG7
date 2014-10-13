@@ -1,7 +1,7 @@
 package queens;
 
 import java.util.*;
-public class Board implements Genotype{
+public class Board implements Genotype, SAState{
 	protected int[] queens; //elemento -> fila, indice -> columna
 	protected int size;
 	protected int maxConflicts;
@@ -17,6 +17,7 @@ public class Board implements Genotype{
 		computeFitness();
 	}
 	
+	private Board(){}
 	
 	public Iterable<QueenPiece> getPairs(){
 		
@@ -220,5 +221,31 @@ public class Board implements Genotype{
 	
 	public String toString(){
 		return fitness() + " " + Arrays.toString(queens) + "\n";
+	}
+
+	public Board clone(){
+		Board copy = new Board();
+		copy.size = size;
+		copy.maxConflicts = maxConflicts;
+		copy.fitness = fitness;
+		copy.queens = new int[queens.length];
+		for (int i = 0; i < queens.length; i++) {
+			copy.queens[i] = queens[i];
+		}
+		return copy;
+	}
+
+	@Override
+	public SAState randomSuccessor() {
+		Board successor = clone();
+		successor.mutate();
+		//successor.mutate();
+		return successor;
+	}
+
+
+	@Override
+	public double value() {
+		return fitness();
 	}
 }
