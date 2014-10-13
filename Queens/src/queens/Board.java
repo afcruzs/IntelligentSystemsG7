@@ -1,7 +1,7 @@
 package queens;
 
 import java.util.*;
-public class Board implements Genotype, SAState{
+public class Board implements Genotype,CSPState, SAState{
 	protected int[] queens; //elemento -> fila, indice -> columna
 	protected int size;
 	protected int maxConflicts;
@@ -16,8 +16,14 @@ public class Board implements Genotype, SAState{
 			emptyBoardInit();
 		computeFitness();
 	}
-	
+
 	private Board(){}
+	
+	public Board(int [] queens){
+		this.queens = queens;
+		size = queens.length;
+	}
+	
 	
 	public Iterable<QueenPiece> getPairs(){
 		
@@ -64,6 +70,12 @@ public class Board implements Genotype, SAState{
 		}
 		
 		
+	}
+	
+	public Board moveQueen(int col, int row){
+		int[] newQueens = queens;
+		newQueens[col] = row;
+		return new Board(newQueens);
 	}
 	
 	public double getMaxFitness(){
@@ -219,9 +231,62 @@ public class Board implements Genotype, SAState{
 		return maxConflicts - fitness;
 	}
 	
+	//-------------------- CSP METHODS -------------------------
+	
+	@Override
+	public boolean testGoalState() {
+		int [] comp = countConstraints();
+		for (int i = 0; i < size; i++) {
+			if(comp[i]!=0)
+				return false;
+		}
+		return true;
+	};
+	
+	@Override
+	public int[] countConstraints() {
+		
+		int [] res = new int [queens.length];
+		for (int x = 0; x < size; x++) {
+			int y = queens[x];
+			
+			for ( int i = x+1; i < size; i++ ) {
+				if ( y == queens[i] || 
+					Math.abs( y - queens[i] ) == Math.abs( x - i ) ){
+						res[x]+=1;
+						res[i]+=1;
+					}
+			}
+		}
+		return res;
+	};
+	
+	@Override
+	public ArrayList<ArrayList<Integer>> remainingValues() {
+		ArrayList<ArrayList<Integer>> possibleMoves = new ArrayList<>();
+		ArrayList<Integer> colOptions ; 
+		
+		for (int x = 0; x < size; x++) {
+			colOptions = new ArrayList<>();
+			for (int y = 0; y < size; y++) {
+				for(int i = x+1; i<size ;i++){
+					if ( y != queens[i] && 
+							Math.abs( y - queens[i] ) != Math.abs( x - i ) ){
+						colOptions.add(y);
+					}
+				}
+			}
+			possibleMoves.add(colOptions);
+		}
+		
+		return possibleMoves;
+	};
+	
+	
 	public String toString(){
 		return fitness() + " " + Arrays.toString(queens) + "\n";
 	}
+
 
 	public Board clone(){
 		Board copy = new Board();

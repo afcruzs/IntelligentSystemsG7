@@ -6,8 +6,9 @@ public class QueensMain {
 	
 	public static void main(String[] args) {
 		int n = 4;
-		testCSP(n,new CSPSearch(),Board.randomGenotype(n));
-		testGenetic(n);
+		//testCSP(n,new CSPSearch(),Board.randomGenotype(n));
+		//testGenetic(n);
+		testSimulatedAnnealing(n, inverseIteration);
 
 	}
 
@@ -50,6 +51,40 @@ public class QueensMain {
 		
 		System.out.println( "Elapsed Time: " + time + "ms." );
 	}
+
+	static void testSimulatedAnnealing(int n, TemperatureFunction temp){
+		testSearch(new SimulatedAnnealingSearch(temp), Board.randomGenotype(n));
+	}
+	
+	static void testIteratedSimulatedAnnealing(int n, TemperatureFunction temp, int maxDepth){
+		testSearch(new IteratedSimulatedAnnealing(temp,maxDepth), Board.randomGenotype(n));
+	}
+	
+	static TemperatureFunction inverseIteration = new TemperatureFunction() {
+		
+		@Override
+		public double temperature(int iteration) {
+			return 1.0/((double)iteration);
+		}
+	};
+	
+	static TemperatureFunction inversePolinomial = new TemperatureFunction() {
+		
+		@Override
+		public double temperature(int iteration) {
+			return 1.0/(Math.pow((double)iteration,5));
+		}
+	};
+	
+	static TemperatureFunction exponentialDecay = new TemperatureFunction() {
+		
+		@Override
+		public double temperature(int iteration) {
+			return Math.exp(-1.0*iteration);
+		}
+	};
+
+
 	
 
 }
