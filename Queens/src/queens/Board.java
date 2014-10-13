@@ -1,6 +1,5 @@
 package queens;
 
-import java.util.Map.Entry;
 import java.util.*;
 public class Board implements Genotype{
 	protected int[] queens; //elemento -> fila, indice -> columna

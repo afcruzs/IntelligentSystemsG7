@@ -1,20 +1,31 @@
 package queens;
 
+import javax.swing.SwingUtilities;
+
 public class QueensMain {
 	
 	public static void main(String[] args) {
-		int n = 10;
+		int n = 50;
 		testGenetic(n);
 
 	}
 
-	static void testSearch(Search searchAlgorithm, Genotype initial){
+	static void testSearch(Search searchAlgorithm, Board initial){
 		long time = System.currentTimeMillis();
-		Genotype ans = searchAlgorithm.search(initial);
+		final Genotype ans = searchAlgorithm.search(initial);
 		System.out.println( ans );
 		time = (System.currentTimeMillis() - time);
-		new QueensFrame((Board)ans,"Elapsed Time: " + time + "ms.");
+		final long time2 = time;
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				new QueensFrame((Board)ans,"Elapsed Time: " + time2 + "ms.");
+			}
+		});
+		
 		System.out.println( "Elapsed Time: " + time + "ms." );
+		
 	}
 	
 	static void testGenetic(int n){
