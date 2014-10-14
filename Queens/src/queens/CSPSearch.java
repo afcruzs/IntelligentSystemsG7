@@ -1,10 +1,6 @@
 package queens;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Stack;
-
 
 public class CSPSearch implements Search{
 	
@@ -29,12 +25,26 @@ public class CSPSearch implements Search{
 		
 	}
 	
+	
 	public Board backtrackingSearch(Board init){
 		return recSearch(init, init.queens.length);
 	}
 	
+	private CSPState doSearch(CSPState current){
+		
+		if( current.isPerfect() ) return current;
+		Variable unAssigned = current.nextVariable();
+		for( CSPState state : unAssigned.getConsistentStates() ){
+				CSPState result = doSearch(state);
+				if( result != null ) return result;
+		}
+		
+		return null;
+	}
+	
 	public Board search(Board init) {
-		return backtrackingSearch(init);
+		//return backtrackingSearch(init);
+		return (Board) doSearch((CSPState) init);
 	}
 
 	/*@Override

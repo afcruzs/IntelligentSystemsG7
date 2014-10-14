@@ -1,9 +1,12 @@
 package queens;
 
-import java.util.ArrayList;
-
 public interface CSPState {
-	boolean testGoalState();
+	/*boolean testGoalState();
 	ArrayList<ArrayList<Integer>> remainingValues();
-	int[] countConstraints();
+	int[] countConstraints();*/
+	boolean isPerfect();
+	
+	//Saca la mejor variable para asignar segun la heuristica
+	Variable nextVariable();
+	
 }

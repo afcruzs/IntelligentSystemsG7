@@ -1,7 +1,7 @@
 package queens;
 
 import java.util.*;
-public class Board implements Genotype,CSPState, SAState{
+public class Board implements Genotype, SAState{
 	protected int[] queens; //elemento -> fila, indice -> columna
 	protected int size;
 	protected int maxConflicts;
@@ -237,7 +237,7 @@ public class Board implements Genotype,CSPState, SAState{
 	
 	//-------------------- CSP METHODS -------------------------
 	
-	@Override
+	/*@Override
 	public boolean testGoalState() {
 		int [] comp = countConstraints();
 		for (int i = 0; i < size; i++) {
@@ -245,9 +245,9 @@ public class Board implements Genotype,CSPState, SAState{
 				return false;
 		}
 		return true;
-	};
+	};*/
 	
-	@Override
+	/*@Override
 	public int[] countConstraints() {
 		
 		int [] res = new int [queens.length];
@@ -284,7 +284,7 @@ public class Board implements Genotype,CSPState, SAState{
 		}
 		
 		return possibleMoves;
-	};
+	}*/
 	
 	
 	public String toString(){
@@ -317,4 +317,5 @@ public class Board implements Genotype,CSPState, SAState{
 	public double value() {
 		return fitness();
 	}
+
 }
