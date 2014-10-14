@@ -5,7 +5,7 @@ public class Board implements Genotype,CSPState, SAState{
 	protected int[] queens; //elemento -> fila, indice -> columna
 	protected int size;
 	protected int maxConflicts;
-	private double fitness;
+	protected double fitness;
 	public Board(int size,boolean doRandom){
 		this.queens = new int[size];
 		this.size = size;
@@ -22,6 +22,10 @@ public class Board implements Genotype,CSPState, SAState{
 	public Board(int [] queens){
 		this.queens = queens;
 		size = queens.length;
+	}
+	
+	public int hashCode(){
+		return Arrays.hashCode(queens);
 	}
 	
 	
@@ -82,11 +86,11 @@ public class Board implements Genotype,CSPState, SAState{
 		return maxConflicts;
 	}
 
-	public static Board randomGenotype(int size) {
+	public static Board randomBoard(int size) {
 		return new Board(size,true);
 	}
 	
-	private void computeFitness(){
+	public void computeFitness(){
 		double conflicts = 0.0;
 		for (int x = 0; x < size; x++) {
 			int y = queens[x];

@@ -6,25 +6,25 @@ public class QueensMain {
 	
 	public static void main(String[] args) {
 		int n = 4;
-		//testCSP(n,new CSPSearch(),Board.randomGenotype(n));
+		testCSP(n,new CSPSearch(),Board.randomBoard(n));
 		//testGenetic(n);
-		testSimulatedAnnealing(n, inverseIteration);
+		//testSimulatedAnnealing(n, inverseIteration);
 
 	}
 
 	static void testSearch(Search searchAlgorithm, Board initial){
 		long time = System.currentTimeMillis();
-		final Genotype ans = searchAlgorithm.search(initial);
+		final Board ans = searchAlgorithm.search(initial);
 		System.out.println( ans );
 		time = (System.currentTimeMillis() - time);
 		final long time2 = time;
-		SwingUtilities.invokeLater(new Runnable() {
+		/*SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
 				new QueensFrame((Board)ans,"Elapsed Time: " + time2 + "ms.");
 			}
-		});
+		});*/
 		
 		System.out.println( "Elapsed Time: " + time + "ms." );
 		
@@ -32,12 +32,12 @@ public class QueensMain {
 	
 	static void testGenetic(int n){
 		testSearch( new GeneticSearch(n, 
-				new BoardCreator(n) ), Board.randomGenotype(n) );
+				new BoardCreator(n) ), Board.randomBoard(n) );
 	}
 	
 	static void testCSP(int n, Search searchAlgorithm , Board initial){
 		long time = System.currentTimeMillis();
-		final Genotype ans = searchAlgorithm.search(initial);
+		final Board ans = searchAlgorithm.search(initial);
 		System.out.println( ans );
 		time = (System.currentTimeMillis() - time);
 		final long time2 = time;
@@ -53,11 +53,11 @@ public class QueensMain {
 	}
 
 	static void testSimulatedAnnealing(int n, TemperatureFunction temp){
-		testSearch(new SimulatedAnnealingSearch(temp), Board.randomGenotype(n));
+		testSearch(new SimulatedAnnealingSearch(temp), Board.randomBoard(n));
 	}
 	
 	static void testIteratedSimulatedAnnealing(int n, TemperatureFunction temp, int maxDepth){
-		testSearch(new IteratedSimulatedAnnealing(temp,maxDepth), Board.randomGenotype(n));
+		testSearch(new IteratedSimulatedAnnealing(temp,maxDepth), Board.randomBoard(n));
 	}
 	
 	static TemperatureFunction inverseIteration = new TemperatureFunction() {
