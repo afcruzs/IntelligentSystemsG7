@@ -2,13 +2,14 @@ package queens;
 
 import javax.swing.SwingUtilities;
 
+
 public class QueensMain {
 	
 	public static void main(String[] args) {
-		int n = 4;
+		int n = 12;
 		testCSP(n);
 		//testGenetic(n);
-		//testSimulatedAnnealing(n, inverseIteration);
+	//	//testSimulatedAnnealing(n, inverseIteration);
 
 	}
 
@@ -18,13 +19,13 @@ public class QueensMain {
 		System.out.println( ans );
 		time = (System.currentTimeMillis() - time);
 		final long time2 = time;
-		/*SwingUtilities.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
 				new QueensFrame((Board)ans,"Elapsed Time: " + time2 + "ms.");
 			}
-		});*/
+		});
 		
 		System.out.println( "Elapsed Time: " + time + "ms." );
 		
@@ -36,7 +37,7 @@ public class QueensMain {
 	}
 	
 	static void testCSP(int n){
-		testSearch(new CSPSearch(), BoardCSP.randomState(n));
+		testSearch(new CSPSearch(), BoardCSP.emptyState(n));
 	}
 
 	static void testSimulatedAnnealing(int n, TemperatureFunction temp){

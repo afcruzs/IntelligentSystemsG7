@@ -1,116 +1,189 @@
 package queens;
 
 import java.util.ArrayList;
-import java.util.TreeSet;
+import java.util.Collections;
+
 
 public class BoardCSP extends Board implements CSPState {
 	
-	//private ArrayList<ArrayList<Integer>> possibleValues;
-	private VariablesSet variables;
 
-	public BoardCSP(int size, boolean doRandom) {
-
-		super(size, doRandom);
+	public BoardCSP(int size) {
+		super(size, false);
 		
-		//TODO PONER DATOS DE VARIAbLES
-		initVariables(); //Esta llamada PROBABLEMENTE deba hacerse FUERA del constructuor
-		//O con una variable booleana
-		
-		/*
-		
-		possibleValues = new ArrayList<>(size);
-		for (int i = 0; i < size; i++) {
-			possibleValues.add(new ArrayList<Integer>());
-		}
-		queens = new int[]{ 3,0,1,2 };
-		
-		ArrayList<Integer> colOptions ; 
-			
-		for (int x = 0; x < size; x++) {
-			colOptions = new ArrayList<>();
-			for (int y = 0; y < size; y++) {
-				for(int i = x+1; i<size ;i++){
-					if ( y != queens[i] && 
-							Math.abs( y - queens[i] ) != Math.abs( x - i ) ){
-						System.out.println("y:"+y+ " q[i]:"+queens[i]+ " x:"+x+" i:"+i);
-						colOptions.add(y);
-					}
-				}
-			}
-			possibleValues.add(colOptions);
-		}*/
+	}
 	
+	public boolean isPerfect(){
+		if( countVariables() != size )
+			return false;
+		computeFitness();
+		return super.isPerfect();
+	}
+	
+	private BoardCSP(){ super(); }
+	
+	private BoardCSP(int size,boolean f){
+		super(size,f);
+	}
+	
+	protected boolean isBitUsed(int bit){
+		return queens[bit] != -1;
 	}
 	
 	@Override
-	public Variable nextVariable() {
-		return new QueenVariable(nextQueenToEvaluate());
-	}
-	
-	private void initVariables(){
-		variables = new VariablesSet();
-		//TODO PONER DATOS DE VARIAbLES
-	}
-	
-	private int nextQueenToEvaluate(){
-		return variables.nextVariableToChange().queenIndex;
-	}
-	
-	class VariablesSet{
-		TreeSet<QueenTile> tiles;
-		public VariablesSet(){
-			tiles = new TreeSet<>();
-		}
+	public Iterable<Variable> unAssignedVariablesInOrder() {
 		
-		public void addTile( QueenTile tile ){
-			tiles.add(tile);
-		}
-		
-		public QueenTile nextVariableToChange(){
-			return tiles.first();
-		}
-	}
-	
-	
-	
-	class QueenTile implements Comparable<QueenTile>{
-		private int queenIndex, legalMoves, constraints;
+		ArrayList<Variable> variables = new ArrayList<>(size);
+		for (int x = 0; x < size; x++) {
+			if( queens[x] != -1 ) continue;
+			int legalValues = 0;
 
-		public QueenTile(int queenIndex, int legalMoves, int constraints) {
-			this.queenIndex = queenIndex;
-			this.legalMoves = legalMoves;
+			for (int possibleValue = 0; possibleValue < size; possibleValue++) {
+				if( containsBit(possibleValue) ) continue;
+				int i;
+				for (i = 0; i < size; i++) {
+					if( !(queens[i] == -1 || Math.abs( x - i ) != Math.abs( possibleValue - queens[i] )) )
+						break;
+				}
+				
+				if( i >= size ) legalValues++;
+			}
+			
+			
+			variables.add(new QueenVariable(x, legalValues, countVariables()) );
+		}
+		Collections.sort(variables);
+		return variables;
+	}
+	
+	protected int countVariables(){
+		int c = 0;
+		for (int i = 0; i < size; i++) {
+			if( queens[i] != -1 ) c++;
+		}
+		return c;
+	}
+	
+	
+	public static BoardCSP emptyState(int size){
+		return new BoardCSP(size,false);
+	}
+	
+	public static Board randomBoard(int size){
+		return new BoardCSP(size, true);
+	}
+	
+	class QueenValue implements Value{
+		int row;
+		int ruledOut;
+		public QueenValue(int row,int ruledOut){
+			this.row = row;
+			this.ruledOut = ruledOut;
+		}
+		
+		@Override
+		public int compareTo(Value o) {
+			return ruledOut - ((QueenValue) o).ruledOut;
+		}
+
+		@Override
+		public String toString() {
+			return "QueenValue [row=" + row + ", ruledOut=" + ruledOut + "]";
+		}
+		
+		
+	}
+	
+	class QueenVariable implements Variable{
+		private int col; //Queen index
+		private int legalValues;
+		private int constraints;
+		
+		
+		public QueenVariable(int col, int legalValues, int constraints) {
+			this.col = col;
+			this.legalValues = legalValues;
 			this.constraints = constraints;
 		}
 
 		@Override
-		public int compareTo(QueenTile o) {
-			if( legalMoves == o.legalMoves && constraints == o.constraints ) //Multiset?
-				return -1;
-			if( legalMoves != o.legalMoves )
-				//choose the variable with the fewest legal values
-				return legalMoves - o.legalMoves;
-			//Tie-breaker among MRV variables
-			//choose the variable with the most constraints on remaining variables
-			return o.constraints - o.constraints;
+		public void assignValue(Value value) {
+			QueenValue qv = (QueenValue)value;
+			queens[col] = qv.row;
+		}
+
+
+		@Override
+		public Iterable<Value> possibleValuesInOrder() {
+
+			ArrayList<Value> values = new ArrayList<>(size);
+			
+			for (int possibleValue = 0; possibleValue < size; possibleValue++) {
+				if( containsBit(possibleValue) ) continue;
+				int i;
+				for (i = 0; i < size; i++) {
+					if( !(queens[i] == -1 || Math.abs( col - i ) != Math.abs( possibleValue - queens[i] )) )
+						break;
+				}
+				if( i >= size ){
+					/*int ruleOut = 0;
+					i = queens[col];
+					int j = col;
+					ruleOut += Math.abs( i -( Math.min(i,j)-i ) ); // ( min(i,j)-i, 0 )
+					ruleOut += Math.abs( i -( Math.min(i,j)-i ) ); // ( min(i,j)-i, n-1 )
+					ruleOut += Math.abs( i -( Math.min(i+j,size-1) ) ); // ( min(i+j,n-1), (i+j) % n )
+					*/
+					values.add( new QueenValue(possibleValue, 0) );
+				}
+			}
+			
+			Collections.sort(values);
+			return values;
+		}
+
+		@Override
+		public int compareTo(Variable v) {
+			QueenVariable o = (QueenVariable)v;
+			if( legalValues != o.legalValues )
+				return legalValues - o.legalValues;
+			else
+				return constraints - o.constraints;
+		}
+
+		@Override
+		public void deassignVariable() {
+			queens[col] = -1;
+		}
+
+		@Override
+		public String toString() {
+			return "QueenVariable [col=" + col + ", legalValues=" + legalValues
+					+ ", constraints=" + constraints + "]";
 		}
 		
+		
+	}
+
+	@Override
+	public CSPState deepClone() {
+		BoardCSP copy = new BoardCSP();
+		copy.size = size;
+		copy.maxConflicts = maxConflicts;
+		copy.fitness = fitness;
+		copy.queens = new int[queens.length];
+		for (int i = 0; i < queens.length; i++) {
+			copy.queens[i] = queens[i];
+		}
+		return copy;
 	}
 	
-	class QueenVariable implements Variable {
-		private int index;
-		public QueenVariable(int index) {
-			this.index = index;
+	public static void main(String[] args) {
+		BoardCSP c = BoardCSP.emptyState(4);
+		c.queens = new int[]{0, 3, -1, -1};
+		for( Variable v : c.unAssignedVariablesInOrder() ){
+			System.out.println(v);
+			for( Value value : v.possibleValuesInOrder() )
+				System.out.println(value);
 		}
-		
-		@Override
-		public Iterable<CSPState> getConsistentStates() {
-			// TODO: Hacer los estados, aplicar Least constraining value!!!
-			return null;
-	    }
 	}
-
-
-	public static BoardCSP randomState(int size) {
-		return new BoardCSP(size, true);
-	}
+	
 }

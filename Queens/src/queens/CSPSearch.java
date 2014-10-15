@@ -2,6 +2,7 @@ package queens;
 
 import java.util.ArrayList;
 
+
 public class CSPSearch implements Search{
 	
 	public Board recSearch(Board current, int n){
@@ -31,13 +32,20 @@ public class CSPSearch implements Search{
 	}
 	
 	private CSPState doSearch(CSPState current){
-		
-		if( current.isPerfect() ) return current;
-		Variable unAssigned = current.nextVariable();
-		for( CSPState state : unAssigned.getConsistentStates() ){
-				CSPState result = doSearch(state);
-				if( result != null ) return result;
+//		System.out.println(current);
+		if( current.isPerfect() )
+			return current;
+	//	System.out.println( current.unAssignedVariablesInOrder() );
+		for( Variable unAssignedVariable : current.unAssignedVariablesInOrder() ){
+			for( Value value : unAssignedVariable.possibleValuesInOrder() ){
+				unAssignedVariable.assignValue(value);
+				CSPState result = doSearch(current.deepClone());
+				if( result != null )
+					return result;
+				unAssignedVariable.deassignVariable();
+			}
 		}
+		
 		
 		return null;
 	}

@@ -17,7 +17,7 @@ public class Board implements Genotype, SAState{
 		computeFitness();
 	}
 
-	private Board(){}
+	protected Board(){}
 	
 	public Board(int [] queens){
 		this.queens = queens;
@@ -94,7 +94,6 @@ public class Board implements Genotype, SAState{
 		double conflicts = 0.0;
 		for (int x = 0; x < size; x++) {
 			int y = queens[x];
-			
 			for ( int i = x+1; i < size; i++ ) {
 				if ( y == queens[i] || 
 					Math.abs( y - queens[i] ) == Math.abs( x - i ) )
@@ -198,7 +197,7 @@ public class Board implements Genotype, SAState{
 		return new Genotype[]{ first, second };
 	}
 	
-	private boolean containsBit(int bit){
+	protected boolean containsBit(int bit){
 		for (int i = 0; i < size; i++) {
 			if( queens[i] == bit ) return true;
 		}

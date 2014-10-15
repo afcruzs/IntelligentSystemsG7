@@ -1,12 +1,14 @@
 package queens;
 
-public interface CSPState {
+
+public interface CSPState  {
 	/*boolean testGoalState();
 	ArrayList<ArrayList<Integer>> remainingValues();
 	int[] countConstraints();*/
 	boolean isPerfect();
+
+	Iterable<Variable> unAssignedVariablesInOrder();
 	
-	//Saca la mejor variable para asignar segun la heuristica
-	Variable nextVariable();
-	
+	CSPState deepClone();
+
 }
