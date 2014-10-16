@@ -1,6 +1,8 @@
 package queens;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 
 public class CSPSearch implements Search{
@@ -36,7 +38,9 @@ public class CSPSearch implements Search{
 		if( current.isPerfect() )
 			return current;
 	//	System.out.println( current.unAssignedVariablesInOrder() );
-		for( Variable unAssignedVariable : current.unAssignedVariablesInOrder() ){
+		List<Variable> variables = current.unAssignedVariablesInOrder() ;
+		current.arcConsistency();
+		for( Variable unAssignedVariable : variables ){
 			for( Value value : unAssignedVariable.possibleValuesInOrder() ){
 				unAssignedVariable.assignValue(value);
 				CSPState result = doSearch(current.deepClone());
@@ -53,6 +57,26 @@ public class CSPSearch implements Search{
 	public Board search(Board init) {
 		//return backtrackingSearch(init);
 		return (Board) doSearch((CSPState) init);
+		/*CSPState current = (CSPState) init;
+		Stack<CSPState> s = new Stack<>();
+		s.push(current);
+		while(!s.isEmpty()){
+			current = s.pop();
+			if( current.isPerfect() )
+				return (Board) current;
+			for( Variable unAssignedVariable : current.unAssignedVariablesInOrder() ){
+				for( Value value : unAssignedVariable.possibleValuesInOrder() ){
+					unAssignedVariable.assignValue(value);
+					s.push(current.deepClone());
+//					CSPState result = doSearch(current.deepClone());
+	//				if( result != null )
+		//				return (Board) result;
+			//		unAssignedVariable.deassignVariable();
+				}
+			}
+		}
+		
+		return null;*/
 	}
 
 	/*@Override

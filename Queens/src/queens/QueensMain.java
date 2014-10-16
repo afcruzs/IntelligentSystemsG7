@@ -6,10 +6,10 @@ import javax.swing.SwingUtilities;
 public class QueensMain {
 	
 	public static void main(String[] args) {
-		int n = 12;
+		int n = 50; //26
 		testCSP(n);
 		//testGenetic(n);
-	//	//testSimulatedAnnealing(n, inverseIteration);
+		//testSimulatedAnnealing(n, inverseIteration);
 
 	}
 

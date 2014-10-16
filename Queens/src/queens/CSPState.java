@@ -1,5 +1,7 @@
 package queens;
 
+import java.util.List;
+
 
 public interface CSPState  {
 	/*boolean testGoalState();
@@ -7,8 +9,10 @@ public interface CSPState  {
 	int[] countConstraints();*/
 	boolean isPerfect();
 
-	Iterable<Variable> unAssignedVariablesInOrder();
+	List<Variable> unAssignedVariablesInOrder();
 	
 	CSPState deepClone();
+	
+	void arcConsistency();
 
 }

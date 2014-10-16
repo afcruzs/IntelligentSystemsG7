@@ -178,7 +178,7 @@ public class Nqueens {
 	
 	public static void main(String[] args) {
 		
-		new Nqueens(50);
+		new Nqueens(27);
 		long time = System.currentTimeMillis();
 		System.out.println(Arrays.toString(searchSolution()));
 		System.out.println("Elapsed time : "+ (System.currentTimeMillis()-time)+ " ms.");

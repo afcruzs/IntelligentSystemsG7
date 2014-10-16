@@ -2,11 +2,16 @@ package queens;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 
 
 public class BoardCSP extends Board implements CSPState {
 	
-
+	ArrayList< List<Value> > domainValues;
 	public BoardCSP(int size) {
 		super(size, false);
 		
@@ -30,9 +35,12 @@ public class BoardCSP extends Board implements CSPState {
 	}
 	
 	@Override
-	public Iterable<Variable> unAssignedVariablesInOrder() {
+	public List<Variable> unAssignedVariablesInOrder() {
 		
 		ArrayList<Variable> variables = new ArrayList<>(size);
+		domainValues = new ArrayList<>( size );
+		for( int i=0; i<size; i++ ) domainValues.add(null);
+		
 		for (int x = 0; x < size; x++) {
 			if( queens[x] != -1 ) continue;
 			int legalValues = 0;
@@ -48,11 +56,66 @@ public class BoardCSP extends Board implements CSPState {
 				if( i >= size ) legalValues++;
 			}
 			
-			
-			variables.add(new QueenVariable(x, legalValues, countVariables()) );
+			if( legalValues == 0 ){
+				//System.out.println("Lool");
+				return new ArrayList<>();
+			}
+			QueenVariable qv = new QueenVariable(x, legalValues, countVariables());
+			variables.add( qv );
+			domainValues.set(x, qv.possibleValuesInOrder() );
 		}
+		
+
 		Collections.sort(variables);
 		return variables;
+	}
+	
+	public void arcConsistency(){
+		Queue<Integer[]> arcs = new LinkedList<>();
+		for (int i = 0; i < size; i++) {
+			if( domainValues.get(i) != null )
+				for (int j = i+1; j < size; j++) {				
+					if( domainValues.get(j) != null )
+						arcs.add( new Integer[]{i,j} );
+				}
+		}
+		
+		while( !arcs.isEmpty() ){
+			Integer[] current = arcs.poll();
+			if( removeInconsistent( current[0], current[1] ) )
+				for (int i = 0; i < size; i++) {
+					if( domainValues.get(i) != null && domainValues.get(current[0]) != null )
+						arcs.add(new Integer[]{i,current[0]});
+				}
+		}
+	}
+	
+	public boolean removeInconsistent(int a, int b){
+		boolean removed = false;
+		Queue<Integer> idx1 = new LinkedList<>();
+		Queue<QueenValue> idx2 = new LinkedList<>();
+		for(Value it : domainValues.get(a)){
+			QueenValue qv1 = (QueenValue)it;
+			boolean satisfiedOne = false;
+			for(Value it2 : domainValues.get(b)){
+				QueenValue qv2 = (QueenValue)it2;
+				if( Math.abs(a-b) != Math.abs(qv1.row - qv2.row) )
+					satisfiedOne = true;
+					
+			}
+			if(!satisfiedOne){
+				//domainValues.get(a).remove(qv1);
+				idx1.add(a);
+				idx2.add(qv1);
+				removed = true;
+			}
+		}
+		
+		while( !idx1.isEmpty() || !idx2.isEmpty() ){
+			domainValues.get( idx1.poll() ).remove( idx2.poll() );
+		}
+		
+		return removed;
 	}
 	
 	protected int countVariables(){
@@ -113,30 +176,66 @@ public class BoardCSP extends Board implements CSPState {
 
 
 		@Override
-		public Iterable<Value> possibleValuesInOrder() {
+		public List<Value> possibleValuesInOrder() {
+			
+			if( domainValues.get(col) != null ) return domainValues.get(col);
 
 			ArrayList<Value> values = new ArrayList<>(size);
+			
 			
 			for (int possibleValue = 0; possibleValue < size; possibleValue++) {
 				if( containsBit(possibleValue) ) continue;
 				int i;
 				for (i = 0; i < size; i++) {
-					if( !(queens[i] == -1 || Math.abs( col - i ) != Math.abs( possibleValue - queens[i] )) )
+					if( !(queens[i] == -1 || Math.abs( col - i ) != Math.abs( possibleValue - queens[i] )) ){
 						break;
+					}
 				}
 				if( i >= size ){
-					/*int ruleOut = 0;
-					i = queens[col];
-					int j = col;
-					ruleOut += Math.abs( i -( Math.min(i,j)-i ) ); // ( min(i,j)-i, 0 )
-					ruleOut += Math.abs( i -( Math.min(i,j)-i ) ); // ( min(i,j)-i, n-1 )
-					ruleOut += Math.abs( i -( Math.min(i+j,size-1) ) ); // ( min(i+j,n-1), (i+j) % n )
-					*/
-					values.add( new QueenValue(possibleValue, 0) );
+					Set<Integer> s = new HashSet<>();
+					int x = possibleValue, y = col;
+					//System.out.println( x + " " + y + " " + size );
+					while( true ){
+						x--; y--;
+						if( x < 0 || y < 0 ) break;
+						if( queens[y] == -1 )
+							s.add(y);						
+					}
+					//System.out.println(s);
+					x = possibleValue; y = col;
+					while( true ){
+						x++; y++;
+						if( x >= size || y >= size ) break;
+						if( queens[y] == -1 )
+							s.add(y);
+						
+					}
+					//System.out.println(s);
+					
+					x = possibleValue; y = col;
+					while( true ){
+						x--; y++;
+						if( x < 0 || y >= size ) break;
+						if( queens[y] == -1 )
+							s.add(y);
+					}
+					//System.out.println(s);
+					
+					x = possibleValue; y = col;
+					while( true ){
+						x++; y--;
+						if( x >= size || y < 0 ) break;
+						if( queens[y] == -1 )
+							s.add(y);
+					}
+					
+					values.add( new QueenValue(possibleValue, s.size()) );
 				}
 			}
 			
 			Collections.sort(values);
+			
+			
 			return values;
 		}
 
@@ -162,6 +261,7 @@ public class BoardCSP extends Board implements CSPState {
 		
 		
 	}
+	
 
 	@Override
 	public CSPState deepClone() {
@@ -177,8 +277,8 @@ public class BoardCSP extends Board implements CSPState {
 	}
 	
 	public static void main(String[] args) {
-		BoardCSP c = BoardCSP.emptyState(4);
-		c.queens = new int[]{0, 3, -1, -1};
+		BoardCSP c = BoardCSP.emptyState(6);
+		c.queens = new int[]{0, -1, 1, 4, -1, -1};
 		for( Variable v : c.unAssignedVariablesInOrder() ){
 			System.out.println(v);
 			for( Value value : v.possibleValuesInOrder() )
