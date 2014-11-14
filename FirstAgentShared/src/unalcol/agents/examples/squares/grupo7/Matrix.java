@@ -51,6 +51,10 @@ public class Matrix {
 				throw new IllegalArgumentException("Bad side!");
 			}
 		}
+		
+		public String toString(){
+			return i + " " + j + " " + getStringSide();
+		}
 	}
 
 	public Matrix(int w, int h) {
@@ -131,6 +135,11 @@ public class Matrix {
 			Line line = possibleLines.remove( r.nextInt( possibleLines.size() ) );
 			if( isNotDumb(line) )
 				return line;
+			else{
+				//System.out.println(line);
+				/*System.out.println("|"+line+"|");
+				print();*/
+			}
 			/*int index = r.nextInt(possibleLines.size());
 			Line line = possibleLines.get(index);
 			if (isNotDumb(line)) {
@@ -141,6 +150,17 @@ public class Matrix {
 
 		throw new IllegalArgumentException("Se acabo la lista, criptoperrito.");
 
+	}
+	
+	private void print(){
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board.length; j++) {
+				System.out.print( board[i][j] + "|" );
+			}
+			System.out.println();
+		}
+		
+		System.out.println();
 	}
 
 	public boolean isNotDumb(Line line) {
@@ -185,27 +205,28 @@ public class Matrix {
 			box.setTop(true);
 		else if (side == BOTTOM)
 			box.setBottom(true);
-
+		
+		
 		if (box2 == null) {
 			return box.turnedSides <= 2;
 		} else {
 
-			switch (line.side) {
-			case RIGHT:
-				if (box2.right)
-					return false;
-
-			case LEFT:
-				if (box2.left)
-					return false;
-
-			case TOP:
-				if (box2.top)
-					return false;
-
-			case BOTTOM:
-				if (box2.bottom)
-					return false;
+			switch (side) {
+				case RIGHT:
+					if (box2.left)
+						return false;
+	
+				case LEFT:
+					if (box2.right)
+						return false;
+	
+				case TOP:
+					if (box2.bottom)
+						return false;
+	
+				case BOTTOM:
+					if (box2.top)
+						return false;
 
 			}
 
@@ -237,6 +258,10 @@ class Box {
 		right = false;
 		left = false;
 		turnedSides = 0;
+	}
+	
+	public String toString(){
+		return top + " " + bottom + " " + left + " " + right;
 	}
 
 	protected Box clone() {

@@ -25,6 +25,8 @@ public class Grupo7BoxesAgent implements AgentProgram {
 			matrix = new Matrix(Integer.parseInt(p.getAttribute(Squares.SIZE)
 					.toString()), Integer.parseInt(p.getAttribute(Squares.SIZE)
 					.toString()));
+			
+			
 		}
 		/*
 		 * try{ Thread.sleep(1000); }catch(Exception e){}
