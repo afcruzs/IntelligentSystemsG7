@@ -82,14 +82,24 @@ public class Matrix {
 			}
 		}
 
-	
+		for (int i = 0; i < board.length; i++) {
+			addLine(0, i, Squares.TOP);
+			addLine(board.length - 1, i, Squares.BOTTOM);
+		}
+
+		for (int i = 1; i < board.length - 1; i++) {
+			addLine(i, 0, Squares.LEFT);
+			addLine(i, board.length - 1, Squares.RIGHT);
+		}
+
 		 /*JOptionPane.showMessageDialog(null, ""+(possibleLines.size() + "   "
 		 + maxLines));*/
 
 	}
 
 	public void addLine(int i, int j, String side) {
-		
+		if (board[i][j].getSide(side) == true)
+			return;
 		if (side.equals(Squares.LEFT)) {
 			if (j > 0)
 				board[i][j - 1].setRight(true);
