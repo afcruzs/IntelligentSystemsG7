@@ -7,6 +7,7 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 import unalcol.agents.examples.squares.Squares;
+import unalcol.agents.examples.squares.grupo7.Matrix.Line;
 
 public class Matrix {
 
@@ -22,9 +23,9 @@ public class Matrix {
 	Box board[][];
 	int maxLines;
 
-	List<Line> possibleLines;
+	public List<Line> possibleLines;
 
-	static class Line {
+	public static class Line {
 		int i, j, side;
 
 		public Line(int i, int j, int side) {
@@ -51,8 +52,8 @@ public class Matrix {
 				throw new IllegalArgumentException("Bad side!");
 			}
 		}
-		
-		public String toString(){
+
+		public String toString() {
 			return i + " " + j + " " + getStringSide();
 		}
 	}
@@ -70,22 +71,25 @@ public class Matrix {
 		possibleLines = new ArrayList<>(maxLines);
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board.length; j++) {
-				if (i < board.length-1 && j < board.length-1) {
+				if (i < board.length - 1 && j < board.length - 1) {
 					possibleLines.add(new Line(i, j, BOTTOM));
 					possibleLines.add(new Line(i, j, RIGHT));
-				} else if (i < board.length-1) {
+				} else if (i < board.length - 1) {
 					possibleLines.add(new Line(i, j, BOTTOM));
-				} else if (j < board.length-1) {
+				} else if (j < board.length - 1) {
 					possibleLines.add(new Line(i, j, RIGHT));
 				}
 			}
 		}
-		
-		//JOptionPane.showMessageDialog(null, ""+(possibleLines.size() + "   " + maxLines));
+
+	
+		 /*JOptionPane.showMessageDialog(null, ""+(possibleLines.size() + "   "
+		 + maxLines));*/
 
 	}
 
-	public void addLine(int i, int j, final String side) {
+	public void addLine(int i, int j, String side) {
+		
 		if (side.equals(Squares.LEFT)) {
 			if (j > 0)
 				board[i][j - 1].setRight(true);
@@ -105,61 +109,39 @@ public class Matrix {
 		}
 	}
 
-	public void addLine(Line line) {
-		int i = line.i, j = line.j, side = line.side;
-
-		if (side == LEFT) {
-			if (j > 0)
-				board[i][j - 1].setRight(true);
-			board[i][j].setLeft(true);
-		} else if (side == RIGHT) {
-			if (j < width - 1)
-				board[i][j + 1].setLeft(true);
-			board[i][j].setRight(true);
-		} else if (side == TOP) {
-			if (i > 0)
-				board[i - 1][j].setBottom(true);
-			board[i][j].setTop(true);
-		} else {
-			if (i < height - 1)
-				board[i + 1][j].setTop(true);
-			board[i][j].setBottom(true);
-		}
-	}
-
 	public Line getRandomLine() {
 		Random r = new Random();
-
+		//System.out.println(possibleLines);
 		while (possibleLines.size() > 0) {
-			
-			Line line = possibleLines.remove( r.nextInt( possibleLines.size() ) );
-			if( isNotDumb(line) )
-				return line;
-			else{
-				//System.out.println(line);
-				/*System.out.println("|"+line+"|");
-				print();*/
-			}
-			/*int index = r.nextInt(possibleLines.size());
-			Line line = possibleLines.get(index);
+
+			Line line = possibleLines.remove(r.nextInt(possibleLines.size()));
 			if (isNotDumb(line)) {
-				possibleLines.remove(index);
 				return line;
-			}*/
+			} else {
+				// System.out.println(line);
+				/*
+				 * System.out.println("|"+line+"|"); print();
+				 */
+			}
+			/*
+			 * int index = r.nextInt(possibleLines.size()); Line line =
+			 * possibleLines.get(index); if (isNotDumb(line)) {
+			 * possibleLines.remove(index); return line; }
+			 */
 		}
 
 		throw new IllegalArgumentException("Se acabo la lista, criptoperrito.");
 
 	}
-	
-	private void print(){
+
+	private void print() {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board.length; j++) {
-				System.out.print( board[i][j] + "|" );
+				System.out.print(board[i][j] + "|");
 			}
 			System.out.println();
 		}
-		
+
 		System.out.println();
 	}
 
@@ -168,21 +150,25 @@ public class Matrix {
 		Box box = board[i][j].clone();
 
 		switch (side) {
-			case RIGHT:
-				if (box.right)
-					return false;
-	
-			case LEFT:
-				if (box.left)
-					return false;
-	
-			case TOP:
-				if (box.top)
-					return false;
-	
-			case BOTTOM:
-				if (box.bottom)
-					return false;
+		case RIGHT:
+			if (box.right)
+				return false;
+			else break;
+
+		case LEFT:
+			if (box.left)
+				return false;
+			else break;
+
+		case TOP:
+			if (box.top)
+				return false;
+			else break;
+
+		case BOTTOM:
+			if (box.bottom)
+				return false;
+			else break;
 
 		}
 
@@ -205,44 +191,62 @@ public class Matrix {
 			box.setTop(true);
 		else if (side == BOTTOM)
 			box.setBottom(true);
-		
-		
+
 		if (box2 == null) {
 			return box.turnedSides <= 2;
 		} else {
 
 			switch (side) {
-				case RIGHT:
-					if (box2.left)
-						return false;
-	
-				case LEFT:
-					if (box2.right)
-						return false;
-	
-				case TOP:
-					if (box2.bottom)
-						return false;
-	
-				case BOTTOM:
-					if (box2.top)
-						return false;
+			case RIGHT:
+				if (box2.left)
+					return false;
+				else break;
+
+			case LEFT:
+				if (box2.right)
+					return false;
+				else break;
+
+			case TOP:
+				if (box2.bottom)
+					return false;
+				else break;
+
+			case BOTTOM:
+				if (box2.top)
+					return false;
+				else break;
 
 			}
 
 			if (side == LEFT)
 				box2.setRight(true);
-
-			if (side == RIGHT)
+			else if (side == RIGHT)
 				box2.setLeft(true);
-
-			if (side == TOP)
+			else if (side == TOP)
 				box2.setBottom(true);
-
-			if (side == BOTTOM)
+			else if (side == BOTTOM)
 				box2.setTop(true);
 
 			return box.turnedSides <= 2 && box2.turnedSides <= 2;
+		}
+	}
+
+	public void addLine(Line line) {
+		switch (line.side) {
+		case LEFT:
+			addLine(line.i, line.j, Squares.LEFT);
+			break;
+		case RIGHT:
+			addLine(line.i, line.j, Squares.RIGHT);
+			break;
+		case TOP:
+			addLine(line.i, line.j, Squares.TOP);
+			break;
+		case BOTTOM:
+			addLine(line.i, line.j, Squares.BOTTOM);
+			break;
+
 		}
 	}
 
@@ -259,8 +263,20 @@ class Box {
 		left = false;
 		turnedSides = 0;
 	}
-	
-	public String toString(){
+
+	public boolean getSide(String side) {
+		if (side.equals(Squares.LEFT))
+			return left;
+		else if (side.equals(Squares.RIGHT))
+			return right;
+		else if (side.equals(Squares.TOP))
+			return top;
+		else
+			/* if( side.equals(Squares.BOTTOM) ) */
+			return bottom;
+	}
+
+	public String toString() {
 		return top + " " + bottom + " " + left + " " + right;
 	}
 
@@ -297,5 +313,6 @@ class Box {
 			turnedSides++;
 		this.right = right;
 	}
+	
 
 }

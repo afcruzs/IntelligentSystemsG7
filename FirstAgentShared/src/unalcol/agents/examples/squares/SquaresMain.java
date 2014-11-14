@@ -4,8 +4,10 @@
  */
 package unalcol.agents.examples.squares;
 
+
 import unalcol.agents.Agent;
 import unalcol.agents.examples.squares.grupo7.Grupo7BoxesAgent;
+import unalcol.agents.examples.squares.grupo7.Matrix;
 import unalcol.reflect.service.ServiceProvider;
 import unalcol.reflect.util.ReflectUtil;
 
@@ -15,9 +17,14 @@ import unalcol.reflect.util.ReflectUtil;
  */
 public class SquaresMain  {
   public static void main( String[] argv ){
+	  Matrix m = new Matrix(3, 3);
+	  //System.out.println(m.possibleLines.get(8) + " " + m.isNotDumb(m.possibleLines.get(8)));
+	  /*for(unalcol.agents.examples.squares.grupo7.Matrix.Line l : m.possibleLines){
+		  System.out.println( l + " " +m.isNotDumb(l) );
+	  }*/
     // Reflection
     ServiceProvider provider = ReflectUtil.getProvider("services/");
-    Agent w_agent = new Agent( new Grupo7BoxesAgent( Squares.WHITE ));
+    Agent w_agent = new Agent( new DummySquaresAgentProgram( Squares.WHITE ));
     Agent b_agent =  new Agent( new Grupo7BoxesAgent( Squares.BLACK ));
     //Agent b_agent = new Agent( new ReversiSinGrupoAPv2(Reversi.BLACK) );
     //Agent w_agent = new Agent( new NoTanDummiReversiAgentProgram(Reversi.WHITE) );
