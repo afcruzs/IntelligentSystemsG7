@@ -19,11 +19,64 @@ public class Matrix {
 
 	static final int BOTTOM = 3;
 
-	int width, height;
+	int n;
 	Box board[][];
-	int maxLines;
+	
 
-	public List<Line> possibleLines;
+	public List<Line> possibleLines,aux;
+	
+	public Matrix(int n) {
+		
+		int maxLines = 2 * n * n - 2 * n;
+		possibleLines = new ArrayList<>(maxLines);
+		this.n = n;
+		board = new Box[n][n];
+		
+		initBoardOnly();
+
+		aux = new ArrayList<>(maxLines);
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board.length; j++) {
+				if (i < board.length - 1 && j < board.length - 1) {
+					possibleLines.add(new Line(i, j, BOTTOM));
+					possibleLines.add(new Line(i, j, RIGHT));
+					
+					aux.add(new Line(i, j, BOTTOM));
+					aux.add(new Line(i, j, RIGHT));
+				} else if (i < board.length - 1) {
+					possibleLines.add(new Line(i, j, BOTTOM));
+					aux.add(new Line(i, j, BOTTOM));
+				} else if (j < board.length - 1) {
+					possibleLines.add(new Line(i, j, RIGHT));
+					aux.add(new Line(i, j, RIGHT));
+				}else{ System.out.println(i + " " + j); }
+			}
+		}
+		
+		
+		
+		
+		 /*JOptionPane.showMessageDialog(null, ""+(possibleLines.size() + "   "
+		 + maxLines));*/
+
+	}
+	
+	public void initBoardOnly(){
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				board[i][j] = new Box();
+		
+		/*for (int i = 0; i < board.length; i++) {
+			addLine(0, i, Squares.TOP);
+			addLine(board.length - 1, i, Squares.BOTTOM);
+		}
+
+		for (int i = 0; i < board.length; i++) {
+			addLine(i, 0, Squares.LEFT);
+			addLine(i, board.length - 1, Squares.RIGHT);
+		}*/
+	}
+	
 
 	public static class Line {
 		int i, j, side;
@@ -58,54 +111,18 @@ public class Matrix {
 		}
 	}
 
-	public Matrix(int w, int h) {
-		width = w;
-		height = h;
-
-		board = new Box[height][width];
-		for (int i = 0; i < height; i++)
-			for (int j = 0; j < width; j++)
-				board[i][j] = new Box();
-
-		maxLines = 2 * board.length * board.length - 2 * board.length;
-		possibleLines = new ArrayList<>(maxLines);
-		for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j < board.length; j++) {
-				if (i < board.length - 1 && j < board.length - 1) {
-					possibleLines.add(new Line(i, j, BOTTOM));
-					possibleLines.add(new Line(i, j, RIGHT));
-				} else if (i < board.length - 1) {
-					possibleLines.add(new Line(i, j, BOTTOM));
-				} else if (j < board.length - 1) {
-					possibleLines.add(new Line(i, j, RIGHT));
-				}
-			}
-		}
-
-		for (int i = 0; i < board.length; i++) {
-			addLine(0, i, Squares.TOP);
-			addLine(board.length - 1, i, Squares.BOTTOM);
-		}
-
-		for (int i = 1; i < board.length - 1; i++) {
-			addLine(i, 0, Squares.LEFT);
-			addLine(i, board.length - 1, Squares.RIGHT);
-		}
-
-		 /*JOptionPane.showMessageDialog(null, ""+(possibleLines.size() + "   "
-		 + maxLines));*/
-
-	}
+	
 
 	public void addLine(int i, int j, String side) {
-		if (board[i][j].getSide(side) == true)
-			return;
+		
+		if( isLine(i,j,side) ) return;
+		
 		if (side.equals(Squares.LEFT)) {
 			if (j > 0)
 				board[i][j - 1].setRight(true);
 			board[i][j].setLeft(true);
 		} else if (side.equals(Squares.RIGHT)) {
-			if (j < width - 1)
+			if (j < n - 1)
 				board[i][j + 1].setLeft(true);
 			board[i][j].setRight(true);
 		} else if (side.equals(Squares.TOP)) {
@@ -113,10 +130,16 @@ public class Matrix {
 				board[i - 1][j].setBottom(true);
 			board[i][j].setTop(true);
 		} else {
-			if (i < height - 1)
+			if (i < n - 1)
 				board[i + 1][j].setTop(true);
 			board[i][j].setBottom(true);
 		}
+	}
+	
+	
+	public boolean isLine(int i, int j, String side){
+				
+		return board[i][j].getSide(side);
 	}
 
 	public Line getRandomLine() {
@@ -127,20 +150,20 @@ public class Matrix {
 			Line line = possibleLines.remove(r.nextInt(possibleLines.size()));
 			if (isNotDumb(line)) {
 				return line;
-			} else {
-				// System.out.println(line);
-				/*
-				 * System.out.println("|"+line+"|"); print();
-				 */
 			}
-			/*
-			 * int index = r.nextInt(possibleLines.size()); Line line =
-			 * possibleLines.get(index); if (isNotDumb(line)) {
-			 * possibleLines.remove(index); return line; }
-			 */
 		}
-
-		throw new IllegalArgumentException("Se acabo la lista, criptoperrito.");
+		
+		return null;
+		/*for (int i = 0; i <n; i++) {
+			for (int j = 0; j <n; j++) {
+				System.out.println( " " + i + " " + j +" "+  board[i][j] );
+			}
+		}
+		System.out.println("---");
+		for(Line l : aux){
+			System.out.println(l);
+		}
+		throw new IllegalArgumentException("Se acabo la lista, criptoperrito.");*/
 
 	}
 
@@ -158,88 +181,61 @@ public class Matrix {
 	public boolean isNotDumb(Line line) {
 		int i = line.i, j = line.j, side = line.side;
 		Box box = board[i][j].clone();
-
-		switch (side) {
-		case RIGHT:
-			if (box.right)
-				return false;
-			else break;
-
-		case LEFT:
-			if (box.left)
-				return false;
-			else break;
-
-		case TOP:
-			if (box.top)
-				return false;
-			else break;
-
-		case BOTTOM:
-			if (box.bottom)
-				return false;
-			else break;
-
-		}
-
 		Box box2 = null;
-
-		if (side == LEFT && j > 0)
-			box2 = board[i][j - 1].clone();
-		else if (side == RIGHT && j < board.length - 1)
-			box2 = board[i][j + 1].clone();
-		else if (side == TOP && i > 0)
-			box2 = board[i - 1][j].clone();
-		else if (side == BOTTOM && i < board.length - 1)
-			box2 = board[i + 1][j].clone();
-
-		if (side == LEFT)
-			box.setLeft(true);
-		else if (side == RIGHT)
-			box.setRight(true);
-		else if (side == TOP)
-			box.setTop(true);
-		else if (side == BOTTOM)
-			box.setBottom(true);
-
-		if (box2 == null) {
-			return box.turnedSides <= 2;
-		} else {
-
-			switch (side) {
-			case RIGHT:
-				if (box2.left)
-					return false;
-				else break;
-
+			
+		switch (side) {
 			case LEFT:
+				if( box.left ) return false;
+				else box.setLeft(true);
+				
+				box2 = board[i][j - 1].clone();
 				if (box2.right)
 					return false;
-				else break;
-
+				else{
+					box2.setRight(true);
+					break;
+				}
+		
+			case RIGHT:
+				if( box.right ) return false;
+				else box.setRight(true);
+				
+				box2 = board[i][j + 1].clone();
+				if (box2.left)
+					return false;
+				else{
+					box2.setLeft(true);
+					break;
+				}
+	
 			case TOP:
+				if(box.top) return false;
+				else box.setTop(true);
+				
+				box2 = board[i - 1][j].clone();
 				if (box2.bottom)
 					return false;
-				else break;
-
+				else{
+					box2.setBottom(true);
+					break;
+				}
+	
 			case BOTTOM:
+				if(box.bottom) return false;
+				else box.setBottom(true);
+				
+				box2 = board[i + 1][j].clone();
 				if (box2.top)
 					return false;
-				else break;
+				else{
+					box2.setTop(true);
+					break;
+				}
 
-			}
-
-			if (side == LEFT)
-				box2.setRight(true);
-			else if (side == RIGHT)
-				box2.setLeft(true);
-			else if (side == TOP)
-				box2.setBottom(true);
-			else if (side == BOTTOM)
-				box2.setTop(true);
-
-			return box.turnedSides <= 2 && box2.turnedSides <= 2;
 		}
+
+		return box.turnedSides <= 2 && box2.turnedSides <= 2;
+		
 	}
 
 	public void addLine(Line line) {
@@ -287,7 +283,7 @@ class Box {
 	}
 
 	public String toString() {
-		return top + " " + bottom + " " + left + " " + right;
+		return top + " " + bottom + " " + left + " " + right + " " + turnedSides;
 	}
 
 	protected Box clone() {
@@ -323,6 +319,5 @@ class Box {
 			turnedSides++;
 		this.right = right;
 	}
-	
 
 }

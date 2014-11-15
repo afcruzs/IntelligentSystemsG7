@@ -17,7 +17,7 @@ import unalcol.reflect.util.ReflectUtil;
  */
 public class SquaresMain  {
   public static void main( String[] argv ){
-	  Matrix m = new Matrix(3, 3);
+
 	  //System.out.println(m.possibleLines.get(8) + " " + m.isNotDumb(m.possibleLines.get(8)));
 	  /*for(unalcol.agents.examples.squares.grupo7.Matrix.Line l : m.possibleLines){
 		  System.out.println( l + " " +m.isNotDumb(l) );
