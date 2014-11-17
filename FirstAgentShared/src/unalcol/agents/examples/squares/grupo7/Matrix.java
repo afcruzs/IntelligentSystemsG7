@@ -221,7 +221,7 @@ public class Matrix implements Serializable{
 					Qj.add(j);
 					lines1.push(new Line(i, j, BOTTOM_C));
 				} else {
-					lines1.push(new Line(i, j, BOTTOM_C));
+					toDelete.push(new Line(i, j, BOTTOM_C));
 				}
 			}
 			if ( !current.right ) {
@@ -232,7 +232,7 @@ public class Matrix implements Serializable{
 					Qj.add(j + 1);
 					lines1.push(new Line(i, j, RIGHT_C));
 				} else {
-					lines1.push(new Line(i, j, RIGHT_C));
+					toDelete.push(new Line(i, j, RIGHT_C));
 				}
 			}
 			if ( !current.left ) {
@@ -243,7 +243,7 @@ public class Matrix implements Serializable{
 					Qj.add(j - 1);
 					lines1.push(new Line(i, j - 1, RIGHT_C));
 				} else {
-					lines1.push(new Line(i, j, RIGHT_C));
+					toDelete.push(new Line(i, j, RIGHT_C));
 				}
 			}
 			if ( !current.top ) {
@@ -254,7 +254,7 @@ public class Matrix implements Serializable{
 					Qj.add(j);
 					lines1.push(new Line(i - 1, j, BOTTOM_C));
 				} else {
-					lines1.push(new Line(i, j, BOTTOM_C));
+					toDelete.push(new Line(i, j, BOTTOM_C));
 				}
 			}
 		}
