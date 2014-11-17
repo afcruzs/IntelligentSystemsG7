@@ -417,6 +417,7 @@ public class Matrix implements Serializable{
 	}
 	
 	private void fillPossiblePoints(Line line, String player){
+		System.out.println(line);
 		int i = line.i, j = line.j;
 		Box box2 = null;
 		switch (line.side) {
@@ -494,7 +495,7 @@ class Box implements Serializable {
 		if(top && bottom && !left && right)
 			return new Line(i, j-1, Matrix.RIGHT_C);
 		
-		if(top && bottom && !left && !right)
+		if(top && bottom && left && !right)
 			return new Line(i, j+1, Matrix.LEFT_C);
 		
 		throw new IllegalArgumentException("Hay algo mal porque el turnedSiedes es 3 pero en realidad no hay 3 booleanos en falso");
