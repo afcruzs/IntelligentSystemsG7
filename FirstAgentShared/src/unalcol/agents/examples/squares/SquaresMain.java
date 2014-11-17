@@ -27,7 +27,7 @@ public class SquaresMain  {
     // Reflection
     ServiceProvider provider = ReflectUtil.getProvider("services/");
     Agent w_agent = new Agent( new Grupo7BoxesAgent( Squares.WHITE ));
-    Agent b_agent =  new Agent( new Agent2( Squares.BLACK ));
+    Agent b_agent =  new Agent( new DummySquaresAgentProgram( Squares.BLACK ));
     //Agent b_agent = new Agent( new ReversiSinGrupoAPv2(Reversi.BLACK) );
     //Agent w_agent = new Agent( new NoTanDummiReversiAgentProgram(Reversi.WHITE) );
     SquaresMainFrame frame = new SquaresMainFrame( w_agent, b_agent );

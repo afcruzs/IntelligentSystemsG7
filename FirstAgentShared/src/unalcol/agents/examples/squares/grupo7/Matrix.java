@@ -1,5 +1,10 @@
 package unalcol.agents.examples.squares.grupo7;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,22 +12,20 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
 
-import javax.swing.JOptionPane;
-
 import unalcol.agents.examples.squares.Squares;
 import unalcol.agents.examples.squares.grupo7.Matrix.Line;
 
-public class Matrix {
+public class Matrix implements Serializable{
 
-	final static int LEFT = 0;
+	public final static int LEFT_C = 0;
 
-	static final int RIGHT = 1;
+	public static final int RIGHT_C = 1;
 
-	static final int TOP = 2;
+	public static final int TOP_C = 2;
 
-	static final int BOTTOM = 3;
+	public static final int BOTTOM_C = 3;
 
-	int n;
+	int n,white,black;
 	Box board[][];
 	public List<Line> possibleLines, aux;
 
@@ -31,17 +34,18 @@ public class Matrix {
 		possibleLines = new ArrayList<>(maxLines);
 		this.n = n;
 		board = new Box[n][n];
+		white = black = 0;
 
 		initBoardOnly();
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				if (i < n - 1 && j < n - 1) {
-					possibleLines.add(new Line(i, j, BOTTOM));
-					possibleLines.add(new Line(i, j, RIGHT));
+					possibleLines.add(new Line(i, j, BOTTOM_C));
+					possibleLines.add(new Line(i, j, RIGHT_C));
 				} else if (i < n - 1) {
-					possibleLines.add(new Line(i, j, BOTTOM));
+					possibleLines.add(new Line(i, j, BOTTOM_C));
 				} else if (j < n - 1) {
-					possibleLines.add(new Line(i, j, RIGHT));
+					possibleLines.add(new Line(i, j, RIGHT_C));
 				} else {
 					System.out.println(i + " " + j);
 				}
@@ -61,6 +65,15 @@ public class Matrix {
 			board[board.length - 1][i].setBottom(true);
 			board[i][board.length - 1].setRight(true);
 		}
+		
+		white = black = 0;
+	}
+	
+	public void colorIfNeeded(String perception){
+		if( perception.equals(Squares.WHITE) )
+			white++;
+		else if( perception.equals(Squares.BLACK) )
+			black++;
 	}
 
 	public void addLine(int i, int j, String side) {
@@ -129,7 +142,7 @@ public class Matrix {
 		Box box2 = null;
 
 		switch (side) {
-		case LEFT:
+		case LEFT_C:
 			if (box.left)
 				return true;
 
@@ -138,7 +151,7 @@ public class Matrix {
 				return true;
 			break;
 
-		case RIGHT:
+		case RIGHT_C:
 			if (box.right)
 				return true;
 
@@ -147,7 +160,7 @@ public class Matrix {
 				return true;
 			break;
 
-		case TOP:
+		case TOP_C:
 			if (box.top)
 				return true;
 
@@ -156,7 +169,7 @@ public class Matrix {
 				return true;
 			break;
 
-		case BOTTOM:
+		case BOTTOM_C:
 			if (box.bottom)
 				return true;
 
@@ -171,16 +184,16 @@ public class Matrix {
 
 	public void addLine(Line line) {
 		switch (line.side) {
-		case LEFT:
+		case LEFT_C:
 			addLine(line.i, line.j, Squares.LEFT);
 			break;
-		case RIGHT:
+		case RIGHT_C:
 			addLine(line.i, line.j, Squares.RIGHT);
 			break;
-		case TOP:
+		case TOP_C:
 			addLine(line.i, line.j, Squares.TOP);
 			break;
-		case BOTTOM:
+		case BOTTOM_C:
 			addLine(line.i, line.j, Squares.BOTTOM);
 			break;
 		}
@@ -198,7 +211,7 @@ public class Matrix {
 			if ( !current.bottom ) {
 				if ( board[i + 1][j].turnedSides >= 2 ) {
 					Q.add(board[i + 1][j]);
-					lines1.push(new Line(i, j, BOTTOM));
+					lines1.push(new Line(i, j, BOTTOM_C));
 				}
 				board[i][j].setBottom(true);
 				board[i + 1][j].setTop(true);
@@ -206,7 +219,7 @@ public class Matrix {
 			if ( !current.right ) {
 				if ( board[i][j + 1].turnedSides >= 2 ) {
 					Q.add(board[i][j + 1]);
-					lines1.push(new Line(i, j, RIGHT));
+					lines1.push(new Line(i, j, RIGHT_C));
 				}
 				board[i][j].setRight(true);
 				board[i][j + 1].setLeft(true);
@@ -214,7 +227,7 @@ public class Matrix {
 			if ( !current.left ) {
 				if ( board[i][j - 1].turnedSides >= 2 ) {
 					Q.add(board[i][j - 1]);
-					lines1.push(new Line(i, j - 1, RIGHT));
+					lines1.push(new Line(i, j - 1, RIGHT_C));
 				}
 				board[i][j].setLeft(true);
 				board[i][j - 1].setRight(true);
@@ -222,7 +235,7 @@ public class Matrix {
 			if ( !current.top ) {
 				if ( board[i - 1][j].turnedSides >= 2 ) {
 					Q.add(board[i - 1][j]);
-					lines1.push(new Line(i - 1, j, BOTTOM));
+					lines1.push(new Line(i - 1, j, BOTTOM_C));
 				}
 				board[i][j].setTop(true);
 				board[i - 1][j].setBottom(true);
@@ -295,7 +308,7 @@ public class Matrix {
 	}
 
 	
-	public static class Line {
+	public static class Line implements Serializable {
 		int i, j, side;
 
 		public Line(int i, int j, int side) {
@@ -306,16 +319,16 @@ public class Matrix {
 
 		public String getStringSide() {
 			switch (side) {
-			case LEFT:
+			case LEFT_C:
 				return Squares.LEFT;
 
-			case RIGHT:
+			case RIGHT_C:
 				return Squares.RIGHT;
 
-			case TOP:
+			case TOP_C:
 				return Squares.TOP;
 
-			case BOTTOM:
+			case BOTTOM_C:
 				return Squares.BOTTOM;
 
 			default:
@@ -327,11 +340,94 @@ public class Matrix {
 			return i + " " + j + " " + getStringSide();
 		}
 	}
+
+
+	public boolean isOver() {
+		return (white + black) == n*n;
+	}
+
+	public static String opposite(String player) {
+		if( player.equals(Squares.WHITE) )
+			return Squares.BLACK;
+		else if( player.equals(Squares.BLACK) )
+			return Squares.WHITE;
+		else
+			throw new IllegalArgumentException();
+	}
+	
+	public Matrix deepClone() {
+		try {
+			// write this object
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+
+			// read a clone
+			ByteArrayInputStream bais = new ByteArrayInputStream(
+					baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+
+			return (Matrix) ois.readObject();
+		} catch (Exception exc) {
+			System.out.println("Error clonando la matrix" + exc);
+		}
+
+		return null;
+	}
+	
+	private void fillPossiblePoints(Line line, String player){
+		int i = line.i, j = line.j;
+		Box box2 = null;
+		switch (line.side) {
+		case LEFT_C:
+			box2 = board[i][j - 1];
+			break;
+
+		case RIGHT_C:
+			box2 = board[i][j + 1];
+			break;
+
+		case TOP_C:
+			box2 = board[i - 1][j];
+			break;
+
+		case BOTTOM_C:
+			box2 = board[i + 1][j];
+			break;
+		}
+		addLine(line);
+		
+		if( board[i][j].turnedSides == 4 ){
+			if( player.equals(Squares.WHITE) ){
+				white++;
+			}else black++;
+			
+			Line missingLine = box2.getMissingLine(i,j);
+			if(missingLine != null) 
+				fillPossiblePoints(missingLine, player);
+		}else if( board[i][j].turnedSides == 3 ){
+			Line missingLine1 = board[i][j].getMissingLine(i,j);
+			Line missingLine2 = box2.getMissingLine(i,j);
+			
+			if(missingLine1 != null)
+				fillPossiblePoints(missingLine1, player);
+			
+			if(missingLine2 != null)
+				fillPossiblePoints(missingLine2, player);
+		}
+	}
+	
+	public Matrix newState(Line line, String player) {
+		Matrix matrix = deepClone();
+		matrix.addLine(line);
+		matrix.fillPossiblePoints(line, player);
+		return matrix;
+	}
 }
 
 
 
-class Box {
+class Box implements Serializable {
 	boolean top, bottom, left, right;
 	int turnedSides;
 
@@ -341,6 +437,26 @@ class Box {
 		right = false;
 		left = false;
 		turnedSides = 0;
+	}
+
+	public Line getMissingLine(int i, int j) {
+		
+		if(turnedSides != 3)
+			return null;
+		
+		if(!top && bottom && left && right)
+			return new Line(i-1, j, Matrix.BOTTOM_C);
+		
+		if(top && !bottom && left && right)
+			return new Line(i+1, j, Matrix.TOP_C);
+		
+		if(top && bottom && !left && right)
+			return new Line(i, j-1, Matrix.RIGHT_C);
+		
+		if(top && bottom && !left && !right)
+			return new Line(i, j+1, Matrix.LEFT_C);
+		
+		throw new IllegalArgumentException("Hay algo mal porque el turnedSiedes es 3 pero en realidad no hay 3 booleanos en falso");
 	}
 
 	public boolean getSide(String side) {

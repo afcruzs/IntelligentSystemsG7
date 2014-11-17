@@ -1,5 +1,6 @@
 package unalcol.agents.examples.squares.grupo7;
 
+import java.util.Collection;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
@@ -21,9 +22,9 @@ public class Grupo7BoxesAgent implements AgentProgram {
 
 	@Override
 	public Action compute(Percept p) {
-		if(matrix == null)
+		if(matrix == null){
 			matrix = new Matrix(Integer.parseInt(p.getAttribute(Squares.SIZE).toString()));
-		else matrix.initBoardOnly();
+		}else matrix.initBoardOnly();
 		
 		/*
 		 * try{ Thread.sleep(1000); }catch(Exception e){}
@@ -31,6 +32,8 @@ public class Grupo7BoxesAgent implements AgentProgram {
 		if (p.getAttribute(Squares.TURN).equals(color)) {
 			for (int i = 0; i < matrix.n; i++)
 				for (int j = 0; j < matrix.n; j++) {
+					
+					matrix.colorIfNeeded((String) p.getAttribute(i+":"+j+":color"));
 					if ( i < matrix.n - 1 && j < matrix.n - 1 ) {
 						if (((String) p.getAttribute(i + ":" + j + ":"
 								+ Squares.BOTTOM)).equals(Squares.TRUE)) {
@@ -75,8 +78,78 @@ public class Grupo7BoxesAgent implements AgentProgram {
 			return new Action(i + ":" + j + ":left");
 		}
 		*/
-		try{ Thread.sleep(30000); }catch(Exception e){}
-		return null;
+		/*try{ Thread.sleep(30000); }catch(Exception e){}
+		return null;*/
+		
+		System.out.println("We are gonna minimax!! ASLKJDKJSLA");
+		MiniMaxValue value = miniMaxWithAlphaBeta(matrix, color, 0,Integer.MIN_VALUE, Integer.MAX_VALUE);
+		Line optimalLine = value.line;
+		return new Action(optimalLine.i+":"+optimalLine.j+":"+line.getStringSide());
+	}
+	
+	public MiniMaxValue miniMaxWithAlphaBeta(Matrix matrix, String player ,int depth, int alpha, int beta){
+		System.out.println(matrix.white + " " +matrix.black);
+		depth++;		
+		if( matrix.isOver() )
+			return new MiniMaxValue( null, evaluateFunction(matrix, depth), depth );
+		
+		Collection<Line> possibleLines = matrix.evaluationLines();
+		System.out.println("asdsd");
+		MiniMaxValue best = null;
+		for( Line t : possibleLines ){
+			MiniMaxValue miniMaxValue = miniMaxWithAlphaBeta(matrix.newState(t, player), 
+					Matrix.opposite(player), depth, alpha, beta);
+			
+			miniMaxValue.line = new Line( t.i, t.j, t.side );
+			
+			if( best == null )
+				best = miniMaxValue;
+			else if( (player.equals(color) && miniMaxValue.value > best.value) || 
+						(!player.equals(color) && miniMaxValue.value < best.value) )
+							best = miniMaxValue;
+			
+			if( player.equals(color) ){
+				alpha = Math.max(alpha, miniMaxValue.value);
+				if( beta <= alpha ){
+					break;
+				}
+			}else{
+				beta = Math.min(beta, miniMaxValue.value);
+				if(beta <= alpha){
+					break;
+				}
+				
+			}
+				
+		}
+		
+		return best;
+	}
+	
+	private int evaluateFunction(Matrix matrix, int depth) {
+		//TODO: Calcular el puntaje maximo y cuadrar con la profunidad
+		//para que se demore mas en caso de que perder sea iniminente.
+		if( color.equals(Squares.WHITE) )
+			return matrix.white;
+		else
+			return matrix.black;
+	}
+
+	class MiniMaxValue implements Comparable<MiniMaxValue>{
+		Line line;
+		int value;
+		int depth;
+		
+		public MiniMaxValue(Line line, int v,int depth){
+			this.line = line;
+			this.value = v;
+			this.depth = depth; 
+		}
+
+		@Override
+		public int compareTo(MiniMaxValue o) {
+			return value-o.value;
+		}
 	}
 
 	@Override
