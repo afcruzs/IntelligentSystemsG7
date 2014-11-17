@@ -31,21 +31,31 @@ public class Grupo7BoxesAgent implements AgentProgram {
 		if (p.getAttribute(Squares.TURN).equals(color)) {
 			for (int i = 0; i < matrix.n; i++)
 				for (int j = 0; j < matrix.n; j++) {
-					if (((String) p.getAttribute(i + ":" + j + ":"
-							+ Squares.LEFT)).equals(Squares.TRUE))
-						matrix.addLine(i, j, Squares.LEFT);
-					
-					if (((String) p.getAttribute(i + ":" + j + ":"
-							+ Squares.TOP)).equals(Squares.TRUE))
-						matrix.addLine(i, j, Squares.TOP);
-					
-					if (((String) p.getAttribute(i + ":" + j + ":"
-							+ Squares.BOTTOM)).equals(Squares.TRUE))
-						matrix.addLine(i, j, Squares.BOTTOM);
-					
-					if (((String) p.getAttribute(i + ":" + j + ":"
-							+ Squares.RIGHT)).equals(Squares.TRUE))
-						matrix.addLine(i, j, Squares.RIGHT);
+					if ( i < matrix.n - 1 && j < matrix.n - 1 ) {
+						if (((String) p.getAttribute(i + ":" + j + ":"
+								+ Squares.BOTTOM)).equals(Squares.TRUE)) {
+							matrix.addLine(i, j, Squares.BOTTOM);
+							matrix.addLine(i + 1, j, Squares.TOP);
+						}
+						
+						if (((String) p.getAttribute(i + ":" + j + ":"
+								+ Squares.RIGHT)).equals(Squares.TRUE)) {
+							matrix.addLine(i, j, Squares.RIGHT);
+							matrix.addLine(i, j + 1, Squares.LEFT);
+						}
+					} else if ( j < matrix.n - 1 ) {
+						if (((String) p.getAttribute(i + ":" + j + ":"
+								+ Squares.RIGHT)).equals(Squares.TRUE)) {
+							matrix.addLine(i, j, Squares.RIGHT);
+							matrix.addLine(i, j + 1, Squares.LEFT);
+						}
+					} else if ( i < matrix.n - 1 ) {
+						if (((String) p.getAttribute(i + ":" + j + ":"
+								+ Squares.BOTTOM)).equals(Squares.TRUE)) {
+							matrix.addLine(i, j, Squares.BOTTOM);
+							matrix.addLine(i + 1, j, Squares.TOP);
+						}
+					}					
 				}
 		}
 
@@ -54,6 +64,8 @@ public class Grupo7BoxesAgent implements AgentProgram {
 			matrix.addLine(line);
 			return new Action(line.i+":"+line.j+":"+line.getStringSide());
 		}
+		
+		/*
 		else{
 			Random r = new Random();
 			//JOptionPane.showMessageDialog(null, "lolol");
@@ -62,6 +74,9 @@ public class Grupo7BoxesAgent implements AgentProgram {
 			int j = r.nextInt(matrix.n);
 			return new Action(i + ":" + j + ":left");
 		}
+		*/
+		try{ Thread.sleep(30000); }catch(Exception e){}
+		return null;
 	}
 
 	@Override

@@ -8,6 +8,8 @@ package unalcol.agents.examples.squares;
 import unalcol.agents.Agent;
 import unalcol.agents.examples.squares.grupo7.Grupo7BoxesAgent;
 import unalcol.agents.examples.squares.grupo7.Matrix;
+import unalcol.agents.examples.squares.grupo7.Agent2;
+import unalcol.agents.examples.squares.grupo7.Matrix2;
 import unalcol.reflect.service.ServiceProvider;
 import unalcol.reflect.util.ReflectUtil;
 
@@ -25,7 +27,7 @@ public class SquaresMain  {
     // Reflection
     ServiceProvider provider = ReflectUtil.getProvider("services/");
     Agent w_agent = new Agent( new Grupo7BoxesAgent( Squares.WHITE ));
-    Agent b_agent =  new Agent( new Grupo7BoxesAgent( Squares.BLACK ));
+    Agent b_agent =  new Agent( new Agent2( Squares.BLACK ));
     //Agent b_agent = new Agent( new ReversiSinGrupoAPv2(Reversi.BLACK) );
     //Agent w_agent = new Agent( new NoTanDummiReversiAgentProgram(Reversi.WHITE) );
     SquaresMainFrame frame = new SquaresMainFrame( w_agent, b_agent );
