@@ -200,45 +200,62 @@ public class Matrix implements Serializable{
 	}
 
 	private void expansion ( Box board[][], int i, int j, List<Line> lines ) {
-		Queue<Box> Q = new LinkedList<>();
-		Q.add(board[i][j]);
+		Queue<Integer> Qi = new LinkedList<>();
+		Queue<Integer> Qj = new LinkedList<>();
+		Qi.add(i);
+		Qj.add(j);
 		
 		Stack<Line> lines1 = new Stack<>();
+		Stack<Line> toDelete = new Stack<>();
 		Box current = board[i][j];
-		while ( !Q.isEmpty() ) {
-			current = Q.poll();
+		while ( !Qi.isEmpty() ) {
+			i = Qi.poll();
+			j = Qj.poll();
+			current = board[i][j];
 			
 			if ( !current.bottom ) {
-				if ( board[i + 1][j].turnedSides >= 2 ) {
-					Q.add(board[i + 1][j]);
-					lines1.push(new Line(i, j, BOTTOM_C));
-				}
 				board[i][j].setBottom(true);
 				board[i + 1][j].setTop(true);
+				if ( board[i + 1][j].turnedSides >= 2 ) {
+					Qi.add(i + 1);
+					Qj.add(j);
+					lines1.push(new Line(i, j, BOTTOM_C));
+				} else {
+					lines1.push(new Line(i, j, BOTTOM_C));
+				}
 			}
 			if ( !current.right ) {
-				if ( board[i][j + 1].turnedSides >= 2 ) {
-					Q.add(board[i][j + 1]);
-					lines1.push(new Line(i, j, RIGHT_C));
-				}
 				board[i][j].setRight(true);
 				board[i][j + 1].setLeft(true);
+				if ( board[i][j + 1].turnedSides >= 2 ) {
+					Qi.add(i);
+					Qj.add(j + 1);
+					lines1.push(new Line(i, j, RIGHT_C));
+				} else {
+					lines1.push(new Line(i, j, RIGHT_C));
+				}
 			}
 			if ( !current.left ) {
-				if ( board[i][j - 1].turnedSides >= 2 ) {
-					Q.add(board[i][j - 1]);
-					lines1.push(new Line(i, j - 1, RIGHT_C));
-				}
 				board[i][j].setLeft(true);
 				board[i][j - 1].setRight(true);
+				if ( board[i][j - 1].turnedSides >= 2 ) {
+					Qi.add(i);
+					Qj.add(j - 1);
+					lines1.push(new Line(i, j - 1, RIGHT_C));
+				} else {
+					lines1.push(new Line(i, j, RIGHT_C));
+				}
 			}
 			if ( !current.top ) {
-				if ( board[i - 1][j].turnedSides >= 2 ) {
-					Q.add(board[i - 1][j]);
-					lines1.push(new Line(i - 1, j, BOTTOM_C));
-				}
 				board[i][j].setTop(true);
 				board[i - 1][j].setBottom(true);
+				if ( board[i - 1][j].turnedSides >= 2 ) {
+					Qi.add(i - 1);
+					Qj.add(j);
+					lines1.push(new Line(i - 1, j, BOTTOM_C));
+				} else {
+					lines1.push(new Line(i, j, BOTTOM_C));
+				}
 			}
 		}
 		
@@ -248,47 +265,69 @@ public class Matrix implements Serializable{
 				board2[k][h] = this.board[k][h].clone();
 		
 		Stack<Line> lines2 = new Stack<>();
-		Q.add(current);
+		Qi.add(i);
+		Qj.add(j);
 		
-		while ( !Q.isEmpty() ) {
-			current = Q.poll();
+		while ( !Qi.isEmpty() ) {
+			i = Qi.poll();
+			j = Qj.poll();
+			current = board[i][j];
 			
 			if ( !current.bottom ) {
-				if ( board2[i + 1][j].turnedSides >= 2 ) {
-					Q.add(board2[i + 1][j]);
+				board[i][j].setBottom(true);
+				board[i + 1][j].setTop(true);
+				if ( board[i + 1][j].turnedSides >= 2 ) {
+					Qi.add(i + 1);
+					Qj.add(j);
 					lines2.push(lines1.pop());
 				}
-				board2[i][j].setBottom(true);
-				board2[i + 1][j].setTop(true);
 			}
 			if ( !current.right ) {
-				if ( board2[i][j + 1].turnedSides >= 2 ) {
-					Q.add(board2[i][j + 1]);
+				board[i][j].setRight(true);
+				board[i][j + 1].setLeft(true);
+				if ( board[i][j + 1].turnedSides >= 2 ) {
+					Qi.add(i);
+					Qj.add(j + 1);
 					lines2.push(lines1.pop());
 				}
-				board2[i][j].setRight(true);
-				board2[i][j + 1].setLeft(true);
 			}
 			if ( !current.left ) {
-				if ( board2[i][j - 1].turnedSides >= 2 ) {
-					Q.add(board2[i][j - 1]);
+				board[i][j].setLeft(true);
+				board[i][j - 1].setRight(true);
+				if ( board[i][j - 1].turnedSides >= 2 ) {
+					Qi.add(i);
+					Qj.add(j - 1);
 					lines2.push(lines1.pop());
 				}
-				board2[i][j].setLeft(true);
-				board2[i][j - 1].setRight(true);
 			}
 			if ( !current.top ) {
-				if ( board2[i - 1][j].turnedSides >= 2 ) {
-					Q.add(board2[i - 1][j]);
+				board[i][j].setTop(true);
+				board[i - 1][j].setBottom(true);
+				if ( board[i - 1][j].turnedSides >= 2 ) {
+					Qi.add(i - 1);
+					Qj.add(j);
 					lines2.push(lines1.pop());
 				}
-				board2[i][j].setTop(true);
-				board2[i - 1][j].setBottom(true);
+			}
+		}
+		
+		while ( !toDelete.empty() ) {
+			Line line = toDelete.pop();
+			if ( line.side == RIGHT_C ) {
+				board[line.i][line.j].setRight(false);
+
+				if ( j < n - 1 ) 
+					board[line.i][line.j + 1].setLeft(false);
+			} else {
+				board[line.i][line.j].setBottom(false);
+				
+				if ( i < n - 1 )
+					board[line.i + 1][line.j].setTop(false);					
 			}
 		}
 		
 		if ( !lines1.isEmpty() ) lines.add(lines1.peek());
-		lines.add(lines2.peek());
+		if ( !lines2.isEmpty() ) lines.add(lines2.peek());
 	}
 	
 	public List<Line> evaluationLines() {
@@ -301,8 +340,10 @@ public class Matrix implements Serializable{
 		
 		for ( int i = 0; i < n; i++ )
 			for ( int j = 0; j < n; j++ )
-				if ( tempBoard[i][j].turnedSides < 3 )
+				if ( board[i][j].turnedSides < 3 && tempBoard[i][j].turnedSides != 4 ) {
+					System.out.println( "Selected " + i + " " + j );
 					expansion( tempBoard, i, j, lines );
+				}
 					
 		return lines;
 	}
@@ -487,26 +528,34 @@ class Box implements Serializable {
 	}
 
 	public void setTop(boolean top) {
-		if (!this.top)
+		if (top && !this.top)
 			turnedSides++;
+		else if (!top && this.top)
+			turnedSides--;
 		this.top = top;
 	}
 
 	public void setBottom(boolean bottom) {
-		if (!this.bottom)
+		if (bottom && !this.bottom)
 			turnedSides++;
+		else if (!bottom && this.bottom)
+			turnedSides--;
 		this.bottom = bottom;
 	}
 
 	public void setLeft(boolean left) {
-		if (!this.left)
+		if (left && !this.left)
 			turnedSides++;
+		else if (!left && this.left)
+			turnedSides--;
 		this.left = left;
 	}
 
 	public void setRight(boolean right) {
-		if (!this.right)
+		if (right && !this.right)
 			turnedSides++;
+		else if (!right && this.right)
+			turnedSides--;
 		this.right = right;
 	}
 

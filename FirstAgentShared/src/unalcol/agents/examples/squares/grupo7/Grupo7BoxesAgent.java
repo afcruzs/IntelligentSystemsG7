@@ -78,13 +78,14 @@ public class Grupo7BoxesAgent implements AgentProgram {
 			return new Action(i + ":" + j + ":left");
 		}
 		*/
-		/*try{ Thread.sleep(30000); }catch(Exception e){}
-		return null;*/
-		
+		System.out.println(matrix.evaluationLines());
+		try{ Thread.sleep(30000); }catch(Exception e){}
+		return null;/*
 		System.out.println("We are gonna minimax!! ASLKJDKJSLA");
 		MiniMaxValue value = miniMaxWithAlphaBeta(matrix, color, 0,Integer.MIN_VALUE, Integer.MAX_VALUE);
 		Line optimalLine = value.line;
 		return new Action(optimalLine.i+":"+optimalLine.j+":"+line.getStringSide());
+		*/
 	}
 	
 	public MiniMaxValue miniMaxWithAlphaBeta(Matrix matrix, String player ,int depth, int alpha, int beta){
