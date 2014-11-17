@@ -216,7 +216,7 @@ public class Matrix implements Serializable{
 			if ( !current.bottom ) {
 				board[i][j].setBottom(true);
 				board[i + 1][j].setTop(true);
-				if ( board[i + 1][j].turnedSides >= 2 ) {
+				if ( board[i + 1][j].turnedSides > 2 ) {
 					Qi.add(i + 1);
 					Qj.add(j);
 					lines1.push(new Line(i, j, BOTTOM_C));
@@ -227,7 +227,7 @@ public class Matrix implements Serializable{
 			if ( !current.right ) {
 				board[i][j].setRight(true);
 				board[i][j + 1].setLeft(true);
-				if ( board[i][j + 1].turnedSides >= 2 ) {
+				if ( board[i][j + 1].turnedSides > 2 ) {
 					Qi.add(i);
 					Qj.add(j + 1);
 					lines1.push(new Line(i, j, RIGHT_C));
@@ -238,23 +238,23 @@ public class Matrix implements Serializable{
 			if ( !current.left ) {
 				board[i][j].setLeft(true);
 				board[i][j - 1].setRight(true);
-				if ( board[i][j - 1].turnedSides >= 2 ) {
+				if ( board[i][j - 1].turnedSides > 2 ) {
 					Qi.add(i);
 					Qj.add(j - 1);
 					lines1.push(new Line(i, j - 1, RIGHT_C));
 				} else {
-					toDelete.push(new Line(i, j, RIGHT_C));
+					toDelete.push(new Line(i, j - 1, RIGHT_C));
 				}
 			}
 			if ( !current.top ) {
 				board[i][j].setTop(true);
 				board[i - 1][j].setBottom(true);
-				if ( board[i - 1][j].turnedSides >= 2 ) {
+				if ( board[i - 1][j].turnedSides > 2 ) {
 					Qi.add(i - 1);
 					Qj.add(j);
 					lines1.push(new Line(i - 1, j, BOTTOM_C));
 				} else {
-					toDelete.push(new Line(i, j, BOTTOM_C));
+					toDelete.push(new Line(i - 1, j, BOTTOM_C));
 				}
 			}
 		}
@@ -276,7 +276,7 @@ public class Matrix implements Serializable{
 			if ( !current.bottom ) {
 				board[i][j].setBottom(true);
 				board[i + 1][j].setTop(true);
-				if ( board[i + 1][j].turnedSides >= 2 ) {
+				if ( board[i + 1][j].turnedSides > 2 ) {
 					Qi.add(i + 1);
 					Qj.add(j);
 					lines2.push(lines1.pop());
@@ -285,7 +285,7 @@ public class Matrix implements Serializable{
 			if ( !current.right ) {
 				board[i][j].setRight(true);
 				board[i][j + 1].setLeft(true);
-				if ( board[i][j + 1].turnedSides >= 2 ) {
+				if ( board[i][j + 1].turnedSides > 2 ) {
 					Qi.add(i);
 					Qj.add(j + 1);
 					lines2.push(lines1.pop());
@@ -294,7 +294,7 @@ public class Matrix implements Serializable{
 			if ( !current.left ) {
 				board[i][j].setLeft(true);
 				board[i][j - 1].setRight(true);
-				if ( board[i][j - 1].turnedSides >= 2 ) {
+				if ( board[i][j - 1].turnedSides > 2 ) {
 					Qi.add(i);
 					Qj.add(j - 1);
 					lines2.push(lines1.pop());
@@ -303,7 +303,7 @@ public class Matrix implements Serializable{
 			if ( !current.top ) {
 				board[i][j].setTop(true);
 				board[i - 1][j].setBottom(true);
-				if ( board[i - 1][j].turnedSides >= 2 ) {
+				if ( board[i - 1][j].turnedSides > 2 ) {
 					Qi.add(i - 1);
 					Qj.add(j);
 					lines2.push(lines1.pop());
