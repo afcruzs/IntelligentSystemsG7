@@ -418,8 +418,8 @@ public class Matrix implements Serializable{
 	}
 	
 	public Matrix newState(Line line, String player) {
+		//Clonada yaoming :v
 		Matrix matrix = deepClone();
-		matrix.addLine(line);
 		matrix.fillPossiblePoints(line, player);
 		return matrix;
 	}
