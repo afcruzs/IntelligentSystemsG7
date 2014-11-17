@@ -417,6 +417,7 @@ public class Matrix implements Serializable{
 	}
 	
 	private void fillPossiblePoints(Line line, String player){
+		System.out.println(line);
 		int i = line.i, j = line.j;
 		Box box2 = null;
 		switch (line.side) {
