@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -15,7 +16,7 @@ import java.util.Stack;
 
 import unalcol.agents.examples.squares.Squares;
 
-public class Matrix implements Serializable{
+public class Matrix implements Serializable {
 
 	public final static int LEFT_C = 0;
 
@@ -25,9 +26,9 @@ public class Matrix implements Serializable{
 
 	public static final int BOTTOM_C = 3;
 
-	int n,white,black;
+	int n, white, black;
 	Box board[][];
-	public List<Line> possibleLines;  
+	public List<Line> possibleLines;
 
 	public Matrix(int n) {
 		int maxLines = 2 * n * n - 2 * n;
@@ -65,14 +66,14 @@ public class Matrix implements Serializable{
 			board[board.length - 1][i].setBottom(true);
 			board[i][board.length - 1].setRight(true);
 		}
-		
+
 		white = black = 0;
 	}
-	
-	public void colorIfNeeded(String perception){
-		if( perception.equals(Squares.WHITE) )
+
+	public void colorIfNeeded(String perception) {
+		if (perception.equals(Squares.WHITE))
 			white++;
-		else if( perception.equals(Squares.BLACK) )
+		else if (perception.equals(Squares.BLACK))
 			black++;
 	}
 
@@ -268,16 +269,16 @@ public class Matrix implements Serializable{
 		Qi.add(i);
 		Qj.add(j);
 		
-		//System.out.println(i+" "+j);
+		System.out.println(i+" "+j);
 		while ( !Qi.isEmpty() ) {
 			i = Qi.poll();
 			j = Qj.poll();
-			current = board2[i][j];
+			current = board2[i][j].clone();
 			
 			if ( !current.bottom ) {
 				board2[i][j].setBottom(true);
 				board2[i + 1][j].setTop(true);
-				if ( board[i + 1][j].turnedSides == 3 ) {
+				if ( board2[i + 1][j].turnedSides == 3 ) {
 					Qi.add(i + 1);
 					Qj.add(j);
 					if ( !lines1.isEmpty() )
@@ -319,11 +320,7 @@ public class Matrix implements Serializable{
 		/* Hay dos componentes, es necesario eliminar la ultima del primero */
 		if ( lines1.size() > 1 ) lines1.pop();
 		
-		/* Box de solo un punto */
-		if ( lines1.isEmpty() && lines2.isEmpty() )
-			lines.add( new ExpandingLine(toDelete.peek(), 1) );
-			
-		//System.out.println("Todelete " + toDelete);
+		System.out.println("Todelete " + toDelete);
 		while ( !toDelete.empty() ) {
 			Line line = toDelete.pop();
 			if ( line.side == RIGHT_C ) {
@@ -339,46 +336,120 @@ public class Matrix implements Serializable{
 			}
 		}
 		
-		//System.out.println("Lines1 " + lines1);
-		//System.out.println("Lines2 " + lines2);
+		System.out.println("Lines1 " + lines1);
+		System.out.println("Lines2 " + lines2);
 		
 		if ( !lines1.isEmpty() ) lines.add( new ExpandingLine(lines1.peek(), lines1.size() + 1) );
 		if ( !lines2.isEmpty() ) lines.add( new ExpandingLine(lines2.peek(), lines2.size() + 1) );
 	}
 	
-	public ArrayList<ExpandingLine> evaluationLines() {
-		Box tempBoard[][] = new Box[n][n];
-		for ( int i = 0; i < n; i++ )
-			for ( int j = 0; j < n; j++ )
-				tempBoard[i][j] = board[i][j].clone();
+	
+	
+	private int labSize ( Box board[][], int i, int j ) {
+		Queue<Integer> Qi = new LinkedList<>();
+		Queue<Integer> Qj = new LinkedList<>();
+		Qi.add(i);
+		Qj.add(j);
 		
+		int size = 0;
+		Box current = board[i][j];
+		
+		boolean flag = false;
+		while ( !Qi.isEmpty() ) {
+			i = Qi.poll();
+			j = Qj.poll();
+			current = board[i][j];
+			
+			if ( !current.bottom ) {
+				board[i][j].setBottom(true);
+				board[i + 1][j].setTop(true);
+				if ( board[i + 1][j].turnedSides > 2 ) {
+					Qi.add(i + 1);
+					Qj.add(j);
+					size++;
+				}
+			}
+			if ( !current.right ) {
+				board[i][j].setRight(true);
+				board[i][j + 1].setLeft(true);
+				if ( board[i][j + 1].turnedSides > 2 ) {
+					Qi.add(i);
+					Qj.add(j + 1);
+					size++;
+				}
+			}
+			if ( !current.left ) {
+				board[i][j].setLeft(true);
+				board[i][j - 1].setRight(true);
+				if ( board[i][j - 1].turnedSides > 2 ) {
+					Qi.add(i);
+					Qj.add(j - 1);
+					size++;
+				} 
+			}
+			if ( !current.top ) {
+				board[i][j].setTop(true);
+				board[i - 1][j].setBottom(true);
+				if ( board[i - 1][j].turnedSides > 2 ) {
+					Qi.add(i - 1);
+					Qj.add(j);
+					size++;
+				} 
+			}
+		}
+		
+		return size;
+	}
+	
+	
+
+	public ArrayList<ExpandingLine> evaluationLines() {
+		ArrayList<ExpandingLine> ord = new ArrayList<>();
+		
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++) {
+				Box board2[][] = new Box[n][n];
+				for ( int k = 0; k < n; k++ )
+					for ( int h = 0; h < n; h++ )
+						board2[k][h] = this.board[k][h].clone();
+				
+				ord.add( new ExpandingLine(i, j, 9999, labSize(board2, i, j) ) );
+			}
+		
+		Collections.sort(ord);
+		Collections.reverse(ord);
+		
+		Box tempBoard[][] = new Box[n][n];
+		for ( int k = 0; k < n; k++ )
+			for ( int h = 0; h < n; h++ )
+				tempBoard[k][h] = this.board[k][h].clone();
 		ArrayList<ExpandingLine> lines = new ArrayList<>();
 		
-		for ( int i = 0; i < n; i++ )
-			for ( int j = 0; j < n; j++ )
-				if ( board[i][j].turnedSides == 2 && tempBoard[i][j].turnedSides < 3 ) {
-					//System.out.println( "Selected " +  i + " " + j );
-					expansion( tempBoard, i, j, lines );
-				}
-					
+		for ( ExpandingLine e : ord ) {
+			if (board[e.i][e.j].turnedSides == 2
+					&& tempBoard[e.i][e.j].turnedSides < 3) {
+				 System.out.println( "Selected " + e.i + " " + e.j );
+				expansion(tempBoard, e.i, e.j, lines);
+			}
+		}
+		
 		Collections.sort(lines);
 		return lines;
 	}
 
-
 	public boolean isOver() {
-		return (white + black) == n*n;
+		return (white + black) == n * n;
 	}
 
 	public static String opposite(String player) {
-		if( player.equals(Squares.WHITE) )
+		if (player.equals(Squares.WHITE))
 			return Squares.BLACK;
-		else if( player.equals(Squares.BLACK) )
+		else if (player.equals(Squares.BLACK))
 			return Squares.WHITE;
 		else
 			throw new IllegalArgumentException();
 	}
-	
+
 	public Matrix deepClone() {
 		try {
 			// write this object
@@ -398,9 +469,9 @@ public class Matrix implements Serializable{
 
 		return null;
 	}
-	
-	private void fillPossiblePoints(Line line, String player){
-		//System.out.println(line);
+
+	private void fillPossiblePoints(Line line, String player) {
+		// System.out.println(line);
 		int i = line.i, j = line.j;
 		Box box2 = null;
 		switch (line.side) {
@@ -421,32 +492,33 @@ public class Matrix implements Serializable{
 			break;
 		}
 		addLine(line);
-		
-		if( board[i][j].turnedSides == 4 ){
-			if( player.equals(Squares.WHITE) ){
+
+		if (board[i][j].turnedSides == 4) {
+			if (player.equals(Squares.WHITE)) {
 				white++;
-			}else black++;
-			
-			Line missingLine = box2.getMissingLine(i,j);
-			if(missingLine != null) 
+			} else
+				black++;
+
+			Line missingLine = box2.getMissingLine(i, j);
+			if (missingLine != null)
 				fillPossiblePoints(missingLine, player);
-		}else if( board[i][j].turnedSides == 3 ){
-			Line missingLine1 = board[i][j].getMissingLine(i,j);
-			Line missingLine2 = box2.getMissingLine(i,j);
-			
-			if(missingLine1 != null)
+		} else if (board[i][j].turnedSides == 3) {
+			Line missingLine1 = board[i][j].getMissingLine(i, j);
+			Line missingLine2 = box2.getMissingLine(i, j);
+
+			if (missingLine1 != null)
 				fillPossiblePoints(missingLine1, player);
-			
-			if(missingLine2 != null)
+
+			if (missingLine2 != null)
 				fillPossiblePoints(missingLine2, player);
 		}
 	}
-	
+
 	public Matrix newState(Line line, String player) {
-		//Clonada yaoming :v
+		// Clonada yaoming :v
 		Matrix matrix = deepClone();
 		matrix.fillPossiblePoints(line, player);
-		
+
 		return matrix;
 	}
 }
@@ -487,17 +559,22 @@ class Line implements Serializable {
 class ExpandingLine extends Line implements Comparable<ExpandingLine> {
 
 	public int expandedBoxes;
-	
+
 	public ExpandingLine(Line line, int ex) {
 		super(line.i, line.j, line.side);
+		expandedBoxes = ex;
+	}
+	
+	public ExpandingLine(int i, int j, int side, int ex) {
+		super(i, j, side);
 		expandedBoxes = ex;
 	}
 
 	@Override
 	public int compareTo(ExpandingLine e) {
-		return this.expandedBoxes - e.expandedBoxes;		
+		return this.expandedBoxes - e.expandedBoxes;
 	}
-	
+
 	@Override
 	public String toString() {
 		return super.toString() + " " + expandedBoxes;
@@ -517,23 +594,24 @@ class Box implements Serializable {
 	}
 
 	public Line getMissingLine(int i, int j) {
-		
-		if(turnedSides != 3)
+
+		if (turnedSides != 3)
 			return null;
-		
-		if(!top && bottom && left && right)
-			return new Line(i-1, j, Matrix.BOTTOM_C);
-		
-		if(top && !bottom && left && right)
-			return new Line(i+1, j, Matrix.TOP_C);
-		
-		if(top && bottom && !left && right)
-			return new Line(i, j-1, Matrix.RIGHT_C);
-		
-		if(top && bottom && left && !right)
-			return new Line(i, j+1, Matrix.LEFT_C);
-		
-		throw new IllegalArgumentException("Hay algo mal porque el turnedSiedes es 3 pero en realidad no hay 3 booleanos en falso");
+
+		if (!top && bottom && left && right)
+			return new Line(i - 1, j, Matrix.BOTTOM_C);
+
+		if (top && !bottom && left && right)
+			return new Line(i + 1, j, Matrix.TOP_C);
+
+		if (top && bottom && !left && right)
+			return new Line(i, j - 1, Matrix.RIGHT_C);
+
+		if (top && bottom && left && !right)
+			return new Line(i, j + 1, Matrix.LEFT_C);
+
+		throw new IllegalArgumentException(
+				"Hay algo mal porque el turnedSiedes es 3 pero en realidad no hay 3 booleanos en falso");
 	}
 
 	public boolean getSide(String side) {
