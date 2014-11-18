@@ -346,13 +346,13 @@ public class Matrix implements Serializable{
 		if ( !lines2.isEmpty() ) lines.add( new ExpandingLine(lines2.peek(), lines2.size() + 1) );
 	}
 	
-	public List<ExpandingLine> evaluationLines() {
+	public ArrayList<ExpandingLine> evaluationLines() {
 		Box tempBoard[][] = new Box[n][n];
 		for ( int i = 0; i < n; i++ )
 			for ( int j = 0; j < n; j++ )
 				tempBoard[i][j] = board[i][j].clone();
 		
-		List<ExpandingLine> lines = new ArrayList<>();
+		ArrayList<ExpandingLine> lines = new ArrayList<>();
 		
 		for ( int i = 0; i < n; i++ )
 			for ( int j = 0; j < n; j++ )

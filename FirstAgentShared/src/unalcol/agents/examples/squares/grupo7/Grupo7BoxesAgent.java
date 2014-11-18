@@ -1,9 +1,6 @@
 package unalcol.agents.examples.squares.grupo7;
 
-import java.util.Collection;
-import java.util.Random;
-
-import javax.swing.JOptionPane;
+import java.util.ArrayList;
 
 import unalcol.agents.Action;
 import unalcol.agents.AgentProgram;
@@ -81,7 +78,7 @@ public class Grupo7BoxesAgent implements AgentProgram {
 		return null;*/
 		
 		System.out.println(color+" Lines: "+matrix.evaluationLines());
-		try{ Thread.sleep(300000); }catch(Exception e){}
+		//try{ Thread.sleep(300000); }catch(Exception e){}
 		
 		
 		System.out.println("We are gonna minimax!! ASLKJDKJSLA");
@@ -96,7 +93,12 @@ public class Grupo7BoxesAgent implements AgentProgram {
 		if( matrix.isOver() || matrix.evaluationLines().size() == 0 )
 			return new MiniMaxValue( null, evaluateFunction(matrix, depth), depth );
 		
-		Collection<ExpandingLine> possibleLines = matrix.evaluationLines();
+		ArrayList<ExpandingLine> possibleLines = matrix.evaluationLines();
+		
+		if( possibleLines.get(0).expandedBoxes <= 4 ) return new MiniMaxValue(
+				possibleLines.get(0), evaluateFunction(matrix.newState(possibleLines.get(0), player), depth), depth
+				);
+		
 		System.out.println("asdsd");
 		MiniMaxValue best = null;
 		for( Line t : possibleLines ){
