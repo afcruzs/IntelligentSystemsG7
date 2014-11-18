@@ -1,11 +1,15 @@
 package unalcol.agents.examples.squares.grupo7;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import unalcol.agents.Action;
 import unalcol.agents.AgentProgram;
 import unalcol.agents.Percept;
 import unalcol.agents.examples.squares.Squares;
+import unalcol.random.Random;
 
 public class Grupo7BoxesAgent implements AgentProgram {
 
@@ -20,7 +24,7 @@ public class Grupo7BoxesAgent implements AgentProgram {
 	public Action compute(Percept p) {
 		if(matrix == null)
 			matrix = new Matrix(Integer.parseInt(p.getAttribute(Squares.SIZE).toString()));
-		//}else matrix.initBoardOnly();
+		//else matrix.initBoardOnly();
 		
 		/*
 		 * try{ Thread.sleep(1000); }catch(Exception e){}
@@ -81,15 +85,98 @@ public class Grupo7BoxesAgent implements AgentProgram {
 		try{ Thread.sleep(300000); }catch(Exception e){}*/
 		
 		
-		System.out.println("We are gonna minimax!! ASLKJDKJSLA");
-		MiniMaxValue value = miniMaxWithAlphaBeta(matrix, color, 0,Integer.MIN_VALUE, Integer.MAX_VALUE);
-		Line optimalLine = value.line;
-		return new Action(optimalLine.i+":"+optimalLine.j+":"+optimalLine.getStringSide());
+		//System.out.println("We are gonna minimax!! ASLKJDKJSLA");
+		try{
+			MiniMaxValue value = miniMaxWithAlphaBeta(matrix, color, 0,Integer.MIN_VALUE, Integer.MAX_VALUE);
+			Line optimalLine = value.line;
+			//System.out.println(optimalLine);
+			/*if( optimalLine == null )
+				optimalLine = getAnyFreeLine(p);
+			else if(checkLineInPercept(optimalLine,p))
+				optimalLine = getAnyFreeLine(p);*/
+			if( optimalLine == null ){
+				
+				ArrayList<ExpandingLine> possibleLines = matrix.evaluationLines();
+				for(ExpandingLine el : possibleLines){
+					if( !checkLineInPercept(el, p) ){
+						optimalLine = el;
+						break;
+					}
+				}
+				
+				if( optimalLine == null )
+					optimalLine = getAnyFreeLine(p);
+				else if(checkLineInPercept(optimalLine,p))
+					optimalLine = getAnyFreeLine(p);
+			}
+	
+			if(checkLineInPercept(optimalLine,p)){
+				
+				ArrayList<ExpandingLine> possibleLines = matrix.evaluationLines();
+				for(ExpandingLine el : possibleLines){
+					if( !checkLineInPercept(el, p) ){
+						optimalLine = el;
+						break;
+					}
+				}
+				
+				if( optimalLine == null )
+					optimalLine = getAnyFreeLine(p);
+				else if(checkLineInPercept(optimalLine,p))
+					optimalLine = getAnyFreeLine(p);
+				
+			}
+	
+			return new Action(optimalLine.i+":"+optimalLine.j+":"+optimalLine.getStringSide());
+		}catch(Exception e){
+			Line l = getAnyFreeLine(p);
+			return new Action(l.i+":"+l.j+":"+l.getStringSide());
+		}
 	}
 	
+	public boolean checkLineInPercept(Line l, Percept p){
+		return ((String) p.getAttribute(l.i + ":" + l.j + ":"
+				+ l.getStringSide())).equals(Squares.TRUE); 
+	}
+	
+	private Line getAnyFreeLine(Percept p) {
+	//	System.out.println("Telametieronjpg");
+		int n = Integer.parseInt(p.getAttribute(Squares.SIZE).toString());
+		ArrayList<Line> random = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (((String) p.getAttribute(i + ":" + j + ":"
+						+ Squares.BOTTOM)).equals(Squares.FALSE)) {
+					random.add( new Line(i,j,Matrix.BOTTOM_C) );
+				}
+				
+				
+				if (((String) p.getAttribute(i + ":" + j + ":"
+						+ Squares.LEFT)).equals(Squares.FALSE)) {
+					random.add( new Line(i,j,Matrix.LEFT_C) );
+				}
+				
+				if (((String) p.getAttribute(i + ":" + j + ":"
+						+ Squares.RIGHT)).equals(Squares.FALSE)) {
+					random.add( new Line(i,j,Matrix.RIGHT_C) );
+				}
+				
+				if (((String) p.getAttribute(i + ":" + j + ":"
+						+ Squares.TOP)).equals(Squares.FALSE)) {
+					random.add( new Line(i,j,Matrix.TOP_C) );
+				}
+					
+			}
+		}
+		if(random.size()==0)
+			return null;
+		else
+			return random.get( new Random().nextInt(random.size()) );
+	}
+
 	public MiniMaxValue miniMaxWithAlphaBeta(Matrix matrix, String player ,int depth, int alpha, int beta){
-		System.out.println(matrix.white + " " +matrix.black);
 		depth++;		
+		//System.out.println(depth + " " + player);
 		if( matrix.isOver() || matrix.evaluationLines().size() == 0 )
 			return new MiniMaxValue( null, evaluateFunction(matrix, depth), depth );
 		
@@ -99,7 +186,6 @@ public class Grupo7BoxesAgent implements AgentProgram {
 				possibleLines.get(0), evaluateFunction(matrix.newState(possibleLines.get(0), player), depth), depth
 				);
 		
-		System.out.println("asdsd");
 		MiniMaxValue best = null;
 		for( Line t : possibleLines ){
 			MiniMaxValue miniMaxValue = miniMaxWithAlphaBeta(matrix.newState(t, player), 

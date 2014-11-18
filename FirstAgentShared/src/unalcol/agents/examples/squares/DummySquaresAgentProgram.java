@@ -43,7 +43,6 @@ public class DummySquaresAgentProgram implements AgentProgram {
                 v.add(Squares.RIGHT);
             }
             String m = i+":"+j+":"+v.get((int)(Math.random()*v.size()));
-            System.out.println(m);
             return new Action( m );
         }
         return new Action(Squares.PASS);

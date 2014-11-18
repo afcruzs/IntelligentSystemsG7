@@ -418,7 +418,8 @@ public class Matrix implements Serializable {
 					for ( int h = 0; h < n; h++ )
 						board2[k][h] = this.board[k][h].clone();
 				
-				ord.add( new ExpandingLine(i, j, 9999, labSize(board2, i, j) ) );
+				if ( board[i][j].turnedSides == 2 )
+					ord.add( new ExpandingLine(i, j, 9999, labSize(board2, i, j) ) );
 			}
 		
 		Collections.sort(ord);
@@ -439,7 +440,12 @@ public class Matrix implements Serializable {
 		}
 		
 		Collections.sort(lines);
-		return lines;
+		ArrayList<ExpandingLine> optimal = new ArrayList<>();
+		for( ExpandingLine el : lines ){
+			if( !board[el.i][el.j].isUsed(el.side) )
+				optimal.add(el);
+		}
+		return optimal;
 	}
 
 	public boolean isOver() {
@@ -526,6 +532,25 @@ public class Matrix implements Serializable {
 
 		return matrix;
 	}
+
+	public Line getAnyFreeLine() {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if( !isLine(i, j, Squares.LEFT) )
+					return new Line(i,j,LEFT_C);
+				
+				if( !isLine(i, j, Squares.RIGHT) )
+					return new Line(i,j,RIGHT_C);
+				
+				if( !isLine(i, j, Squares.TOP) )
+					return new Line(i,j,TOP_C);
+				
+				if( !isLine(i, j, Squares.BOTTOM) )
+					return new Line(i,j,BOTTOM_C);
+			}
+		}
+		return null;
+	}
 }
 
 class Line implements Serializable {
@@ -596,6 +621,22 @@ class Box implements Serializable {
 		right = false;
 		left = false;
 		turnedSides = 0;
+	}
+
+	public boolean isUsed(int side) {
+		switch (side) {
+		case Matrix.LEFT_C:
+			return left;
+
+		case Matrix.RIGHT_C:
+			return right;
+
+		case Matrix.TOP_C:
+			return top;
+
+		default: /*case Matrix.BOTTOM_C:*/
+			return bottom;
+		}
 	}
 
 	public Line getMissingLine(int i, int j) {
