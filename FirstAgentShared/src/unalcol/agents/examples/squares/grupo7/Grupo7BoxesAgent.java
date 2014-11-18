@@ -83,13 +83,13 @@ public class Grupo7BoxesAgent implements AgentProgram {
 		System.out.println("We are gonna minimax!! ASLKJDKJSLA");
 		MiniMaxValue value = miniMaxWithAlphaBeta(matrix, color, 0,Integer.MIN_VALUE, Integer.MAX_VALUE);
 		Line optimalLine = value.line;
-		return new Action(optimalLine.i+":"+optimalLine.j+":"+line.getStringSide());
+		return new Action(optimalLine.i+":"+optimalLine.j+":"+optimalLine.getStringSide());
 	}
 	
 	public MiniMaxValue miniMaxWithAlphaBeta(Matrix matrix, String player ,int depth, int alpha, int beta){
 		System.out.println(matrix.white + " " +matrix.black);
 		depth++;		
-		if( matrix.isOver() )
+		if( matrix.isOver() || matrix.evaluationLines().size() == 0 )
 			return new MiniMaxValue( null, evaluateFunction(matrix, depth), depth );
 		
 		Collection<Line> possibleLines = matrix.evaluationLines();
@@ -129,9 +129,9 @@ public class Grupo7BoxesAgent implements AgentProgram {
 		//TODO: Calcular el puntaje maximo y cuadrar con la profunidad
 		//para que se demore mas en caso de que perder sea iniminente.
 		if( color.equals(Squares.WHITE) )
-			return matrix.white;
+			return matrix.white - matrix.black;
 		else
-			return matrix.black;
+			return matrix.black - matrix.white;
 	}
 
 	class MiniMaxValue implements Comparable<MiniMaxValue>{

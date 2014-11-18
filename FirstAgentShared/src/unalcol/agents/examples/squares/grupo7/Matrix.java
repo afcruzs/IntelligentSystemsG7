@@ -394,7 +394,7 @@ public class Matrix implements Serializable{
 	}
 	
 	private void fillPossiblePoints(Line line, String player){
-		System.out.println(line);
+		//System.out.println(line);
 		int i = line.i, j = line.j;
 		Box box2 = null;
 		switch (line.side) {
@@ -440,6 +440,7 @@ public class Matrix implements Serializable{
 		//Clonada yaoming :v
 		Matrix matrix = deepClone();
 		matrix.fillPossiblePoints(line, player);
+		
 		return matrix;
 	}
 }
