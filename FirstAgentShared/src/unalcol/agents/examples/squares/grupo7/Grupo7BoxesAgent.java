@@ -9,7 +9,6 @@ import unalcol.agents.Action;
 import unalcol.agents.AgentProgram;
 import unalcol.agents.Percept;
 import unalcol.agents.examples.squares.Squares;
-import unalcol.agents.examples.squares.grupo7.Matrix.Line;
 
 public class Grupo7BoxesAgent implements AgentProgram {
 
@@ -22,9 +21,9 @@ public class Grupo7BoxesAgent implements AgentProgram {
 
 	@Override
 	public Action compute(Percept p) {
-		if(matrix == null){
+		if(matrix == null)
 			matrix = new Matrix(Integer.parseInt(p.getAttribute(Squares.SIZE).toString()));
-		}else matrix.initBoardOnly();
+		//}else matrix.initBoardOnly();
 		
 		/*
 		 * try{ Thread.sleep(1000); }catch(Exception e){}
@@ -77,15 +76,14 @@ public class Grupo7BoxesAgent implements AgentProgram {
 			int j = r.nextInt(matrix.n);
 			return new Action(i + ":" + j + ":left");
 		}
-		*/
-		System.out.println(matrix.evaluationLines());
+		
+		System.out.println(color+" Lines: "+matrix.evaluationLines());
 		try{ Thread.sleep(30000); }catch(Exception e){}
-		return null;/*
+		return null;*/
 		System.out.println("We are gonna minimax!! ASLKJDKJSLA");
 		MiniMaxValue value = miniMaxWithAlphaBeta(matrix, color, 0,Integer.MIN_VALUE, Integer.MAX_VALUE);
 		Line optimalLine = value.line;
 		return new Action(optimalLine.i+":"+optimalLine.j+":"+line.getStringSide());
-		*/
 	}
 	
 	public MiniMaxValue miniMaxWithAlphaBeta(Matrix matrix, String player ,int depth, int alpha, int beta){

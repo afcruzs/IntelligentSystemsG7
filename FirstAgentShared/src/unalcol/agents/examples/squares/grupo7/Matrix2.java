@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 import unalcol.agents.examples.squares.Squares;
-import unalcol.agents.examples.squares.grupo7.Matrix.Line;
 
 public class Matrix2 {
 

@@ -13,7 +13,6 @@ import java.util.Random;
 import java.util.Stack;
 
 import unalcol.agents.examples.squares.Squares;
-import unalcol.agents.examples.squares.grupo7.Matrix.Line;
 
 public class Matrix implements Serializable{
 
@@ -216,44 +215,44 @@ public class Matrix implements Serializable{
 			if ( !current.bottom ) {
 				board[i][j].setBottom(true);
 				board[i + 1][j].setTop(true);
-				if ( board[i + 1][j].turnedSides > 2 ) {
+				if ( board[i + 1][j].turnedSides == 3 ) {
 					Qi.add(i + 1);
 					Qj.add(j);
 					lines1.push(new Line(i, j, BOTTOM_C));
-				} else {
+				} else if ( board[i + 1][j].turnedSides < 3 ) {
 					toDelete.push(new Line(i, j, BOTTOM_C));
 				}
 			}
 			if ( !current.right ) {
 				board[i][j].setRight(true);
 				board[i][j + 1].setLeft(true);
-				if ( board[i][j + 1].turnedSides > 2 ) {
+				if ( board[i][j + 1].turnedSides == 3 ) {
 					Qi.add(i);
 					Qj.add(j + 1);
 					lines1.push(new Line(i, j, RIGHT_C));
-				} else {
+				} else if ( board[i][j + 1].turnedSides < 3 ) {
 					toDelete.push(new Line(i, j, RIGHT_C));
 				}
 			}
 			if ( !current.left ) {
 				board[i][j].setLeft(true);
 				board[i][j - 1].setRight(true);
-				if ( board[i][j - 1].turnedSides > 2 ) {
+				if ( board[i][j - 1].turnedSides == 3 ) {
 					Qi.add(i);
 					Qj.add(j - 1);
 					lines1.push(new Line(i, j - 1, RIGHT_C));
-				} else {
+				} else if ( board[i][j - 1].turnedSides < 3 ) {
 					toDelete.push(new Line(i, j - 1, RIGHT_C));
 				}
 			}
 			if ( !current.top ) {
 				board[i][j].setTop(true);
 				board[i - 1][j].setBottom(true);
-				if ( board[i - 1][j].turnedSides > 2 ) {
+				if ( board[i - 1][j].turnedSides == 3 ) {
 					Qi.add(i - 1);
 					Qj.add(j);
 					lines1.push(new Line(i - 1, j, BOTTOM_C));
-				} else {
+				} else if ( board[i - 1][j].turnedSides < 3 ) {
 					toDelete.push(new Line(i - 1, j, BOTTOM_C));
 				}
 			}
@@ -268,49 +267,58 @@ public class Matrix implements Serializable{
 		Qi.add(i);
 		Qj.add(j);
 		
+		//System.out.println(i+" "+j);
 		while ( !Qi.isEmpty() ) {
 			i = Qi.poll();
 			j = Qj.poll();
-			current = board[i][j];
+			current = board2[i][j];
 			
 			if ( !current.bottom ) {
-				board[i][j].setBottom(true);
-				board[i + 1][j].setTop(true);
-				if ( board[i + 1][j].turnedSides > 2 ) {
+				board2[i][j].setBottom(true);
+				board2[i + 1][j].setTop(true);
+				if ( board[i + 1][j].turnedSides == 3 ) {
 					Qi.add(i + 1);
 					Qj.add(j);
-					lines2.push(lines1.pop());
+					if ( !lines1.isEmpty() )
+						lines2.push(lines1.pop());
 				}
 			}
 			if ( !current.right ) {
-				board[i][j].setRight(true);
-				board[i][j + 1].setLeft(true);
-				if ( board[i][j + 1].turnedSides > 2 ) {
+				board2[i][j].setRight(true);
+				board2[i][j + 1].setLeft(true);
+				if ( board2[i][j + 1].turnedSides == 3 ) {
 					Qi.add(i);
 					Qj.add(j + 1);
-					lines2.push(lines1.pop());
+					if ( !lines1.isEmpty() )
+						lines2.push(lines1.pop());
 				}
 			}
 			if ( !current.left ) {
-				board[i][j].setLeft(true);
-				board[i][j - 1].setRight(true);
-				if ( board[i][j - 1].turnedSides > 2 ) {
+				board2[i][j].setLeft(true);
+				board2[i][j - 1].setRight(true);
+				if ( board2[i][j - 1].turnedSides == 3 ) {
 					Qi.add(i);
 					Qj.add(j - 1);
-					lines2.push(lines1.pop());
+					if ( !lines1.isEmpty() )
+						lines2.push(lines1.pop());
 				}
 			}
 			if ( !current.top ) {
-				board[i][j].setTop(true);
-				board[i - 1][j].setBottom(true);
-				if ( board[i - 1][j].turnedSides > 2 ) {
+				board2[i][j].setTop(true);
+				board2[i - 1][j].setBottom(true);
+				if ( board2[i - 1][j].turnedSides == 3 ) {
 					Qi.add(i - 1);
 					Qj.add(j);
-					lines2.push(lines1.pop());
+					if ( !lines1.isEmpty() )
+						lines2.push(lines1.pop());
 				}
 			}
 		}
 		
+		/* Hay dos componentes, es necesario eliminar la ultima del primero */
+		if ( lines1.size() > 1 ) lines1.pop();
+		
+		//System.out.println("Todelete " + toDelete);
 		while ( !toDelete.empty() ) {
 			Line line = toDelete.pop();
 			if ( line.side == RIGHT_C ) {
@@ -326,6 +334,9 @@ public class Matrix implements Serializable{
 			}
 		}
 		
+		//System.out.println("Lines1 " + lines1);
+		//System.out.println("Lines2 " + lines2);
+		
 		if ( !lines1.isEmpty() ) lines.add(lines1.peek());
 		if ( !lines2.isEmpty() ) lines.add(lines2.peek());
 	}
@@ -340,46 +351,12 @@ public class Matrix implements Serializable{
 		
 		for ( int i = 0; i < n; i++ )
 			for ( int j = 0; j < n; j++ )
-				if ( board[i][j].turnedSides < 3 && tempBoard[i][j].turnedSides != 4 ) {
-					System.out.println( "Selected " + i + " " + j );
+				if ( board[i][j].turnedSides == 2 && tempBoard[i][j].turnedSides < 3 ) {
+					//System.out.println( "Selected " +  i + " " + j );
 					expansion( tempBoard, i, j, lines );
 				}
 					
 		return lines;
-	}
-
-	
-	public static class Line implements Serializable {
-		int i, j, side;
-
-		public Line(int i, int j, int side) {
-			this.i = i;
-			this.j = j;
-			this.side = side;
-		}
-
-		public String getStringSide() {
-			switch (side) {
-			case LEFT_C:
-				return Squares.LEFT;
-
-			case RIGHT_C:
-				return Squares.RIGHT;
-
-			case TOP_C:
-				return Squares.TOP;
-
-			case BOTTOM_C:
-				return Squares.BOTTOM;
-
-			default:
-				throw new IllegalArgumentException("Bad side!");
-			}
-		}
-
-		public String toString() {
-			return i + " " + j + " " + getStringSide();
-		}
 	}
 
 
@@ -467,6 +444,38 @@ public class Matrix implements Serializable{
 	}
 }
 
+class Line implements Serializable {
+	int i, j, side;
+
+	public Line(int i, int j, int side) {
+		this.i = i;
+		this.j = j;
+		this.side = side;
+	}
+
+	public String getStringSide() {
+		switch (side) {
+		case Matrix.LEFT_C:
+			return Squares.LEFT;
+
+		case Matrix.RIGHT_C:
+			return Squares.RIGHT;
+
+		case Matrix.TOP_C:
+			return Squares.TOP;
+
+		case Matrix.BOTTOM_C:
+			return Squares.BOTTOM;
+
+		default:
+			throw new IllegalArgumentException("Bad side!");
+		}
+	}
+
+	public String toString() {
+		return i + " " + j + " " + getStringSide();
+	}
+}
 
 
 class Box implements Serializable {
