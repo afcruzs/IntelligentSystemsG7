@@ -77,9 +77,13 @@ public class Grupo7BoxesAgent implements AgentProgram {
 			return new Action(i + ":" + j + ":left");
 		}
 		
-		System.out.println(color+" Lines: "+matrix.evaluationLines());
-		try{ Thread.sleep(30000); }catch(Exception e){}
+		
 		return null;*/
+		
+		System.out.println(color+" Lines: "+matrix.evaluationLines());
+		try{ Thread.sleep(300000); }catch(Exception e){}
+		
+		
 		System.out.println("We are gonna minimax!! ASLKJDKJSLA");
 		MiniMaxValue value = miniMaxWithAlphaBeta(matrix, color, 0,Integer.MIN_VALUE, Integer.MAX_VALUE);
 		Line optimalLine = value.line;
@@ -92,7 +96,7 @@ public class Grupo7BoxesAgent implements AgentProgram {
 		if( matrix.isOver() || matrix.evaluationLines().size() == 0 )
 			return new MiniMaxValue( null, evaluateFunction(matrix, depth), depth );
 		
-		Collection<Line> possibleLines = matrix.evaluationLines();
+		Collection<ExpandingLine> possibleLines = matrix.evaluationLines();
 		System.out.println("asdsd");
 		MiniMaxValue best = null;
 		for( Line t : possibleLines ){

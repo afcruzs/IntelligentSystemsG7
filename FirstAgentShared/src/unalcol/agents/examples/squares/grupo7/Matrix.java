@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Matrix implements Serializable{
 
 	int n,white,black;
 	Box board[][];
-	public List<Line> possibleLines, aux;
+	public List<Line> possibleLines;  
 
 	public Matrix(int n) {
 		int maxLines = 2 * n * n - 2 * n;
@@ -198,7 +199,7 @@ public class Matrix implements Serializable{
 		}
 	}
 
-	private void expansion ( Box board[][], int i, int j, List<Line> lines ) {
+	private void expansion ( Box board[][], int i, int j, List<ExpandingLine> lines ) {
 		Queue<Integer> Qi = new LinkedList<>();
 		Queue<Integer> Qj = new LinkedList<>();
 		Qi.add(i);
@@ -318,6 +319,10 @@ public class Matrix implements Serializable{
 		/* Hay dos componentes, es necesario eliminar la ultima del primero */
 		if ( lines1.size() > 1 ) lines1.pop();
 		
+		/* Box de solo un punto */
+		if ( lines1.isEmpty() && lines2.isEmpty() )
+			lines.add( new ExpandingLine(toDelete.peek(), 1) );
+			
 		//System.out.println("Todelete " + toDelete);
 		while ( !toDelete.empty() ) {
 			Line line = toDelete.pop();
@@ -337,17 +342,17 @@ public class Matrix implements Serializable{
 		//System.out.println("Lines1 " + lines1);
 		//System.out.println("Lines2 " + lines2);
 		
-		if ( !lines1.isEmpty() ) lines.add(lines1.peek());
-		if ( !lines2.isEmpty() ) lines.add(lines2.peek());
+		if ( !lines1.isEmpty() ) lines.add( new ExpandingLine(lines1.peek(), lines1.size() + 1) );
+		if ( !lines2.isEmpty() ) lines.add( new ExpandingLine(lines2.peek(), lines2.size() + 1) );
 	}
 	
-	public List<Line> evaluationLines() {
+	public List<ExpandingLine> evaluationLines() {
 		Box tempBoard[][] = new Box[n][n];
 		for ( int i = 0; i < n; i++ )
 			for ( int j = 0; j < n; j++ )
 				tempBoard[i][j] = board[i][j].clone();
 		
-		List<Line> lines = new LinkedList<>();
+		List<ExpandingLine> lines = new ArrayList<>();
 		
 		for ( int i = 0; i < n; i++ )
 			for ( int j = 0; j < n; j++ )
@@ -356,6 +361,7 @@ public class Matrix implements Serializable{
 					expansion( tempBoard, i, j, lines );
 				}
 					
+		Collections.sort(lines);
 		return lines;
 	}
 
@@ -478,6 +484,25 @@ class Line implements Serializable {
 	}
 }
 
+class ExpandingLine extends Line implements Comparable<ExpandingLine> {
+
+	public int expandedBoxes;
+	
+	public ExpandingLine(Line line, int ex) {
+		super(line.i, line.j, line.side);
+		expandedBoxes = ex;
+	}
+
+	@Override
+	public int compareTo(ExpandingLine e) {
+		return this.expandedBoxes - e.expandedBoxes;		
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + " " + expandedBoxes;
+	}
+}
 
 class Box implements Serializable {
 	boolean top, bottom, left, right;
