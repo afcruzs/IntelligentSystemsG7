@@ -269,7 +269,7 @@ public class Matrix implements Serializable {
 		Qi.add(i);
 		Qj.add(j);
 		
-		System.out.println(i+" "+j);
+		//System.out.println(i+" "+j);
 		while ( !Qi.isEmpty() ) {
 			i = Qi.poll();
 			j = Qj.poll();
@@ -317,10 +317,15 @@ public class Matrix implements Serializable {
 			}
 		}
 		
+		/* Un box */
+		if ( lines1.isEmpty() && lines2.isEmpty() &&  !toDelete.isEmpty() ) 
+			lines.add( new ExpandingLine(toDelete.pop(), 1) );
+		
 		/* Hay dos componentes, es necesario eliminar la ultima del primero */
 		if ( lines1.size() > 1 ) lines1.pop();
 		
-		System.out.println("Todelete " + toDelete);
+	
+		//System.out.println("Todelete " + toDelete);
 		while ( !toDelete.empty() ) {
 			Line line = toDelete.pop();
 			if ( line.side == RIGHT_C ) {
@@ -336,10 +341,10 @@ public class Matrix implements Serializable {
 			}
 		}
 		
-		System.out.println("Lines1 " + lines1);
-		System.out.println("Lines2 " + lines2);
+		//System.out.println("Lines1 " + lines1);
+		//System.out.println("Lines2 " + lines2);
 		
-		if ( !lines1.isEmpty() ) lines.add( new ExpandingLine(lines1.peek(), lines1.size() + 1) );
+		if ( !lines1.isEmpty() ) lines.add( new ExpandingLine(lines1.peek(), lines1.size() + lines2.size() + 2) );
 		if ( !lines2.isEmpty() ) lines.add( new ExpandingLine(lines2.peek(), lines2.size() + 1) );
 	}
 	
@@ -428,7 +433,7 @@ public class Matrix implements Serializable {
 		for ( ExpandingLine e : ord ) {
 			if (board[e.i][e.j].turnedSides == 2
 					&& tempBoard[e.i][e.j].turnedSides < 3) {
-				 System.out.println( "Selected " + e.i + " " + e.j );
+				 //System.out.println( "Selected " + e.i + " " + e.j );
 				expansion(tempBoard, e.i, e.j, lines);
 			}
 		}
