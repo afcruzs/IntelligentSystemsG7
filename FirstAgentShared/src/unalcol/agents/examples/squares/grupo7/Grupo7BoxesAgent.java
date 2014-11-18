@@ -77,8 +77,8 @@ public class Grupo7BoxesAgent implements AgentProgram {
 		
 		return null;*/
 		
-		System.out.println(color+" Lines: "+matrix.evaluationLines());
-		try{ Thread.sleep(300000); }catch(Exception e){}
+		/*System.out.println(color+" Lines: "+matrix.evaluationLines());
+		try{ Thread.sleep(300000); }catch(Exception e){}*/
 		
 		
 		System.out.println("We are gonna minimax!! ASLKJDKJSLA");
